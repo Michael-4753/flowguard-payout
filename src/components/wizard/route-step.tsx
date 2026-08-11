@@ -29,6 +29,7 @@ export function RouteStep({
         selectedId={selectedId}
         onSelect={setSelectedId}
         riskHits={risk.factors}
+        avgHops={risk.avgHops}
       />
 
       <p className="text-center text-[11px] text-muted-foreground">
