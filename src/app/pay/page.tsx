@@ -64,7 +64,14 @@ function PayWizard() {
     if (hasQuery || loading || previewTried.current || suppliers.length === 0) return;
     if (!suppliers.some((s) => s.id === PREVIEW_DRAFT.supplierId)) return;
     previewTried.current = true;
-    void runAssess(PREVIEW_DRAFT);
+    let alive = true;
+    void (async () => {
+      await Promise.resolve();
+      if (alive) await runAssess(PREVIEW_DRAFT);
+    })();
+    return () => {
+      alive = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasQuery, loading, suppliers]);
 
