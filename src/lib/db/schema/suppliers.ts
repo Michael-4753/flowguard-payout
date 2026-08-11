@@ -11,7 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 
-/** 供应商档案。历史统计会喂给风险预检。每条记录归属一个用户。 */
+/** Supplier / payee ledger (module 4). History feeds the risk pre-check. Owned by a user. */
 export const suppliers = pgTable(
   "suppliers",
   {
@@ -21,14 +21,18 @@ export const suppliers = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     codeName: varchar("code_name", { length: 64 }).notNull(),
-    region: text("region").notNull(),
+    country: text("country").notNull(),
     countryCode: varchar("country_code", { length: 8 }).notNull(),
+    currency: varchar("currency", { length: 8 }).notNull(),
+    entityType: varchar("entity_type", { length: 16 }).notNull(),
+    bankName: text("bank_name").notNull(),
+    swift: varchar("swift", { length: 16 }).notNull(),
+    iban: varchar("iban", { length: 40 }).notNull(),
+    accountStatus: varchar("account_status", { length: 16 }).notNull(),
     restrictedRegion: boolean("restricted_region").notNull().default(false),
-    preferredChain: varchar("preferred_chain", { length: 32 }).notNull(),
-    preferredCoin: varchar("preferred_coin", { length: 16 }).notNull(),
-    payoutAddress: varchar("payout_address", { length: 128 }).notNull(),
-    travelRuleCompleteness: doublePrecision("travel_rule_completeness").notNull().default(1),
-    addressNetworkMatch: boolean("address_network_match").notNull().default(true),
+    bankBlacklisted: boolean("bank_blacklisted").notNull().default(false),
+    preferredChannel: varchar("preferred_channel", { length: 32 }).notNull(),
+    riskTag: varchar("risk_tag", { length: 16 }).notNull().default("low"),
     paymentCount: integer("payment_count").notNull().default(0),
     historicalReturnRate: doublePrecision("historical_return_rate").notNull().default(0),
     avgSettlementHours: doublePrecision("avg_settlement_hours").notNull().default(2),
