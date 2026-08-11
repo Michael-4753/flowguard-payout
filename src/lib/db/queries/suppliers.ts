@@ -1,21 +1,32 @@
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "../client";
 import { suppliers, type SupplierRow } from "../schema/suppliers";
-import type { ChainId, StableCoin, Supplier } from "@/lib/engine/types";
+import type {
+  AccountStatus,
+  ChannelClass,
+  Currency,
+  EntityType,
+  RiskLevel,
+  Supplier,
+} from "@/lib/engine/types";
 
 function toDomain(row: SupplierRow): Supplier {
   return {
     id: row.id,
     name: row.name,
     codeName: row.codeName,
-    region: row.region,
+    country: row.country,
     countryCode: row.countryCode,
+    currency: row.currency as Currency,
+    entityType: row.entityType as EntityType,
+    bankName: row.bankName,
+    swift: row.swift,
+    iban: row.iban,
+    accountStatus: row.accountStatus as AccountStatus,
     restrictedRegion: row.restrictedRegion,
-    preferredChain: row.preferredChain as ChainId,
-    preferredCoin: row.preferredCoin as StableCoin,
-    payoutAddress: row.payoutAddress,
-    travelRuleCompleteness: row.travelRuleCompleteness,
-    addressNetworkMatch: row.addressNetworkMatch,
+    bankBlacklisted: row.bankBlacklisted,
+    preferredChannel: row.preferredChannel as ChannelClass,
+    riskTag: row.riskTag as RiskLevel,
     paymentCount: row.paymentCount,
     historicalReturnRate: row.historicalReturnRate,
     avgSettlementHours: row.avgSettlementHours,
@@ -33,10 +44,7 @@ export async function listSuppliers(userId: string): Promise<Supplier[]> {
   return rows.map(toDomain);
 }
 
-export async function getSupplierById(
-  userId: string,
-  id: string,
-): Promise<Supplier | undefined> {
+export async function getSupplierById(userId: string, id: string): Promise<Supplier | undefined> {
   const rows = await db
     .select()
     .from(suppliers)
@@ -58,14 +66,18 @@ export async function insertSuppliers(
         userId,
         name: s.name,
         codeName: s.codeName,
-        region: s.region,
+        country: s.country,
         countryCode: s.countryCode,
+        currency: s.currency,
+        entityType: s.entityType,
+        bankName: s.bankName,
+        swift: s.swift,
+        iban: s.iban,
+        accountStatus: s.accountStatus,
         restrictedRegion: s.restrictedRegion,
-        preferredChain: s.preferredChain,
-        preferredCoin: s.preferredCoin,
-        payoutAddress: s.payoutAddress,
-        travelRuleCompleteness: s.travelRuleCompleteness,
-        addressNetworkMatch: s.addressNetworkMatch,
+        bankBlacklisted: s.bankBlacklisted,
+        preferredChannel: s.preferredChannel,
+        riskTag: s.riskTag,
         paymentCount: s.paymentCount,
         historicalReturnRate: s.historicalReturnRate,
         avgSettlementHours: s.avgSettlementHours,
@@ -76,9 +88,6 @@ export async function insertSuppliers(
 }
 
 export async function countSuppliers(userId: string): Promise<number> {
-  const rows = await db
-    .select({ id: suppliers.id })
-    .from(suppliers)
-    .where(eq(suppliers.userId, userId));
+  const rows = await db.select({ id: suppliers.id }).from(suppliers).where(eq(suppliers.userId, userId));
   return rows.length;
 }
