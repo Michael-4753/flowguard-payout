@@ -1,0 +1,8 @@
+{
+  "route": "reconcile",
+  "name": "Reconcile",
+  "nav_type": "tab",
+  "order_index": 6,
+  "icon": "scale",
+  "summary": "Reconciliation center: expected vs received, fees, FX loss, CSV export"
+}
