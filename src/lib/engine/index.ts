@@ -1,8 +1,11 @@
-// FlowGuard 确定性模拟引擎 —— 风险规则库、通道库与路由打分。
-// 相同输入总是产生相同输出，便于演示与评审。
+// FlowGuard deterministic mock engine.
+// Module 1: return-risk pre-check (SWIFT/IBAN/company validation, sanctions &
+//   bank blacklist, currency-control / interception scoring, tiered report).
+// Module 2: three-class channel pool + auto-scoring router.
+// Same input always yields the same output — reproducible for demo & review.
 
 import type {
-  ChainId,
+  ChannelClass,
   FlowHop,
   PaymentInput,
   RiskAssessment,
@@ -10,308 +13,364 @@ import type {
   RiskLevel,
   RouteOption,
   RoutingResult,
-  StableCoin,
   Supplier,
 } from "./types";
-
-/** 通道库：预置的结算通道基础参数。 */
-interface ChannelSpec {
-  id: string;
-  name: string;
-  chain: ChainId;
-  coin: StableCoin;
-  /** 基础费率 0-1。 */
-  baseFeeRate: number;
-  /** 固定网络费（USD）。 */
-  fixedFeeUsd: number;
-  /** 基础时效（分钟）。 */
-  baseMinutes: number;
-  /** 基础成功率 0-1。 */
-  baseSuccessRate: number;
-  /** 中转结构：每一跳的说明模板。 */
-  hopLabels: string[];
-}
-
-export const CHANNELS: ChannelSpec[] = [
-  {
-    id: "base-usdc",
-    name: "Base · USDC",
-    chain: "base",
-    coin: "USDC",
-    baseFeeRate: 0.0032,
-    fixedFeeUsd: 12,
-    baseMinutes: 135,
-    baseSuccessRate: 0.982,
-    hopLabels: ["入金", "Base 结算", "供应商到账"],
-  },
-  {
-    id: "polygon-usdc",
-    name: "Polygon · USDC",
-    chain: "polygon",
-    coin: "USDC",
-    baseFeeRate: 0.0022,
-    fixedFeeUsd: 6,
-    baseMinutes: 260,
-    baseSuccessRate: 0.951,
-    hopLabels: ["入金", "Polygon 结算", "供应商到账"],
-  },
-  {
-    id: "arbitrum-usdc",
-    name: "Arbitrum · USDC",
-    chain: "arbitrum",
-    coin: "USDC",
-    baseFeeRate: 0.0041,
-    fixedFeeUsd: 18,
-    baseMinutes: 100,
-    baseSuccessRate: 0.991,
-    hopLabels: ["入金", "Arbitrum 结算", "供应商到账"],
-  },
-  {
-    id: "tron-usdt",
-    name: "Tron · USDT",
-    chain: "tron",
-    coin: "USDT",
-    baseFeeRate: 0.0018,
-    fixedFeeUsd: 3,
-    baseMinutes: 190,
-    baseSuccessRate: 0.928,
-    hopLabels: ["入金", "Tron 结算", "供应商到账"],
-  },
-];
-
-// ---------- 风险预检 ----------
 
 function clamp(n: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, n));
 }
 
+// ---------- validators ----------
+
+/** SWIFT/BIC: 8 or 11 chars, 6 letters + 2 alnum (+ optional 3 alnum branch). */
+export function isValidSwift(swift: string): boolean {
+  return /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(swift.trim().toUpperCase());
+}
+
+/** IBAN: 2 letters + 2 digits + up to 30 alnum. Demo-grade structural check. */
+export function isValidIban(iban: string): boolean {
+  const v = iban.replace(/\s+/g, "").toUpperCase();
+  return /^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(v);
+}
+
+/** Company name red flags: trailing space, double space, or missing legal suffix. */
+export function companyNameIssue(name: string): boolean {
+  const trimmed = name.trim();
+  if (trimmed !== name || /\s{2,}/.test(name)) return true;
+  const suffixes = /\b(ltd|llc|inc|gmbh|oy|ou|co|corp|pte|pvt|sa|srl|bv|ag|plc)\b/i;
+  return !suffixes.test(trimmed);
+}
+
+// ---------- module 1: risk pre-check ----------
+
 function scoreToLevel(score: number): RiskLevel {
   if (score >= 60) return "high";
-  if (score >= 30) return "medium";
+  if (score >= 28) return "medium";
   return "low";
 }
 
-/**
- * 退回风险预检：按可解释规则算出命中项与总分。
- * 分数越高越危险，>=60 出现拦截高危。
- */
-export function assessRisk(
-  supplier: Supplier,
-  input: PaymentInput,
-): RiskAssessment {
-  const factors: RiskFactor[] = [];
+const CHOKEPOINT_BANKS = [
+  "Deutsche Bank Trust (NY)",
+  "Citibank N.A. (London)",
+  "Standard Chartered (Singapore)",
+  "HSBC Intermediary (HK)",
+];
 
-  // 1. 收款地址与目标网络匹配性
-  const networkHit = !supplier.addressNetworkMatch;
-  factors.push({
-    id: "network-match",
-    title: "risk.factor.network.title",
-    severity: networkHit ? "critical" : "info",
-    points: networkHit ? 34 : 0,
-    description: networkHit
-      ? "risk.factor.network.descHit"
-      : "risk.factor.network.descOk",
-    remediation: "risk.factor.network.fix",
-    hit: networkHit,
-  });
-
-  // 2. 制裁 / 受限地区筛查
-  const sanctionHit = supplier.restrictedRegion;
-  factors.push({
-    id: "sanction",
-    title: "risk.factor.sanction.title",
-    severity: sanctionHit ? "critical" : "info",
-    points: sanctionHit ? 40 : 0,
-    description: sanctionHit
-      ? "risk.factor.sanction.descHit"
-      : "risk.factor.sanction.descOk",
-    remediation: "risk.factor.sanction.fix",
-    hit: sanctionHit,
-  });
-
-  // 3. Travel Rule 信息完整度
-  const trGap = supplier.travelRuleCompleteness < 0.95;
-  const trCritical = supplier.travelRuleCompleteness < 0.7;
-  factors.push({
-    id: "travel-rule",
-    title: "risk.factor.travelRule.title",
-    severity: trCritical ? "critical" : trGap ? "warn" : "info",
-    points: trCritical ? 26 : trGap ? 14 : 0,
-    description: trGap
-      ? "risk.factor.travelRule.descHit"
-      : "risk.factor.travelRule.descOk",
-    remediation: "risk.factor.travelRule.fix",
-    hit: trGap,
-  });
-
-  // 4. 供应商历史退回记录
-  const returnHit = supplier.historicalReturnRate > 0.03;
-  const returnCritical = supplier.historicalReturnRate > 0.08;
-  factors.push({
-    id: "history-return",
-    title: "risk.factor.history.title",
-    severity: returnCritical ? "critical" : returnHit ? "warn" : "info",
-    points: returnCritical ? 24 : returnHit ? 12 : 0,
-    description: returnHit
-      ? "risk.factor.history.descHit"
-      : "risk.factor.history.descOk",
-    remediation: "risk.factor.history.fix",
-    hit: returnHit,
-  });
-
-  // 5. 金额异常（远高于历史均值）
-  const ratio = supplier.avgAmountUsd > 0 ? input.amountUsd / supplier.avgAmountUsd : 1;
-  const amountHit = ratio >= 2.2;
-  factors.push({
-    id: "amount-anomaly",
-    title: "risk.factor.amount.title",
-    severity: amountHit ? "warn" : "info",
-    points: amountHit ? 16 : 0,
-    description: amountHit
-      ? "risk.factor.amount.descHit"
-      : "risk.factor.amount.descOk",
-    remediation: "risk.factor.amount.fix",
-    hit: amountHit,
-  });
-
-  const rawScore = factors.reduce((sum, f) => sum + f.points, 0);
-  const score = clamp(Math.round(rawScore), 0, 100);
-  const level = scoreToLevel(score);
-  const hasBlocker = factors.some((f) => f.hit && f.severity === "critical");
-
-  return { score, level, factors, hasBlocker };
-}
-
-// ---------- 路由打分 ----------
-
-/** 稳定的伪随机（基于字符串种子），保证同输入同输出。 */
+/** Stable pseudo-random from a string seed — keeps output reproducible. */
 function seededJitter(seed: string): number {
   let h = 2166136261;
   for (let i = 0; i < seed.length; i++) {
     h ^= seed.charCodeAt(i);
     h = Math.imul(h, 16777619);
   }
-  // 归一化到 [-0.5, 0.5]
   return ((h >>> 0) % 1000) / 1000 - 0.5;
 }
+
+/** Return-risk pre-check: explainable rules → hit factors + tiered report. */
+export function assessRisk(supplier: Supplier, input: PaymentInput): RiskAssessment {
+  const factors: RiskFactor[] = [];
+
+  // 1. SWIFT / BIC validation
+  const swiftBad = !isValidSwift(supplier.swift);
+  factors.push({
+    id: "swift",
+    title: "SWIFT / BIC validation",
+    severity: swiftBad ? "critical" : "info",
+    points: swiftBad ? 30 : 0,
+    description: swiftBad
+      ? "The beneficiary SWIFT/BIC code is malformed — the wire will bounce at the routing bank."
+      : "SWIFT/BIC code format is valid.",
+    remediation: "Confirm the 8 or 11-character SWIFT/BIC with the beneficiary bank.",
+    hit: swiftBad,
+  });
+
+  // 2. IBAN validation
+  const ibanBad = !isValidIban(supplier.iban);
+  factors.push({
+    id: "iban",
+    title: "IBAN validation",
+    severity: ibanBad ? "critical" : "info",
+    points: ibanBad ? 28 : 0,
+    description: ibanBad
+      ? "The IBAN fails structural validation — high chance of an invalid-account return."
+      : "IBAN structure is valid.",
+    remediation: "Re-collect the IBAN and verify the country + check digits.",
+    hit: ibanBad,
+  });
+
+  // 3. Company name spelling / suffix
+  const nameBad = companyNameIssue(supplier.name);
+  factors.push({
+    id: "company-name",
+    title: "Company name & suffix",
+    severity: nameBad ? "warn" : "info",
+    points: nameBad ? 10 : 0,
+    description: nameBad
+      ? "Beneficiary name has spacing/suffix issues that can trip name-screening at the beneficiary bank."
+      : "Beneficiary legal name looks well-formed.",
+    remediation: "Match the name exactly to the bank record, including the legal suffix.",
+    hit: nameBad,
+  });
+
+  // 4. Dormant / unverified account
+  const dormant = supplier.accountStatus !== "active";
+  factors.push({
+    id: "account-status",
+    title: "Account dormancy risk",
+    severity: supplier.accountStatus === "dormant" ? "warn" : "info",
+    points: supplier.accountStatus === "dormant" ? 12 : supplier.accountStatus === "unverified" ? 8 : 0,
+    description: dormant
+      ? "The beneficiary account is dormant/unverified — dormant accounts frequently reject inbound wires."
+      : "Beneficiary account is active.",
+    remediation: "Ask the beneficiary to confirm the account is active before sending.",
+    hit: dormant,
+  });
+
+  // 5. Sanctions & high-risk region
+  const sanctionHit = supplier.restrictedRegion;
+  factors.push({
+    id: "sanction",
+    title: "Sanctions & high-risk region",
+    severity: sanctionHit ? "critical" : "info",
+    points: sanctionHit ? 40 : 0,
+    description: sanctionHit
+      ? "Beneficiary is in a sanctioned/high-risk jurisdiction — likely compliance hold or return."
+      : "Region hits no sanctions or high-risk list.",
+    remediation: "Route through a compliance review; keep due-diligence records on file.",
+    hit: sanctionHit,
+  });
+
+  // 6. Beneficiary bank blacklist
+  const bankHit = supplier.bankBlacklisted;
+  factors.push({
+    id: "bank-blacklist",
+    title: "Beneficiary bank blacklist",
+    severity: bankHit ? "critical" : "info",
+    points: bankHit ? 34 : 0,
+    description: bankHit
+      ? "The beneficiary bank is on the internal risk blacklist — elevated interception and return risk."
+      : "Beneficiary bank is not blacklisted.",
+    remediation: "Request an alternate beneficiary bank or use a licensed PSP corridor.",
+    hit: bankHit,
+  });
+
+  // 7. Currency control / interception probability
+  const controlled = supplier.currency === "INR" || supplier.currency === "VND" || supplier.currency === "AED";
+  const jitter = seededJitter(`${supplier.id}:ctl`);
+  const controlPts = controlled ? Math.round(14 + jitter * 6) : 0;
+  factors.push({
+    id: "currency-control",
+    title: "Currency control & interception",
+    severity: controlled ? "warn" : "info",
+    points: controlPts,
+    description: controlled
+      ? `Destination currency (${supplier.currency}) is under FX control — cross-border interception probability is elevated.`
+      : "Destination currency has no significant FX-control interception risk.",
+    remediation: "Attach an invoice + business purpose; consider a licensed local PSP corridor.",
+    hit: controlled,
+  });
+
+  const rawScore = factors.reduce((s, f) => s + f.points, 0);
+  const score = clamp(Math.round(rawScore), 0, 100);
+  const level = scoreToLevel(score);
+  const returnProbability = clamp(
+    score / 100 + supplier.historicalReturnRate * 0.5 + jitter * 0.03,
+    0.01,
+    0.97,
+  );
+  const chokepointBank =
+    CHOKEPOINT_BANKS[Math.abs(Math.round(jitter * 1000)) % CHOKEPOINT_BANKS.length];
+  const hasBlocker = factors.some((f) => f.hit && f.severity === "critical");
+
+  return { score, level, returnProbability, chokepointBank, factors, hasBlocker };
+}
+
+// ---------- module 2: channel pool + router ----------
+
+interface ChannelSpec {
+  id: string;
+  channelClass: ChannelClass;
+  name: string;
+  baseFeeRate: number;
+  fixedFeeUsd: number;
+  baseMinutes: number;
+  baseSuccessRate: number;
+  baseFxLoss: number;
+  /** Layer labels for the money-flow link board. */
+  layers: { label: string; role: FlowHop["role"] }[];
+}
+
+export const CHANNELS: ChannelSpec[] = [
+  {
+    id: "swift-gpi",
+    channelClass: "swift-gpi",
+    name: "SWIFT-GPI Correspondent",
+    baseFeeRate: 0.006,
+    fixedFeeUsd: 28,
+    baseMinutes: 1440,
+    baseSuccessRate: 0.94,
+    baseFxLoss: 0.011,
+    layers: [
+      { label: "Originating bank", role: "origin" },
+      { label: "Correspondent (US)", role: "intermediary" },
+      { label: "Intermediary (EU)", role: "intermediary" },
+      { label: "Beneficiary bank", role: "beneficiary" },
+    ],
+  },
+  {
+    id: "licensed-psp",
+    channelClass: "licensed-psp",
+    name: "Licensed Cross-border PSP",
+    baseFeeRate: 0.0042,
+    fixedFeeUsd: 9,
+    baseMinutes: 420,
+    baseSuccessRate: 0.968,
+    baseFxLoss: 0.006,
+    layers: [
+      { label: "PSP collection", role: "origin" },
+      { label: "PSP netting hub", role: "intermediary" },
+      { label: "Local payout bank", role: "beneficiary" },
+    ],
+  },
+  {
+    id: "stablecoin-gateway",
+    channelClass: "stablecoin-gateway",
+    name: "Compliant Stablecoin Gateway",
+    baseFeeRate: 0.0026,
+    fixedFeeUsd: 5,
+    baseMinutes: 150,
+    baseSuccessRate: 0.985,
+    baseFxLoss: 0.003,
+    layers: [
+      { label: "On-ramp (USDC)", role: "origin" },
+      { label: "Chain settlement", role: "intermediary" },
+      { label: "Local off-ramp", role: "beneficiary" },
+    ],
+  },
+];
 
 function buildHops(
   channel: ChannelSpec,
   amountUsd: number,
   totalFeeUsd: number,
   etaMinutes: number,
+  chokepointIdx: number,
 ): FlowHop[] {
-  const labels = channel.hopLabels;
-  const perHopFee = totalFeeUsd / labels.length;
-  const perHopMin = etaMinutes / labels.length;
+  const n = channel.layers.length;
+  const perFee = totalFeeUsd / n;
+  const perMin = etaMinutes / n;
   let remaining = amountUsd;
-  return labels.map((label, i) => {
-    const feeUsd = Math.round(perHopFee * (i === labels.length - 1 ? 0.6 : 1.2) * 100) / 100;
+  return channel.layers.map((layer, i) => {
+    const feeUsd = Math.round(perFee * (i === n - 1 ? 0.6 : 1.2) * 100) / 100;
     remaining = Math.round((remaining - feeUsd) * 100) / 100;
+    const chokepoint = i === chokepointIdx && layer.role === "intermediary";
     return {
       id: `${channel.id}-hop-${i}`,
-      label,
-      minutes: Math.round(perHopMin),
+      label: layer.label,
+      role: layer.role,
+      minutes: Math.round(perMin),
       feeUsd,
       remainingUsd: remaining,
-      note: `${label} · ${channel.name}`,
+      idleMinutes: chokepoint ? Math.round(perMin * 1.8) : Math.round(perMin * 0.3),
+      chokepoint,
+      note: `${layer.label} · ${channel.name}`,
     };
   });
 }
 
 /**
- * 路由打分：对每条通道算综合费用/时效/成功率，并结合风险预检加权。
- * 高退回风险供应商时更偏向高成功率通道。
+ * Router: score each channel on fee / time / return-risk / FX-loss, factoring
+ * the risk pre-check. Stablecoin gateway is only available for overseas payees.
  */
 export function routePayment(
   supplier: Supplier,
   input: PaymentInput,
   risk: RiskAssessment,
 ): RoutingResult {
-  const targetCoin = input.targetCoin ?? supplier.preferredCoin;
-  // 高风险时更看重成功率
-  const riskWeight = risk.level === "high" ? 0.55 : risk.level === "medium" ? 0.4 : 0.28;
-  const feeWeight = risk.level === "high" ? 0.22 : 0.36;
-  const speedWeight = 1 - riskWeight - feeWeight;
+  const riskWeight = risk.level === "high" ? 0.5 : risk.level === "medium" ? 0.38 : 0.26;
+  const feeWeight = risk.level === "high" ? 0.2 : 0.32;
+  const fxWeight = 0.14;
+  const speedWeight = clamp(1 - riskWeight - feeWeight - fxWeight, 0.05, 0.6);
 
   const options: RouteOption[] = CHANNELS.map((channel) => {
     const jitter = seededJitter(`${channel.id}:${supplier.id}`);
-    const feeRate = clamp(channel.baseFeeRate + jitter * 0.0006, 0.001, 0.01);
+    const feeRate = clamp(channel.baseFeeRate + jitter * 0.0008, 0.001, 0.02);
     const totalFeeUsd = Math.round((input.amountUsd * feeRate + channel.fixedFeeUsd) * 100) / 100;
-    const etaMinutes = Math.max(
-      30,
-      Math.round(channel.baseMinutes * (1 + jitter * 0.1)),
-    );
+    const etaMinutes = Math.max(60, Math.round(channel.baseMinutes * (1 + jitter * 0.12)));
     const successRate = clamp(
-      channel.baseSuccessRate - supplier.historicalReturnRate * 0.35 + jitter * 0.004,
-      0.8,
-      0.999,
+      channel.baseSuccessRate - supplier.historicalReturnRate * 0.4 + jitter * 0.004,
+      0.75,
+      0.998,
     );
-    const receiveUsd = Math.round((input.amountUsd - totalFeeUsd) * 100) / 100;
+    const returnRisk = clamp(1 - successRate + risk.returnProbability * 0.25, 0.01, 0.6);
+    const fxLoss = clamp(channel.baseFxLoss + jitter * 0.0015, 0.001, 0.03);
+    const receiveUsd =
+      Math.round((input.amountUsd - totalFeeUsd - input.amountUsd * fxLoss) * 100) / 100;
 
-    // 归一化打分：成功率越高越好、费率越低越好、时效越短越好
-    const feeScore = clamp(1 - feeRate / 0.008, 0, 1);
-    const speedScore = clamp(1 - etaMinutes / 360, 0, 1);
-    const successScore = clamp((successRate - 0.8) / 0.2, 0, 1);
-    // 币种偏好加成
-    const coinBonus = channel.coin === targetCoin ? 0.05 : 0;
+    // stablecoin gateway only for overseas entities
+    const available =
+      channel.channelClass !== "stablecoin-gateway" || supplier.entityType === "overseas";
+
+    const feeScore = clamp(1 - feeRate / 0.012, 0, 1);
+    const speedScore = clamp(1 - etaMinutes / 1600, 0, 1);
+    const successScore = clamp((successRate - 0.75) / 0.25, 0, 1);
+    const fxScore = clamp(1 - fxLoss / 0.02, 0, 1);
     const composite =
-      feeScore * feeWeight +
-      speedScore * speedWeight +
-      successScore * riskWeight +
-      coinBonus;
-    const score = clamp(Math.round(composite * 100), 0, 100);
+      feeScore * feeWeight + speedScore * speedWeight + successScore * riskWeight + fxScore * fxWeight;
+    const score = available ? clamp(Math.round(composite * 100), 0, 100) : 0;
+
+    const chokepointIdx = channel.layers.findIndex((l) => l.role === "intermediary");
 
     return {
       id: channel.id,
       name: channel.name,
-      chain: channel.chain,
-      coin: channel.coin,
+      channelClass: channel.channelClass,
       totalFeeUsd,
       feeRate,
       etaMinutes,
       successRate,
+      returnRisk,
+      fxLoss,
       receiveUsd,
       score,
       reason: "",
-      hops: buildHops(channel, input.amountUsd, totalFeeUsd, etaMinutes),
+      available,
+      hops: buildHops(channel, input.amountUsd, totalFeeUsd, etaMinutes, chokepointIdx),
       recommended: false,
     };
   });
 
-  options.sort((a, b) => b.score - a.score);
-  const best = options[0];
+  const ranked = [...options].sort((a, b) => b.score - a.score);
+  const best = ranked[0];
   best.recommended = true;
 
-  // 生成推荐理由
-  for (const opt of options) {
-    opt.reason = buildReason(opt, options, risk.level);
-  }
+  for (const opt of options) opt.reason = buildReason(opt, options, risk.level);
 
   return { options, recommendedId: best.id };
 }
 
-function buildReason(
-  opt: RouteOption,
-  all: RouteOption[],
-  level: RiskLevel,
-): string {
-  const cheapest = [...all].sort((a, b) => a.totalFeeUsd - b.totalFeeUsd)[0];
-  const fastest = [...all].sort((a, b) => a.etaMinutes - b.etaMinutes)[0];
-  const safest = [...all].sort((a, b) => b.successRate - a.successRate)[0];
+function buildReason(opt: RouteOption, all: RouteOption[], level: RiskLevel): string {
+  if (!opt.available) return "Not available for this payee (domestic entity).";
+  const avail = all.filter((o) => o.available);
+  const cheapest = [...avail].sort((a, b) => a.totalFeeUsd - b.totalFeeUsd)[0];
+  const fastest = [...avail].sort((a, b) => a.etaMinutes - b.etaMinutes)[0];
+  const safest = [...avail].sort((a, b) => a.returnRisk - b.returnRisk)[0];
   if (opt.recommended) {
-    if (level === "high") return "route.reason.recommendedHighRisk";
-    return "route.reason.recommendedBalanced";
+    return level === "high"
+      ? "High-risk payment — prioritizes the lowest return risk"
+      : "Best balance of fee, speed, return risk and FX loss";
   }
-  if (opt.id === cheapest.id) return "route.reason.cheapest";
-  if (opt.id === fastest.id) return "route.reason.fastest";
-  if (opt.id === safest.id) return "route.reason.safest";
-  return "route.reason.alternative";
+  if (opt.id === cheapest.id) return "Lowest fee, slower settlement";
+  if (opt.id === fastest.id) return "Fastest arrival";
+  if (opt.id === safest.id) return "Lowest return risk";
+  return "Alternative route";
 }
 
 export function formatMinutes(minutes: number): string {
-  const h = Math.floor(minutes / 60);
+  const d = Math.floor(minutes / 1440);
+  const h = Math.floor((minutes % 1440) / 60);
   const m = minutes % 60;
+  if (d > 0) return h > 0 ? `${d}d${h}h` : `${d}d`;
   if (h <= 0) return `${m}m`;
   if (m <= 0) return `${h}h`;
   return `${h}h${m}m`;
