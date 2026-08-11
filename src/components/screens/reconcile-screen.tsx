@@ -28,7 +28,6 @@ export function ReconcileScreen() {
 
   const rows = useMemo(
     () => toReconcileRows(payments).map((r) => ({ ...r, reconciled: isReconciled(r.id) })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [payments],
   );
   const summary = useMemo(() => summarize(rows), [rows]);
