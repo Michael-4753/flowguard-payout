@@ -1,7 +1,7 @@
 // Aggregation helpers for the multi-country supplier view and country-exposure
 // overview. Pure functions — reused by the Payees page, Home, and Reconcile.
 
-import type { Currency, PaymentRecord, Supplier } from "@/lib/engine/types";
+import type { Currency, FlowHop, PaymentRecord, Supplier } from "@/lib/engine/types";
 
 /** Per-country rollup of payees + payment exposure. */
 export interface CountryGroup {
@@ -76,4 +76,60 @@ export function groupByCountry(
 /** Distinct currencies present across all payees, sorted. */
 export function distinctCurrencies(suppliers: Supplier[]): Currency[] {
   return [...new Set(suppliers.map((s) => s.currency))].sort();
+}
+
+/** Where the money currently sits on the route (in-transit position). */
+export interface FlowProgress {
+  hops: FlowHop[];
+  /** Index of the hop the money is currently at / stuck on. */
+  currentIndex: number;
+  /** Whether the payment is done (arrived) or dead (returned). */
+  done: boolean;
+  returned: boolean;
+  /** Short status caption. */
+  caption: string;
+}
+
+/**
+ * Derive the in-transit position (pain point 1: "you can't see where the money
+ * is or which intermediary it's stuck at, you just wait"). Maps the payment
+ * status onto the selected route's hops so the UI can highlight the current
+ * layer instead of leaving the payer in the dark.
+ */
+export function deriveFlowProgress(record: PaymentRecord): FlowProgress {
+  const hops = record.route.hops;
+  const last = hops.length - 1;
+  const chokeIdx = hops.findIndex((h) => h.chokepoint);
+
+  switch (record.status) {
+    case "draft":
+    case "initiated":
+      return { hops, currentIndex: 0, done: false, returned: false, caption: "Initiated at origin" };
+    case "settling": {
+      const idx = chokeIdx >= 0 ? chokeIdx : Math.max(1, Math.floor(last / 2));
+      return {
+        hops,
+        currentIndex: idx,
+        done: false,
+        returned: false,
+        caption: hops[idx]?.chokepoint
+          ? `Held at ${hops[idx].bankName}`
+          : `In transit via ${hops[idx]?.bankName ?? "intermediary"}`,
+      };
+    }
+    case "arrived":
+      return { hops, currentIndex: last, done: true, returned: false, caption: "Arrived at beneficiary" };
+    case "returned": {
+      const idx = chokeIdx >= 0 ? chokeIdx : Math.max(1, Math.floor(last / 2));
+      return {
+        hops,
+        currentIndex: idx,
+        done: false,
+        returned: true,
+        caption: `Returned from ${hops[idx]?.bankName ?? "intermediary"}`,
+      };
+    }
+    default:
+      return { hops, currentIndex: 0, done: false, returned: false, caption: "" };
+  }
 }
