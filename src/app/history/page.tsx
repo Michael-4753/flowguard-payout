@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { RotateCcw } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
+import { FlowProgressTimeline } from "@/components/shared/flow-progress-timeline";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { formatUsd, formatDate, formatPercent } from "@/lib/format";
@@ -97,6 +98,8 @@ function HistoryBody() {
                 <Cell label="Channel" value={CHANNEL_CLASS_LABEL[p.route.channelClass]} />
                 <Cell label="Return prob." value={formatPercent(p.returnProbability, 0)} />
               </div>
+
+              {p.status !== "draft" && <FlowProgressTimeline record={p} />}
 
               <button
                 type="button"
