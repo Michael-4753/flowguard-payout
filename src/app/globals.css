@@ -70,6 +70,8 @@ body {
 
 :root {
   /* FlowGuard 资金流叙事 — dark ground design tokens */
+  --eazo-safe-area-top: max(56px, env(safe-area-inset-top, 0px));
+  --eazo-safe-area-bottom: max(34px, env(safe-area-inset-bottom, 0px));
   --background: #0B1613;
   --foreground: #EDEBE5;
   --card: #0E1A16;
