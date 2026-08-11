@@ -1,7 +1,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "../client";
 import { payments, type PaymentRow } from "../schema/payments";
-import type { PaymentRecord, PaymentStatus, StableCoin } from "@/lib/engine/types";
+import type { Currency, PaymentRecord, PaymentStatus } from "@/lib/engine/types";
 
 function toDomain(row: PaymentRow): PaymentRecord {
   return {
@@ -10,9 +10,11 @@ function toDomain(row: PaymentRow): PaymentRecord {
     supplierName: row.supplierName,
     supplierCodeName: row.supplierCodeName,
     amountUsd: row.amountUsd,
-    targetCoin: row.targetCoin as StableCoin,
+    currency: row.currency as Currency,
     riskScore: row.riskScore,
     riskLevel: row.riskLevel,
+    returnProbability: row.returnProbability,
+    chokepointBank: row.chokepointBank,
     riskFactors: row.riskFactors,
     selectedRouteId: row.selectedRouteId,
     route: row.route,
@@ -42,10 +44,7 @@ export async function listPaymentsBySupplier(
   return rows.map(toDomain);
 }
 
-export async function insertPayment(
-  userId: string,
-  record: PaymentRecord,
-): Promise<PaymentRecord> {
+export async function insertPayment(userId: string, record: PaymentRecord): Promise<PaymentRecord> {
   const rows = await db
     .insert(payments)
     .values({
@@ -55,9 +54,11 @@ export async function insertPayment(
       supplierName: record.supplierName,
       supplierCodeName: record.supplierCodeName,
       amountUsd: record.amountUsd,
-      targetCoin: record.targetCoin,
+      currency: record.currency,
       riskScore: record.riskScore,
       riskLevel: record.riskLevel,
+      returnProbability: record.returnProbability,
+      chokepointBank: record.chokepointBank,
       riskFactors: record.riskFactors,
       selectedRouteId: record.selectedRouteId,
       route: record.route,
@@ -81,9 +82,6 @@ export async function updatePaymentStatus(
 }
 
 export async function countPayments(userId: string): Promise<number> {
-  const rows = await db
-    .select({ id: payments.id })
-    .from(payments)
-    .where(eq(payments.userId, userId));
+  const rows = await db.select({ id: payments.id }).from(payments).where(eq(payments.userId, userId));
   return rows.length;
 }
