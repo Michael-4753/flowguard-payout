@@ -55,7 +55,9 @@ export function RouteStep({
         >
           <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
           <span>
-            游客模式：付款记录仅保存在本设备（浏览器本地），退出游客后将被清除。登录后可同步到你的账户。
+            Guest mode — payment records are saved on this device only (browser local
+            storage) and are cleared when you leave guest mode. Sign in to sync them to
+            your account.
           </span>
         </div>
       )}

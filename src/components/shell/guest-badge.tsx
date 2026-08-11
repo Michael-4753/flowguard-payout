@@ -24,7 +24,7 @@ export function GuestBadge() {
       <div className="flex shrink-0 items-center gap-2" data-el="guest-badge">
         <span className="inline-flex items-center gap-1 rounded-full border border-border bg-[color:var(--fg-soft)] px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
           <UserRound className="h-3 w-3" aria-hidden />
-          游客
+          Guest
         </span>
         <button
           type="button"
@@ -33,7 +33,7 @@ export function GuestBadge() {
           data-el="guest-exit"
         >
           <LogOut className="h-3 w-3" aria-hidden />
-          退出
+          Exit
         </button>
       </div>
 
@@ -47,7 +47,7 @@ export function GuestBadge() {
           {/* backdrop */}
           <button
             type="button"
-            aria-label="取消"
+            aria-label="Cancel"
             onClick={() => setConfirming(false)}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
@@ -56,9 +56,10 @@ export function GuestBadge() {
             <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[color:var(--danger)]/15 text-[color:var(--danger)]">
               <AlertTriangle className="h-6 w-6" aria-hidden />
             </div>
-            <h2 className="mt-4 text-base font-bold">退出游客模式？</h2>
+            <h2 className="mt-4 text-base font-bold">Leave guest mode?</h2>
             <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
-              退出后，本设备上保存的游客付款记录将被清除且无法恢复。
+              Payment records saved on this device will be permanently cleared and
+              cannot be recovered.
             </p>
             <div className="mt-5 flex flex-col gap-2">
               <button
@@ -68,7 +69,7 @@ export function GuestBadge() {
                 data-el="guest-exit-confirm"
               >
                 <LogOut className="h-4 w-4" aria-hidden />
-                确认退出
+                Exit guest mode
               </button>
               <button
                 type="button"
@@ -76,7 +77,7 @@ export function GuestBadge() {
                 className="flex w-full items-center justify-center rounded-full border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-[color:var(--fg-soft)]"
                 data-el="guest-exit-cancel"
               >
-                取消
+                Cancel
               </button>
             </div>
           </div>
