@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { ArrowRight, Check } from "lucide-react";
-import type { StableCoin, Supplier } from "@/lib/engine/types";
+import type { ChannelClass, Supplier } from "@/lib/engine/types";
+import { CHANNEL_CLASS_LABEL, RISK_LEVEL_LABEL } from "@/lib/engine/types";
 import { cn } from "@/utils/utils";
 
-const COINS: (StableCoin | "auto")[] = ["auto", "USDC", "USDT", "PYUSD"];
+const CHANNELS: (ChannelClass | "auto")[] = [
+  "auto",
+  "swift-gpi",
+  "licensed-psp",
+  "stablecoin-gateway",
+];
 
 export function BuildStep({
   suppliers,
@@ -17,28 +22,30 @@ export function BuildStep({
   suppliers: Supplier[];
   initialSupplierId?: string;
   initialAmount?: number;
-  onSubmit: (v: { supplierId: string; amountUsd: number; targetCoin?: StableCoin }) => void;
+  onSubmit: (v: { supplierId: string; amountUsd: number; preferredChannel?: ChannelClass }) => void;
 }) {
-  const { t } = useTranslation();
   const [supplierId, setSupplierId] = useState(initialSupplierId ?? "");
   const [amount, setAmount] = useState(initialAmount ? String(initialAmount) : "");
-  const [coin, setCoin] = useState<StableCoin | "auto">("auto");
+  const [channel, setChannel] = useState<ChannelClass | "auto">("auto");
   const [error, setError] = useState<string | null>(null);
 
   function submit() {
-    if (!supplierId) return setError(t("wizard.build.noSupplier"));
+    if (!supplierId) return setError("Select a payee to continue.");
     const amt = Number(amount);
-    if (!amt || amt <= 0) return setError(t("wizard.build.invalidAmount"));
+    if (!amt || amt <= 0) return setError("Enter a valid amount in USD.");
     setError(null);
-    onSubmit({ supplierId, amountUsd: amt, targetCoin: coin === "auto" ? undefined : coin });
+    onSubmit({ supplierId, amountUsd: amt, preferredChannel: channel === "auto" ? undefined : channel });
   }
 
   return (
     <div className="fg-glass rounded-[24px] p-5" data-el="wizard-build">
-      <h2 className="text-lg font-bold">{t("wizard.build.title")}</h2>
+      <h2 className="text-lg font-bold">New payment</h2>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Pick a payee and amount to run the return-risk pre-check.
+      </p>
 
-      {/* Supplier */}
-      <label className="mt-4 block text-xs text-muted-foreground">{t("wizard.build.supplier")}</label>
+      {/* Payee */}
+      <label className="mt-4 block text-xs text-muted-foreground">Payee</label>
       <div className="mt-2 space-y-2">
         {suppliers.map((s) => (
           <button
@@ -53,16 +60,21 @@ export function BuildStep({
           >
             <div className="min-w-0">
               <div className="truncate text-sm font-semibold">{s.name}</div>
-              <div className="font-mono text-[10px] text-muted-foreground">{s.region}</div>
+              <div className="truncate font-mono text-[10px] text-muted-foreground">
+                {s.country} · {s.swift}
+              </div>
             </div>
-            {supplierId === s.id && <Check className="h-4 w-4 shrink-0 text-primary" />}
+            <div className="flex shrink-0 items-center gap-2">
+              <span className="text-[10px] text-muted-foreground">{RISK_LEVEL_LABEL[s.riskTag]}</span>
+              {supplierId === s.id && <Check className="h-4 w-4 text-primary" />}
+            </div>
           </button>
         ))}
       </div>
 
       {/* Amount */}
       <label className="mt-4 block text-xs text-muted-foreground" htmlFor="amount">
-        {t("wizard.build.amount")}
+        Amount (USD)
       </label>
       <input
         id="amount"
@@ -70,25 +82,27 @@ export function BuildStep({
         inputMode="decimal"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
-        placeholder={t("wizard.build.amountPlaceholder")}
+        placeholder="e.g. 18400"
         className="mt-2 w-full rounded-2xl border border-border bg-background/40 px-4 py-3 font-mono text-lg outline-none focus:border-primary"
         data-el="wizard-amount"
       />
 
-      {/* Coin */}
-      <label className="mt-4 block text-xs text-muted-foreground">{t("wizard.build.coin")}</label>
+      {/* Channel preference */}
+      <label className="mt-4 block text-xs text-muted-foreground">Channel preference</label>
       <div className="mt-2 flex flex-wrap gap-2">
-        {COINS.map((c) => (
+        {CHANNELS.map((c) => (
           <button
             key={c}
             type="button"
-            onClick={() => setCoin(c)}
+            onClick={() => setChannel(c)}
             className={cn(
-              "rounded-full border px-3 py-1.5 font-mono text-xs transition-colors",
-              coin === c ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground",
+              "rounded-full border px-3 py-1.5 text-xs transition-colors",
+              channel === c
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border text-muted-foreground",
             )}
           >
-            {c === "auto" ? t("wizard.build.coinAuto") : c}
+            {c === "auto" ? "Auto (recommended)" : CHANNEL_CLASS_LABEL[c]}
           </button>
         ))}
       </div>
@@ -101,7 +115,7 @@ export function BuildStep({
         className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.99]"
         data-el="wizard-run-precheck"
       >
-        {t("wizard.build.run")} <ArrowRight className="h-4 w-4" />
+        Run pre-check <ArrowRight className="h-4 w-4" />
       </button>
     </div>
   );
