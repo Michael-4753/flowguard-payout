@@ -64,7 +64,7 @@ export function RiskGauge({
             {Math.round(score)}
           </div>
           <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
-            {t("wizard.precheck.scoreLabel")}
+            Return-risk score
           </div>
         </div>
       </div>
