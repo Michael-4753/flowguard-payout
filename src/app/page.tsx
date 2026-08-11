@@ -107,12 +107,17 @@ function StatCard({
   danger?: boolean;
 }) {
   return (
-    <div className="fg-glass rounded-2xl p-4" data-el="stat-card">
+    <div className="fg-glass min-w-0 rounded-2xl p-4" data-el="stat-card">
       <div className="flex items-center gap-1.5 text-muted-foreground">
-        <span className={danger ? "text-[color:var(--danger)]" : "text-primary"}>{icon}</span>
-        <span className="text-[11px]">{label}</span>
+        <span className={cn("shrink-0", danger ? "text-[color:var(--danger)]" : "text-primary")}>
+          {icon}
+        </span>
+        <span className="min-w-0 truncate text-[11px]">{label}</span>
       </div>
-      <div className="mt-2 font-mono text-xl font-bold" style={danger ? { color: "var(--danger)" } : undefined}>
+      <div
+        className="mt-2 truncate font-mono text-xl font-bold leading-tight tabular-nums"
+        style={danger ? { color: "var(--danger)" } : undefined}
+      >
         {value}
       </div>
     </div>
