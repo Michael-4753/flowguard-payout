@@ -1,5 +1,5 @@
 {
-  "id": "bed1e0dc-bbfd-4689-ad57-2f525eb6c2e8",
+  "id": "76896a10-f729-46ab-8513-895dd51ccc56",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -122,8 +122,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "region": {
-          "name": "region",
+        "country": {
+          "name": "country",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -134,6 +134,42 @@
           "primaryKey": false,
           "notNull": true
         },
+        "currency": {
+          "name": "currency",
+          "type": "varchar(8)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "entity_type": {
+          "name": "entity_type",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bank_name": {
+          "name": "bank_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "swift": {
+          "name": "swift",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "iban": {
+          "name": "iban",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "account_status": {
+          "name": "account_status",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
         "restricted_region": {
           "name": "restricted_region",
           "type": "boolean",
@@ -141,37 +177,25 @@
           "notNull": true,
           "default": false
         },
-        "preferred_chain": {
-          "name": "preferred_chain",
+        "bank_blacklisted": {
+          "name": "bank_blacklisted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "preferred_channel": {
+          "name": "preferred_channel",
           "type": "varchar(32)",
           "primaryKey": false,
           "notNull": true
         },
-        "preferred_coin": {
-          "name": "preferred_coin",
+        "risk_tag": {
+          "name": "risk_tag",
           "type": "varchar(16)",
           "primaryKey": false,
-          "notNull": true
-        },
-        "payout_address": {
-          "name": "payout_address",
-          "type": "varchar(128)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "travel_rule_completeness": {
-          "name": "travel_rule_completeness",
-          "type": "double precision",
-          "primaryKey": false,
           "notNull": true,
-          "default": 1
-        },
-        "address_network_match": {
-          "name": "address_network_match",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
+          "default": "'low'"
         },
         "payment_count": {
           "name": "payment_count",
@@ -287,9 +311,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "target_coin": {
-          "name": "target_coin",
-          "type": "varchar(16)",
+        "currency": {
+          "name": "currency",
+          "type": "varchar(8)",
           "primaryKey": false,
           "notNull": true
         },
@@ -304,6 +328,20 @@
           "type": "varchar(16)",
           "primaryKey": false,
           "notNull": true
+        },
+        "return_probability": {
+          "name": "return_probability",
+          "type": "double precision",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "chokepoint_bank": {
+          "name": "chokepoint_bank",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
         },
         "risk_factors": {
           "name": "risk_factors",
