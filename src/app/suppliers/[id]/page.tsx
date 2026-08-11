@@ -37,17 +37,19 @@ function SupplierDetailBody({ id }: { id: string }) {
   useEffect(() => {
     if (!user) return;
     let alive = true;
-    setLoading(true);
-    fetchSupplier(id)
-      .then((res) => {
+    void (async () => {
+      await Promise.resolve();
+      if (!alive) return;
+      setLoading(true);
+      try {
+        const res = await fetchSupplier(id);
         if (alive) setData(res);
-      })
-      .catch(() => {
+      } catch {
         if (alive) setData(null);
-      })
-      .finally(() => {
+      } finally {
         if (alive) setLoading(false);
-      });
+      }
+    })();
     return () => {
       alive = false;
     };
