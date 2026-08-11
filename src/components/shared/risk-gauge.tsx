@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
 import type { RiskLevel } from "@/lib/engine/types";
 
 const RING_COLOR: Record<RiskLevel, string> = {
@@ -9,7 +8,7 @@ const RING_COLOR: Record<RiskLevel, string> = {
   high: "var(--danger)",
 };
 
-/** 环形退回风险仪表 —— soft-focus orb 风格。 */
+/** Circular return-risk gauge — soft-focus orb style. */
 export function RiskGauge({
   score,
   level,
@@ -19,7 +18,6 @@ export function RiskGauge({
   level: RiskLevel;
   size?: number;
 }) {
-  const { t } = useTranslation();
   const stroke = 10;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
