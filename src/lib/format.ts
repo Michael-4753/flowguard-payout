@@ -1,6 +1,6 @@
-// 共享格式化工具（面向用户文案，显式传 BCP-47 locale）。
+// Shared formatting helpers. English-only app → default to en-US.
 
-export function formatUsd(amount: number, locale: string): string {
+export function formatUsd(amount: number, locale = "en-US"): string {
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "USD",
@@ -8,7 +8,7 @@ export function formatUsd(amount: number, locale: string): string {
   }).format(amount);
 }
 
-export function formatUsdCents(amount: number, locale: string): string {
+export function formatUsdCents(amount: number, locale = "en-US"): string {
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "USD",
@@ -16,7 +16,7 @@ export function formatUsdCents(amount: number, locale: string): string {
   }).format(amount);
 }
 
-export function formatPercent(ratio: number, locale: string, digits = 1): string {
+export function formatPercent(ratio: number, digits = 1, locale = "en-US"): string {
   return new Intl.NumberFormat(locale, {
     style: "percent",
     minimumFractionDigits: digits,
@@ -24,7 +24,7 @@ export function formatPercent(ratio: number, locale: string, digits = 1): string
   }).format(ratio);
 }
 
-export function formatDate(iso: string, locale: string): string {
+export function formatDate(iso: string, locale = "en-US"): string {
   return new Intl.DateTimeFormat(locale, {
     month: "short",
     day: "numeric",
@@ -34,11 +34,13 @@ export function formatDate(iso: string, locale: string): string {
 }
 
 export function formatMinutes(minutes: number): string {
-  const h = Math.floor(minutes / 60);
+  const d = Math.floor(minutes / 1440);
+  const h = Math.floor((minutes % 1440) / 60);
   const m = Math.round(minutes % 60);
+  if (d > 0) return h > 0 ? `${d}d ${h}h` : `${d}d`;
   if (h <= 0) return `${m}m`;
   if (m <= 0) return `${h}h`;
-  return `${h}h${m}m`;
+  return `${h}h ${m}m`;
 }
 
 export function formatHours(hours: number): string {
