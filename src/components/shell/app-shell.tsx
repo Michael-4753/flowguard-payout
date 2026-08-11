@@ -6,6 +6,8 @@ import { LayoutDashboard, Workflow, Building2, History, Languages } from "lucide
 import { useTranslation } from "react-i18next";
 import { useCallback, useSyncExternalStore } from "react";
 import { cn } from "@/utils/utils";
+import { AuthGate } from "@/components/shell/auth-gate";
+import { FlowGuardDataProvider } from "@/components/shell/data-provider";
 import {
   changeLocale,
   getLocalePreference,
@@ -90,7 +92,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Content */}
-      <main className="mx-auto w-full max-w-[760px] flex-1 px-4">{children}</main>
+      <main className="mx-auto w-full max-w-[760px] flex-1 px-4">
+        <AuthGate>
+          <FlowGuardDataProvider>{children}</FlowGuardDataProvider>
+        </AuthGate>
+      </main>
 
       {/* Bottom nav */}
       <nav
