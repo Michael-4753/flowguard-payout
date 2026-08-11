@@ -2,19 +2,23 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslation } from "react-i18next";
 import { RotateCcw } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { formatUsd, formatDate, formatPercent } from "@/lib/format";
-import { useCurrentLocale } from "@/lib/use-locale";
-import type { PaymentStatus, RiskLevel } from "@/lib/engine/types";
+import {
+  CHANNEL_CLASS_LABEL,
+  RISK_LEVEL_LABEL,
+  STATUS_LABEL,
+  type PaymentStatus,
+  type RiskLevel,
+} from "@/lib/engine/types";
 import { cn } from "@/utils/utils";
 
 const LEVELS: (RiskLevel | "all")[] = ["all", "low", "medium", "high"];
-const STATUSES: (PaymentStatus | "all")[] = ["all", "draft", "initiated", "settling", "arrived"];
+const STATUSES: (PaymentStatus | "all")[] = ["all", "initiated", "settling", "arrived", "returned"];
 
 export default function HistoryPage() {
   return (
@@ -25,9 +29,7 @@ export default function HistoryPage() {
 }
 
 function HistoryBody() {
-  const { t } = useTranslation();
   const router = useRouter();
-  const locale = useCurrentLocale();
   const { payments, loading } = useFlowGuardData();
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
@@ -42,70 +44,72 @@ function HistoryBody() {
 
   return (
     <section className="pt-1" data-el="history">
-        <h1 className="text-2xl font-bold tracking-tight">{t("history.title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("history.subtitle")}</p>
+      <h1 className="text-2xl font-bold tracking-tight">Payment history</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Every routed payment with its pre-check snapshot and chosen channel.
+      </p>
 
-        {/* Filters */}
-        <div className="mt-4 space-y-2" data-el="history-filters">
-          <FilterRow label={t("history.filterLevel")}>
-            {LEVELS.map((l) => (
-              <Chip key={l} active={level === l} onClick={() => setLevel(l)}>
-                {l === "all" ? t("history.filterAll") : t(`risk.level.${l}`)}
-              </Chip>
-            ))}
-          </FilterRow>
-          <FilterRow label={t("history.filterStatus")}>
-            {STATUSES.map((s) => (
-              <Chip key={s} active={status === s} onClick={() => setStatus(s)}>
-                {s === "all" ? t("history.filterAll") : t(`status.${s}`)}
-              </Chip>
-            ))}
-          </FilterRow>
+      {/* Filters */}
+      <div className="mt-4 space-y-2" data-el="history-filters">
+        <FilterRow label="Risk">
+          {LEVELS.map((l) => (
+            <Chip key={l} active={level === l} onClick={() => setLevel(l)}>
+              {l === "all" ? "All" : RISK_LEVEL_LABEL[l]}
+            </Chip>
+          ))}
+        </FilterRow>
+        <FilterRow label="Status">
+          {STATUSES.map((s) => (
+            <Chip key={s} active={status === s} onClick={() => setStatus(s)}>
+              {s === "all" ? "All" : STATUS_LABEL[s]}
+            </Chip>
+          ))}
+        </FilterRow>
+      </div>
+
+      {loading ? (
+        <div className="mt-4">
+          <LoadingBlock rows={4} />
         </div>
-
-        {loading ? (
-          <div className="mt-4">
-            <LoadingBlock rows={4} />
-          </div>
-        ) : filtered.length === 0 ? (
-          <p className="fg-glass mt-4 rounded-2xl p-6 text-center text-sm text-muted-foreground">
-            {t("history.empty")}
-          </p>
-        ) : (
-          <div className="mt-4 space-y-2.5">
-            {filtered.map((p) => (
-              <article key={p.id} className="fg-glass rounded-2xl p-4" data-el="history-item">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="truncate text-sm font-semibold">{p.supplierName}</span>
-                      <RiskBadge level={p.riskLevel} />
-                    </div>
-                    <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-                      {formatDate(p.createdAt, locale)}
-                    </p>
+      ) : filtered.length === 0 ? (
+        <p className="fg-glass mt-4 rounded-2xl p-6 text-center text-sm text-muted-foreground">
+          No payments match these filters.
+        </p>
+      ) : (
+        <div className="mt-4 space-y-2.5">
+          {filtered.map((p) => (
+            <article key={p.id} className="fg-glass rounded-2xl p-4" data-el="history-item">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="truncate text-sm font-semibold">{p.supplierName}</span>
+                    <RiskBadge level={p.riskLevel} />
                   </div>
-                  <StatusPill status={p.status} />
+                  <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+                    {formatDate(p.createdAt)}
+                  </p>
                 </div>
+                <StatusPill status={p.status} />
+              </div>
 
-                <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
-                  <Cell label={t("history.amount")} value={formatUsd(p.amountUsd, locale)} />
-                  <Cell label={t("history.route")} value={p.route.name} />
-                  <Cell label={t("wizard.route.success")} value={formatPercent(p.route.successRate, locale)} />
-                </div>
+              <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
+                <Cell label="Amount" value={formatUsd(p.amountUsd)} />
+                <Cell label="Channel" value={CHANNEL_CLASS_LABEL[p.route.channelClass]} />
+                <Cell label="Return prob." value={formatPercent(p.returnProbability, 0)} />
+              </div>
 
-                <button
-                  type="button"
-                  onClick={() => router.push(`/pay?supplier=${p.supplierId}&amount=${p.amountUsd}`)}
-                  className="mt-3 flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/10"
-                  data-el="history-reuse"
-                >
-                  <RotateCcw className="h-3 w-3" /> {t("history.reuse")}
-                </button>
-              </article>
-            ))}
-          </div>
-        )}
+              <button
+                type="button"
+                onClick={() => router.push(`/pay?supplier=${p.supplierId}&amount=${p.amountUsd}`)}
+                className="mt-3 flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/10"
+                data-el="history-reuse"
+              >
+                <RotateCcw className="h-3 w-3" /> Reuse draft
+              </button>
+            </article>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
