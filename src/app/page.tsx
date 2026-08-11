@@ -8,6 +8,7 @@ import { PaymentRow } from "@/components/shared/payment-row";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { formatUsd, formatHours } from "@/lib/format";
+import { cn } from "@/utils/utils";
 
 export default function DashboardPage() {
   return (
