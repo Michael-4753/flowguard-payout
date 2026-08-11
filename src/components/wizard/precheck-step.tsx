@@ -1,20 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown } from "lucide-react";
 import type { RiskAssessment } from "@/lib/engine/types";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
+import { formatPercent } from "@/lib/format";
 import { cn } from "@/utils/utils";
-
-const FACTOR_KEY: Record<string, string> = {
-  "network-match": "network",
-  sanction: "sanction",
-  "travel-rule": "travelRule",
-  "history-return": "history",
-  "amount-anomaly": "amount",
-};
 
 export function PrecheckStep({
   risk,
@@ -23,19 +15,19 @@ export function PrecheckStep({
   risk: RiskAssessment;
   onContinue: () => void;
 }) {
-  const { t } = useTranslation();
   const [scanning, setScanning] = useState(true);
   const [acknowledged, setAcknowledged] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
-    // 挂载后播放扫描动画，结束揭晓评分。父级通过 key 重挂载以重置。
-    const id = setTimeout(() => setScanning(false), 1100);
+    const id = setTimeout(() => setScanning(false), 1000);
     return () => clearTimeout(id);
   }, []);
 
   const hits = risk.factors.filter((f) => f.hit);
-  const shown = risk.factors.slice().sort((a, b) => Number(b.hit) - Number(a.hit) || b.points - a.points);
+  const shown = risk.factors
+    .slice()
+    .sort((a, b) => Number(b.hit) - Number(a.hit) || b.points - a.points);
   const canContinue = !risk.hasBlocker || acknowledged;
 
   return (
@@ -46,19 +38,42 @@ export function PrecheckStep({
         <div className="mt-3 flex items-center gap-2">
           <RiskBadge level={risk.level} />
           <span className="font-mono text-[11px] text-muted-foreground">
-            {scanning ? t("wizard.precheck.scanning") : t("wizard.precheck.hitCount", { count: hits.length })}
+            {scanning ? "Scanning…" : `${hits.length} risk factor(s) hit`}
           </span>
         </div>
+        {!scanning && (
+          <div className="mt-4 grid w-full grid-cols-2 gap-2">
+            <div className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3 text-center">
+              <div className="text-[9px] uppercase tracking-wide text-muted-foreground">
+                Return probability
+              </div>
+              <div className="mt-0.5 font-mono text-lg font-bold">
+                {formatPercent(risk.returnProbability, 0)}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3 text-center">
+              <div className="text-[9px] uppercase tracking-wide text-muted-foreground">
+                Likely chokepoint
+              </div>
+              <div className="mt-0.5 truncate text-[11px] font-semibold">{risk.chokepointBank}</div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Blocker banner */}
       {!scanning && risk.hasBlocker && (
-        <div className="rounded-2xl border border-[color:var(--danger)]/40 bg-[color:var(--danger)]/12 p-4" data-el="wizard-blocker">
+        <div
+          className="rounded-2xl border border-[color:var(--danger)]/40 bg-[color:var(--danger)]/12 p-4"
+          data-el="wizard-blocker"
+        >
           <div className="flex items-center gap-2 text-[color:var(--danger)]">
             <ShieldAlert className="h-4 w-4" />
-            <span className="text-sm font-bold">{t("wizard.precheck.blockerTitle")}</span>
+            <span className="text-sm font-bold">Do not send yet</span>
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">{t("wizard.precheck.blockerDesc")}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            A critical blocker was detected. Resolve it, or acknowledge the risk to continue for review.
+          </p>
         </div>
       )}
 
@@ -66,7 +81,7 @@ export function PrecheckStep({
         <div className="rounded-2xl border border-[color:var(--success)]/40 bg-[color:var(--success)]/12 p-4">
           <div className="flex items-center gap-2 text-[color:var(--success)]">
             <ShieldCheck className="h-4 w-4" />
-            <span className="text-sm font-medium">{t("wizard.precheck.clean")}</span>
+            <span className="text-sm font-medium">All checks passed — safe to route.</span>
           </div>
         </div>
       )}
@@ -75,15 +90,11 @@ export function PrecheckStep({
       {!scanning && (
         <div className="space-y-2" data-el="wizard-factors">
           {shown.map((f) => {
-            const key = FACTOR_KEY[f.id] ?? "network";
             const open = expanded === f.id;
             return (
               <div
                 key={f.id}
-                className={cn(
-                  "fg-glass overflow-hidden rounded-2xl",
-                  !f.hit && "opacity-60",
-                )}
+                className={cn("fg-glass overflow-hidden rounded-2xl", !f.hit && "opacity-60")}
                 data-el="wizard-factor"
               >
                 <button
@@ -93,26 +104,31 @@ export function PrecheckStep({
                 >
                   <SeverityDot severity={f.severity} />
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold">{t(`risk.factor.${key}.title`)}</div>
+                    <div className="truncate text-sm font-semibold">{f.title}</div>
                     <p className="mt-0.5 line-clamp-1 text-[11px] text-muted-foreground">
-                      {t(f.description)}
+                      {f.description}
                     </p>
                   </div>
                   {f.hit && (
-                    <span className="shrink-0 font-mono text-[10px] text-muted-foreground">+{f.points}</span>
+                    <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+                      +{f.points}
+                    </span>
                   )}
                   <ChevronDown
-                    className={cn("h-4 w-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")}
+                    className={cn(
+                      "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+                      open && "rotate-180",
+                    )}
                   />
                 </button>
                 {open && (
                   <div className="border-t border-border px-3.5 pb-3.5 pt-3">
-                    <p className="text-xs text-muted-foreground">{t(f.description)}</p>
+                    <p className="text-xs text-muted-foreground">{f.description}</p>
                     <div className="mt-2 rounded-xl bg-primary/10 p-2.5">
                       <div className="text-[10px] font-semibold uppercase tracking-wide text-primary">
-                        {t("wizard.precheck.remediation")}
+                        Remediation
                       </div>
-                      <p className="mt-0.5 text-xs text-foreground">{t(f.remediation)}</p>
+                      <p className="mt-0.5 text-xs text-foreground">{f.remediation}</p>
                     </div>
                   </div>
                 )}
@@ -130,7 +146,7 @@ export function PrecheckStep({
           className="flex w-full items-center justify-center gap-2 rounded-full border border-[color:var(--danger)]/50 px-4 py-3 text-sm font-medium text-[color:var(--danger)]"
           data-el="wizard-acknowledge"
         >
-          {t("wizard.precheck.acknowledge")}
+          I acknowledge the risk — continue for review
         </button>
       )}
 
@@ -147,7 +163,7 @@ export function PrecheckStep({
           )}
           data-el="wizard-to-route"
         >
-          {t("wizard.precheck.toRoute")} <ArrowRight className="h-4 w-4" />
+          Compare routes <ArrowRight className="h-4 w-4" />
         </button>
       )}
     </div>
