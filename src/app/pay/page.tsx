@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -9,93 +9,118 @@ import { WizardStepper } from "@/components/wizard/wizard-stepper";
 import { BuildStep } from "@/components/wizard/build-step";
 import { PrecheckStep } from "@/components/wizard/precheck-step";
 import { RouteStep } from "@/components/wizard/route-step";
-import { useSuppliers, getSupplier, addPayment } from "@/lib/mock/store";
-import { assessRisk, routePayment } from "@/lib/engine";
-import type { PaymentInput, PaymentRecord, StableCoin } from "@/lib/engine/types";
+import { LoadingBlock } from "@/components/shared/loading-block";
+import { useFlowGuardData } from "@/components/shell/data-provider";
+import { assessPayment, createPayment } from "@/lib/api";
+import type {
+  RiskAssessment,
+  RoutingResult,
+  StableCoin,
+  Supplier,
+} from "@/lib/engine/types";
 
-// 预览切片：无参数时直接进入「风险预检」态，加载一笔草稿（Lumen Viet, $18,400）。
-const PREVIEW_DRAFT: PaymentInput = { supplierId: "lumen-viet", amountUsd: 18400 };
+// 预览切片：无参数时对默认草稿（Lumen Viet, $18,400）跑预检并进入预检态。
+const PREVIEW_DRAFT = { supplierId: "lumen-viet", amountUsd: 18400 };
+
+interface Assessed {
+  supplier: Supplier;
+  risk: RiskAssessment;
+  routing: RoutingResult;
+  amountUsd: number;
+  targetCoin?: StableCoin;
+}
 
 function PayWizard() {
   const { t } = useTranslation();
   const router = useRouter();
   const params = useSearchParams();
-  const suppliers = useSuppliers();
+  const { suppliers, loading, refresh } = useFlowGuardData();
 
   const querySupplier = params.get("supplier") ?? undefined;
   const queryAmount = params.get("amount") ? Number(params.get("amount")) : undefined;
-  // 携带参数：从建单开始并预填；无参数：预览切片直接进入预检。
   const hasQuery = Boolean(querySupplier);
 
   const [step, setStep] = useState<0 | 1 | 2>(hasQuery ? 0 : 1);
-  const [input, setInput] = useState<PaymentInput>(hasQuery ? { supplierId: "", amountUsd: 0 } : PREVIEW_DRAFT);
+  const [assessed, setAssessed] = useState<Assessed | null>(null);
+  const [assessing, setAssessing] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const previewTried = useRef(false);
 
-  const supplier = getSupplier(input.supplierId);
-  const risk = useMemo(
-    () => (supplier ? assessRisk(supplier, input) : null),
-    [supplier, input],
-  );
-  const routing = useMemo(
-    () => (supplier && risk ? routePayment(supplier, input, risk) : null),
-    [supplier, risk, input],
-  );
-
-  function handleBuild(v: { supplierId: string; amountUsd: number; targetCoin?: StableCoin }) {
-    setInput(v);
-    setStep(1);
+  async function runAssess(v: { supplierId: string; amountUsd: number; targetCoin?: StableCoin }) {
+    setAssessing(true);
+    try {
+      const res = await assessPayment(v);
+      setAssessed({ ...res, amountUsd: v.amountUsd, targetCoin: v.targetCoin });
+      setStep(1);
+    } catch {
+      toast.error(t("errors.generic.title"));
+    } finally {
+      setAssessing(false);
+    }
   }
 
-  function handleConfirm(routeId: string) {
-    if (!supplier || !risk || !routing) return;
-    const route = routing.options.find((o) => o.id === routeId) ?? routing.options[0];
-    const record: PaymentRecord = {
-      id: `pmt-${Date.now().toString().slice(-6)}`,
-      supplierId: supplier.id,
-      supplierName: supplier.name,
-      supplierCodeName: supplier.codeName,
-      amountUsd: input.amountUsd,
-      targetCoin: input.targetCoin ?? supplier.preferredCoin,
-      riskScore: risk.score,
-      riskLevel: risk.level,
-      riskFactors: risk.factors,
-      selectedRouteId: route.id,
-      route,
-      status: "initiated",
-      createdAt: new Date().toISOString(),
-    };
-    addPayment(record);
-    setConfirmed(true);
-    toast.success(t("wizard.route.confirmed"));
-    setTimeout(() => router.push("/history"), 900);
+  // 预览切片：无参数、供应商已加载且包含默认草稿时，自动跑预检。
+  useEffect(() => {
+    if (hasQuery || loading || previewTried.current || suppliers.length === 0) return;
+    if (!suppliers.some((s) => s.id === PREVIEW_DRAFT.supplierId)) return;
+    previewTried.current = true;
+    void runAssess(PREVIEW_DRAFT);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasQuery, loading, suppliers]);
+
+  async function handleConfirm(routeId: string) {
+    if (!assessed) return;
+    try {
+      await createPayment({
+        supplierId: assessed.supplier.id,
+        amountUsd: assessed.amountUsd,
+        targetCoin: assessed.targetCoin,
+        selectedRouteId: routeId,
+      });
+      setConfirmed(true);
+      toast.success(t("wizard.route.confirmed"));
+      await refresh();
+      setTimeout(() => router.push("/history"), 900);
+    } catch {
+      toast.error(t("errors.generic.title"));
+    }
   }
 
   return (
-    <AppShell>
-      <section className="pt-1" data-el="pay-wizard">
-        <WizardStepper current={step} />
+    <section className="pt-1" data-el="pay-wizard">
+      <WizardStepper current={step} />
 
-        {step === 0 && (
-          <BuildStep
-            suppliers={suppliers}
-            initialSupplierId={querySupplier}
-            initialAmount={queryAmount}
-            onSubmit={handleBuild}
+      {step === 0 && (
+        <BuildStep
+          suppliers={suppliers}
+          initialSupplierId={querySupplier}
+          initialAmount={queryAmount}
+          onSubmit={runAssess}
+        />
+      )}
+
+      {step === 1 && !assessed && (assessing || loading) && <LoadingBlock rows={4} />}
+
+      {step === 1 && assessed && (
+        <>
+          <DraftBanner name={assessed.supplier.name} amount={assessed.amountUsd} />
+          <PrecheckStep
+            key={assessed.supplier.id + assessed.amountUsd}
+            risk={assessed.risk}
+            onContinue={() => setStep(2)}
           />
-        )}
+        </>
+      )}
 
-        {step === 1 && risk && supplier && (
-          <>
-            <DraftBanner name={supplier.name} amount={input.amountUsd} />
-            <PrecheckStep key={supplier.id + input.amountUsd} risk={risk} onContinue={() => setStep(2)} />
-          </>
-        )}
-
-        {step === 2 && routing && risk && (
-          <RouteStep routing={routing} risk={risk} onConfirm={handleConfirm} confirmed={confirmed} />
-        )}
-      </section>
-    </AppShell>
+      {step === 2 && assessed && (
+        <RouteStep
+          routing={assessed.routing}
+          risk={assessed.risk}
+          onConfirm={handleConfirm}
+          confirmed={confirmed}
+        />
+      )}
+    </section>
   );
 }
 
@@ -112,8 +137,10 @@ function DraftBanner({ name, amount }: { name: string; amount: number }) {
 
 export default function PayPage() {
   return (
-    <Suspense fallback={null}>
-      <PayWizard />
-    </Suspense>
+    <AppShell>
+      <Suspense fallback={<LoadingBlock rows={4} />}>
+        <PayWizard />
+      </Suspense>
+    </AppShell>
   );
 }
