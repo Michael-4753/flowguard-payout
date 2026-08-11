@@ -43,8 +43,15 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
   }, [user]);
 
   useEffect(() => {
-    // 用户态变化时同步加载数据（外部系统同步）。
-    void refresh();
+    // 用户态变化时异步加载数据。首个语句为 await，避免在 effect 体内同步 setState。
+    let alive = true;
+    void (async () => {
+      await Promise.resolve();
+      if (alive) await refresh();
+    })();
+    return () => {
+      alive = false;
+    };
   }, [refresh]);
 
   const value = useMemo(
