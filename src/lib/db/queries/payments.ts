@@ -1,0 +1,89 @@
+import { and, desc, eq } from "drizzle-orm";
+import { db } from "../client";
+import { payments, type PaymentRow } from "../schema/payments";
+import type { PaymentRecord, PaymentStatus, StableCoin } from "@/lib/engine/types";
+
+function toDomain(row: PaymentRow): PaymentRecord {
+  return {
+    id: row.id,
+    supplierId: row.supplierId,
+    supplierName: row.supplierName,
+    supplierCodeName: row.supplierCodeName,
+    amountUsd: row.amountUsd,
+    targetCoin: row.targetCoin as StableCoin,
+    riskScore: row.riskScore,
+    riskLevel: row.riskLevel,
+    riskFactors: row.riskFactors,
+    selectedRouteId: row.selectedRouteId,
+    route: row.route,
+    status: row.status,
+    createdAt: row.createdAt.toISOString(),
+  };
+}
+
+export async function listPayments(userId: string): Promise<PaymentRecord[]> {
+  const rows = await db
+    .select()
+    .from(payments)
+    .where(eq(payments.userId, userId))
+    .orderBy(desc(payments.createdAt));
+  return rows.map(toDomain);
+}
+
+export async function listPaymentsBySupplier(
+  userId: string,
+  supplierId: string,
+): Promise<PaymentRecord[]> {
+  const rows = await db
+    .select()
+    .from(payments)
+    .where(and(eq(payments.userId, userId), eq(payments.supplierId, supplierId)))
+    .orderBy(desc(payments.createdAt));
+  return rows.map(toDomain);
+}
+
+export async function insertPayment(
+  userId: string,
+  record: PaymentRecord,
+): Promise<PaymentRecord> {
+  const rows = await db
+    .insert(payments)
+    .values({
+      id: record.id,
+      userId,
+      supplierId: record.supplierId,
+      supplierName: record.supplierName,
+      supplierCodeName: record.supplierCodeName,
+      amountUsd: record.amountUsd,
+      targetCoin: record.targetCoin,
+      riskScore: record.riskScore,
+      riskLevel: record.riskLevel,
+      riskFactors: record.riskFactors,
+      selectedRouteId: record.selectedRouteId,
+      route: record.route,
+      status: record.status,
+    })
+    .returning();
+  return toDomain(rows[0]);
+}
+
+export async function updatePaymentStatus(
+  userId: string,
+  id: string,
+  status: PaymentStatus,
+): Promise<PaymentRecord | undefined> {
+  const rows = await db
+    .update(payments)
+    .set({ status })
+    .where(and(eq(payments.userId, userId), eq(payments.id, id)))
+    .returning();
+  return rows[0] ? toDomain(rows[0]) : undefined;
+}
+
+export async function countPayments(userId: string): Promise<number> {
+  const rows = await db
+    .select({ id: payments.id })
+    .from(payments)
+    .where(eq(payments.userId, userId));
+  return rows.length;
+}
