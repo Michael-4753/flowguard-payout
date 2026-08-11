@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Lock } from "lucide-react";
+import { Check, Lock, Info } from "lucide-react";
 import type { RiskAssessment, RouteOption, RoutingResult } from "@/lib/engine/types";
 import { FlowNarrativeStage } from "@/components/flow/flow-narrative-stage";
 import { formatUsdCents, formatPercent, formatMinutes } from "@/lib/format";
+import { useIsGuest } from "@/lib/guest/guest-session";
 import { cn } from "@/utils/utils";
 
 export function RouteStep({
@@ -19,6 +20,7 @@ export function RouteStep({
   confirmed: boolean;
 }) {
   const [selectedId, setSelectedId] = useState(routing.recommendedId);
+  const guest = useIsGuest();
 
   return (
     <div className="space-y-4" data-el="wizard-route">
