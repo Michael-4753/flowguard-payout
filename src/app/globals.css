@@ -166,3 +166,112 @@ body {
     @apply font-sans;
   }
 }
+
+/* ============================================================
+   Flow-narrative shared primitives (reproduced from selected design)
+   ============================================================ */
+@layer components {
+  /* Atmospheric backdrop used behind the app shell */
+  .fg-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background:
+      linear-gradient(180deg, rgba(6, 14, 12, 0.1), rgba(6, 14, 12, 0.34) 62%, rgba(6, 14, 12, 0.72)),
+      var(--fg-backdrop) center / cover no-repeat;
+    transform: scale(1.04);
+    animation: fg-drift 18s var(--fg-ease) infinite alternate;
+    filter: saturate(1.05) contrast(1.02);
+    pointer-events: none;
+  }
+  .fg-backdrop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 16% 20%, rgba(224, 120, 60, 0.18), transparent 30%),
+      radial-gradient(circle at 84% 38%, rgba(65, 122, 83, 0.28), transparent 34%),
+      linear-gradient(180deg, transparent 0%, rgba(11, 22, 19, 0.8) 82%);
+    mix-blend-mode: screen;
+    opacity: 0.82;
+  }
+  .fg-grain {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0.17;
+    background-image: repeating-radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 4px);
+    mix-blend-mode: overlay;
+  }
+
+  /* Glass surface used by cards, sheets, pills */
+  .fg-glass {
+    background: var(--fg-glass);
+    border: 1px solid var(--border);
+    box-shadow: var(--fg-shadow-md);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Soft-focus orb node */
+  .fg-orb {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    line-height: 1.12;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    box-shadow: inset 0 0 38px rgba(255, 255, 255, 0.05), 0 18px 70px rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: transform 280ms var(--fg-ease), filter 280ms var(--fg-ease), opacity 280ms var(--fg-ease);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fg-orb-main {
+    background:
+      radial-gradient(circle at 35% 30%, rgba(237, 235, 229, 0.34), transparent 26%),
+      radial-gradient(circle at 58% 72%, rgba(79, 138, 97, 0.34), transparent 36%),
+      radial-gradient(circle, rgba(237, 235, 229, 0.2), rgba(237, 235, 229, 0.035) 68%, rgba(237, 235, 229, 0.015));
+  }
+  .fg-orb-risk {
+    background:
+      radial-gradient(circle at 40% 36%, rgba(224, 120, 60, 0.22), transparent 28%),
+      radial-gradient(circle, rgba(200, 90, 69, 0.24), rgba(72, 48, 24, 0.1) 70%, rgba(72, 48, 24, 0.04));
+  }
+  .fg-orb-route {
+    background:
+      radial-gradient(circle at 42% 36%, rgba(224, 120, 60, 0.28), transparent 28%),
+      radial-gradient(circle, rgba(224, 120, 60, 0.2), rgba(72, 48, 24, 0.1) 72%, rgba(72, 48, 24, 0.03));
+    opacity: 0.82;
+  }
+  .fg-orb-route[data-active="true"] {
+    opacity: 1;
+    filter: drop-shadow(0 0 22px rgba(224, 120, 60, 0.36));
+  }
+  .fg-orb:active { transform: scale(0.96); }
+
+  /* SVG connectors */
+  .fg-path { fill: none; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .fg-path-main { stroke: rgba(237, 235, 229, 0.58); stroke-width: 1.1; stroke-dasharray: 3 7; animation: fg-trace 14s linear infinite; }
+  .fg-path-risk { stroke: rgba(200, 90, 69, 0.74); stroke-width: 1; }
+  .fg-path-route { stroke: rgba(224, 120, 60, 0.86); stroke-width: 1.35; filter: drop-shadow(0 0 8px rgba(224, 120, 60, 0.32)); }
+  .fg-path-alt { stroke: rgba(237, 235, 229, 0.18); stroke-width: 1; stroke-dasharray: 2 8; }
+}
+
+@keyframes fg-drift {
+  from { transform: scale(1.04) translate3d(-8px, -6px, 0); }
+  to { transform: scale(1.08) translate3d(8px, 10px, 0); }
+}
+@keyframes fg-trace {
+  to { stroke-dashoffset: -120; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fg-backdrop, .fg-path-main {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
