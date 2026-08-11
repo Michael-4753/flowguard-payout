@@ -16,7 +16,7 @@ export async function request(
   const sessionHeader = await auth.getSessionHeader();
   const headers = new Headers(init.headers);
   if (sessionHeader) headers.set("x-eazo-session", sessionHeader);
-  headers.set("x-app-locale", getResolvedLocale());
+  headers.set("x-app-locale", "en-US");
 
   return appAIRequest(input, {
     ...init,
