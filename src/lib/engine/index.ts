@@ -67,7 +67,7 @@ function seededJitter(seed: string): number {
 }
 
 /** Return-risk pre-check: explainable rules → hit factors + tiered report. */
-export function assessRisk(supplier: Supplier, _input: PaymentInput): RiskAssessment {
+export function assessRisk(supplier: Supplier): RiskAssessment {
   const factors: RiskFactor[] = [];
 
   // 1. SWIFT / BIC validation
