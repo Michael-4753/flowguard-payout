@@ -1,13 +1,11 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
 import { LogIn, ShieldCheck } from "lucide-react";
 import { auth } from "@eazo/sdk";
 import { useEazo } from "@eazo/sdk/react";
 
-/** 登录门：未登录时展示登录 CTA，登录后渲染子内容。 */
+/** Auth gate: shows a sign-in CTA when logged out, renders children once authed. */
 export function AuthGate({ children }: { children: React.ReactNode }) {
-  const { t } = useTranslation();
   const user = useEazo((s) => s.auth.user);
   const loading = useEazo((s) => s.auth.loading);
 
@@ -26,14 +24,16 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
           <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary/15 text-primary">
             <ShieldCheck className="h-6 w-6" />
           </div>
-          <p className="mt-4 text-sm text-muted-foreground">{t("auth.required")}</p>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Sign in to access your payout console.
+          </p>
           <button
             type="button"
             onClick={() => auth.login().catch(() => undefined)}
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)]"
             data-el="auth-login"
           >
-            <LogIn className="h-4 w-4" /> {t("auth.signInCta")}
+            <LogIn className="h-4 w-4" /> Sign in
           </button>
         </div>
       </div>
