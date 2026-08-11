@@ -1,9 +1,10 @@
 import { request } from "./request";
 import type {
+  ChannelClass,
+  FailureCase,
   PaymentRecord,
   RiskAssessment,
   RoutingResult,
-  StableCoin,
   Supplier,
 } from "@/lib/engine/types";
 
@@ -26,7 +27,7 @@ export async function fetchSupplier(
 export interface AssessInput {
   supplierId: string;
   amountUsd: number;
-  targetCoin?: StableCoin;
+  preferredChannel?: ChannelClass;
 }
 
 export async function assessPayment(input: AssessInput): Promise<{
@@ -57,7 +58,7 @@ export async function fetchPayments(): Promise<PaymentRecord[]> {
 export async function createPayment(input: {
   supplierId: string;
   amountUsd: number;
-  targetCoin?: StableCoin;
+  preferredChannel?: ChannelClass;
   selectedRouteId: string;
 }): Promise<PaymentRecord> {
   const res = await request("/api/payments", {
@@ -68,4 +69,11 @@ export async function createPayment(input: {
   if (!res.ok) throw new Error("failed_to_create_payment");
   const json = (await res.json()) as { payment: PaymentRecord };
   return json.payment;
+}
+
+export async function fetchFailureCases(): Promise<FailureCase[]> {
+  const res = await request("/api/cases");
+  if (!res.ok) throw new Error("failed_to_load_cases");
+  const json = (await res.json()) as { cases: FailureCase[] };
+  return json.cases;
 }
