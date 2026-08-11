@@ -1,6 +1,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "../client";
 import { payments, type PaymentRow } from "../schema/payments";
+import { deriveVouchers } from "@/lib/engine";
 import type { Currency, PaymentRecord, PaymentStatus } from "@/lib/engine/types";
 
 function toDomain(row: PaymentRow): PaymentRecord {
@@ -19,6 +20,7 @@ function toDomain(row: PaymentRow): PaymentRecord {
     selectedRouteId: row.selectedRouteId,
     route: row.route,
     status: row.status,
+    ...deriveVouchers(`${row.supplierId}-${row.selectedRouteId}`, row.route.channelClass, row.status),
     createdAt: row.createdAt.toISOString(),
   };
 }

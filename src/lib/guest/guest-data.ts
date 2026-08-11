@@ -5,7 +5,7 @@
 // deterministic engine, the seed ledger, and localStorage-backed payment
 // history. No network, no auth — usable offline.
 
-import { assessRisk, routePayment } from "@/lib/engine";
+import { assessRisk, deriveVouchers, routePayment } from "@/lib/engine";
 import { SEED_SUPPLIERS } from "@/lib/db/seed-suppliers";
 import { FAILURE_CASES } from "@/lib/engine/failure-cases";
 import type {
@@ -80,6 +80,7 @@ export function guestCreatePayment(input: {
     selectedRouteId: route.id,
     route,
     status: "initiated",
+    ...deriveVouchers(`guest-${supplier.id}-${route.id}`, route.channelClass, "initiated"),
     createdAt: new Date().toISOString(),
   };
   addGuestPayment(record);
