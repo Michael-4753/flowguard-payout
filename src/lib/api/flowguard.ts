@@ -1,4 +1,13 @@
 import { request } from "./request";
+import {
+  guestAssess,
+  guestCreatePayment,
+  guestFailureCases,
+  guestPayments,
+  guestSupplier,
+  guestSuppliers,
+} from "@/lib/guest/guest-data";
+import { isGuest } from "@/lib/guest/guest-session";
 import type {
   ChannelClass,
   FailureCase,
@@ -9,6 +18,7 @@ import type {
 } from "@/lib/engine/types";
 
 export async function fetchSuppliers(): Promise<Supplier[]> {
+  if (isGuest()) return guestSuppliers();
   const res = await request("/api/suppliers");
   if (!res.ok) throw new Error("failed_to_load_suppliers");
   const json = (await res.json()) as { suppliers: Supplier[] };
@@ -18,6 +28,7 @@ export async function fetchSuppliers(): Promise<Supplier[]> {
 export async function fetchSupplier(
   id: string,
 ): Promise<{ supplier: Supplier; payments: PaymentRecord[] } | null> {
+  if (isGuest()) return guestSupplier(id);
   const res = await request(`/api/suppliers/${encodeURIComponent(id)}`);
   if (res.status === 404) return null;
   if (!res.ok) throw new Error("failed_to_load_supplier");
@@ -35,6 +46,7 @@ export async function assessPayment(input: AssessInput): Promise<{
   risk: RiskAssessment;
   routing: RoutingResult;
 }> {
+  if (isGuest()) return guestAssess(input);
   const res = await request("/api/payments/assess", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -49,6 +61,7 @@ export async function assessPayment(input: AssessInput): Promise<{
 }
 
 export async function fetchPayments(): Promise<PaymentRecord[]> {
+  if (isGuest()) return guestPayments();
   const res = await request("/api/payments");
   if (!res.ok) throw new Error("failed_to_load_payments");
   const json = (await res.json()) as { payments: PaymentRecord[] };
@@ -61,6 +74,7 @@ export async function createPayment(input: {
   preferredChannel?: ChannelClass;
   selectedRouteId: string;
 }): Promise<PaymentRecord> {
+  if (isGuest()) return guestCreatePayment(input);
   const res = await request("/api/payments", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -72,6 +86,7 @@ export async function createPayment(input: {
 }
 
 export async function fetchFailureCases(): Promise<FailureCase[]> {
+  if (isGuest()) return guestFailureCases();
   const res = await request("/api/cases");
   if (!res.ok) throw new Error("failed_to_load_cases");
   const json = (await res.json()) as { cases: FailureCase[] };
