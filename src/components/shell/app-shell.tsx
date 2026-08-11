@@ -60,11 +60,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Bottom nav */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 mx-auto flex max-w-[760px] items-stretch justify-around px-3"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-30 mx-auto flex max-w-[760px] items-stretch justify-around px-3"
         style={{ paddingBottom: "var(--eazo-safe-area-bottom)" }}
         data-el="bottom-nav"
       >
-        <div className="fg-glass mx-auto mb-2 grid w-full grid-cols-5 gap-1 rounded-2xl p-1.5">
+        <div className="fg-glass pointer-events-auto mx-auto mb-2 grid w-full grid-cols-5 gap-1 rounded-2xl p-1.5">
           {NAV.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             const Icon = item.icon;
