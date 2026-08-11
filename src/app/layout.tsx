@@ -5,10 +5,7 @@ import { EazoProvider } from "@eazo/sdk/react";
 import { cn } from "@/utils/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { UserSyncEffect } from "@/components/user-profile/user-sync-effect";
-import { I18nProvider } from "@/components/i18n/i18n-provider";
-import { LocaleSyncEffect } from "@/components/i18n/locale-sync-effect";
 import { PreviewInspector } from "@/components/eazo/preview-inspector";
-import { getServerLocale } from "@/lib/i18n/server-preference";
 
 const notoSans = Inter({
   subsets: ["latin"],
