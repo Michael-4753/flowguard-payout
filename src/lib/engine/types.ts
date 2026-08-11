@@ -83,6 +83,17 @@ export interface RiskFactor {
   hit: boolean;
 }
 
+/** A predicted return reason (module 1 — "why it might bounce"). */
+export interface ReturnReason {
+  id: string;
+  /** Human-readable reason headline. */
+  title: string;
+  /** Estimated probability this is the cause of a return 0-1. */
+  probability: number;
+  /** Where the estimate comes from (rule / history / corridor). */
+  source: string;
+}
+
 /**
  * Return-risk pre-check report (module 1).
  * tier: low / medium (needs supporting docs) / high (blocked).
@@ -95,7 +106,11 @@ export interface RiskAssessment {
   returnProbability: number;
   /** Name of the chokepoint intermediary bank most likely to hold funds. */
   chokepointBank: string;
+  /** Typical number of intermediary hops on this corridor. */
+  avgHops: number;
   factors: RiskFactor[];
+  /** Top predicted return reasons, highest probability first. */
+  returnReasons: ReturnReason[];
   /** True when a critical blocker requires acknowledgement. */
   hasBlocker: boolean;
 }
@@ -106,6 +121,8 @@ export interface FlowHop {
   label: string;
   /** Layer role: origin, intermediary, or beneficiary. */
   role: "origin" | "intermediary" | "beneficiary";
+  /** Concrete bank/institution handling this hop (de-blackboxes the corridor). */
+  bankName: string;
   /** Hop duration (minutes). */
   minutes: number;
   /** Hop fee (USD). */
@@ -116,6 +133,8 @@ export interface FlowHop {
   idleMinutes: number;
   /** Whether this layer is a risk chokepoint. */
   chokepoint: boolean;
+  /** Transparency of this hop: how much visibility you have into it. */
+  blackboxLevel: "clear" | "partial" | "opaque";
   note: string;
 }
 
