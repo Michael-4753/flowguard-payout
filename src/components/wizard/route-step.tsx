@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Check, Lock } from "lucide-react";
 import type { RiskAssessment, RouteOption, RoutingResult } from "@/lib/engine/types";
 import { FlowNarrativeStage } from "@/components/flow/flow-narrative-stage";
 import { formatUsdCents, formatPercent, formatMinutes } from "@/lib/format";
-import { useCurrentLocale } from "@/lib/use-locale";
 import { cn } from "@/utils/utils";
 
 export function RouteStep({
@@ -20,10 +18,7 @@ export function RouteStep({
   onConfirm: (routeId: string) => void;
   confirmed: boolean;
 }) {
-  const { t } = useTranslation();
-  const locale = useCurrentLocale();
   const [selectedId, setSelectedId] = useState(routing.recommendedId);
-  const selected = routing.options.find((o) => o.id === selectedId) ?? routing.options[0];
 
   return (
     <div className="space-y-4" data-el="wizard-route">
@@ -32,10 +27,11 @@ export function RouteStep({
         selectedId={selectedId}
         onSelect={setSelectedId}
         riskHits={risk.factors}
-        locale={locale}
       />
 
-      <p className="text-center text-[11px] text-muted-foreground">{t("wizard.route.switchHint")}</p>
+      <p className="text-center text-[11px] text-muted-foreground">
+        Tap a channel to compare its money-flow, fees and return risk.
+      </p>
 
       {/* Route comparison cards */}
       <div className="space-y-2" data-el="route-options">
@@ -44,29 +40,9 @@ export function RouteStep({
             key={o.id}
             option={o}
             active={o.id === selectedId}
-            onClick={() => setSelectedId(o.id)}
-            locale={locale}
+            onClick={() => o.available && setSelectedId(o.id)}
           />
         ))}
-      </div>
-
-      {/* Hops for selected route */}
-      <div className="fg-glass rounded-2xl p-4" data-el="route-hops">
-        <div className="mb-3 text-xs font-semibold text-muted-foreground">{t("wizard.route.hops")}</div>
-        <ol className="relative space-y-3">
-          {selected.hops.map((h) => (
-            <li key={h.id} className="flex items-center gap-3">
-              <span className="h-2 w-2 shrink-0 rounded-full bg-primary" />
-              <span className="min-w-0 flex-1 truncate text-sm">{h.label}</span>
-              <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
-                {formatMinutes(h.minutes)} · -{formatUsdCents(h.feeUsd, locale)}
-              </span>
-              <span className="shrink-0 font-mono text-[11px] text-foreground">
-                {formatUsdCents(h.remainingUsd, locale)}
-              </span>
-            </li>
-          ))}
-        </ol>
       </div>
 
       {/* Confirm */}
@@ -84,11 +60,11 @@ export function RouteStep({
       >
         {confirmed ? (
           <>
-            <Check className="h-4 w-4" /> {t("wizard.route.confirmed")}
+            <Check className="h-4 w-4" /> Payment initiated
           </>
         ) : (
           <>
-            <Lock className="h-4 w-4" /> {t("wizard.route.confirm")}
+            <Lock className="h-4 w-4" /> Confirm &amp; initiate
           </>
         )}
       </button>
@@ -100,42 +76,45 @@ function RouteCard({
   option,
   active,
   onClick,
-  locale,
 }: {
   option: RouteOption;
   active: boolean;
   onClick: () => void;
-  locale: string;
 }) {
-  const { t } = useTranslation();
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={!option.available}
       className={cn(
         "w-full rounded-2xl border p-3.5 text-left transition-colors",
         active ? "border-primary bg-primary/10" : "border-border",
+        !option.available && "opacity-40",
       )}
       data-el="route-card"
     >
       <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-bold">{option.name}</span>
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="truncate text-sm font-bold">{option.name}</span>
           {option.recommended && (
-            <span className="rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase text-primary-foreground">
-              {t("wizard.route.recommended")}
+            <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase text-primary-foreground">
+              Best
             </span>
           )}
         </div>
-        <span className="font-mono text-sm font-bold text-primary">{option.score}</span>
+        <span className="shrink-0 font-mono text-sm font-bold text-primary">
+          {option.available ? option.score : "—"}
+        </span>
       </div>
-      <p className="mt-1 text-[11px] text-muted-foreground">{t(option.reason)}</p>
-      <div className="mt-2.5 grid grid-cols-4 gap-1 font-mono text-[10px]">
-        <Metric label={t("wizard.route.fee")} value={formatUsdCents(option.totalFeeUsd, locale)} />
-        <Metric label={t("wizard.route.eta")} value={formatMinutes(option.etaMinutes)} />
-        <Metric label={t("wizard.route.success")} value={formatPercent(option.successRate, locale)} />
-        <Metric label={t("wizard.route.receive")} value={formatUsdCents(option.receiveUsd, locale)} highlight />
-      </div>
+      <p className="mt-1 text-[11px] text-muted-foreground">{option.reason}</p>
+      {option.available && (
+        <div className="mt-2.5 grid grid-cols-4 gap-1 font-mono text-[10px]">
+          <Metric label="Fee" value={formatUsdCents(option.totalFeeUsd)} />
+          <Metric label="ETA" value={formatMinutes(option.etaMinutes)} />
+          <Metric label="Return risk" value={formatPercent(option.returnRisk, 0)} />
+          <Metric label="Received" value={formatUsdCents(option.receiveUsd)} highlight />
+        </div>
+      )}
     </button>
   );
 }
