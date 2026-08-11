@@ -33,17 +33,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Header */}
       <header
-        className="sticky z-20 mx-auto flex w-full max-w-[760px] items-center justify-between px-4 pb-3 pt-1"
-        style={{ top: "var(--eazo-safe-area-top)" }}
+        className="z-20 mx-auto flex w-full max-w-[760px] items-center justify-between px-4 pb-3 pt-1"
         data-el="app-header"
       >
-        <Link href="/" className="flex items-center gap-2" data-el="app-logo">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary font-mono text-base font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)]">
+        <Link href="/" className="flex min-w-0 items-center gap-2" data-el="app-logo">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary font-mono text-base font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)]">
             F
           </span>
-          <div className="leading-tight">
-            <div className="text-sm font-bold tracking-tight">FlowGuard</div>
-            <div className="text-[10px] text-muted-foreground">
+          <div className="min-w-0 leading-tight">
+            <div className="truncate text-sm font-bold tracking-tight">FlowGuard</div>
+            <div className="truncate text-[10px] text-muted-foreground">
               Cross-border payment risk &amp; routing
             </div>
           </div>
@@ -51,7 +50,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Content */}
-      <main className="mx-auto w-full max-w-[760px] flex-1 px-4">
+      <main className="mx-auto w-full max-w-[760px] flex-1 px-4 pt-2">
         <AuthGate>
           <FlowGuardDataProvider>{children}</FlowGuardDataProvider>
         </AuthGate>
