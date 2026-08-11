@@ -61,6 +61,11 @@ export function subscribeGuest(listener: () => void): () => void {
   };
 }
 
+/** React hook: reactive guest flag (re-renders on enter/exit and localStorage). */
+export function useIsGuest(): boolean {
+  return useSyncExternalStore(subscribeGuest, isGuest, () => false);
+}
+
 // ---- local payment records ----
 
 export function readGuestPayments(): PaymentRecord[] {
