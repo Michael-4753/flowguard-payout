@@ -67,7 +67,6 @@ function PayWizard() {
     return () => {
       alive = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasQuery, loading, suppliers]);
 
   async function handleConfirm(routeId: string) {
