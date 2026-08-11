@@ -1,0 +1,8 @@
+{
+  "route": "suppliers",
+  "name": "供应商",
+  "nav_type": "tab",
+  "order_index": 2,
+  "icon": "building-2",
+  "summary": "供应商档案列表与历史统计"
+}

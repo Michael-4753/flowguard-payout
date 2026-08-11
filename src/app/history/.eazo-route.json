@@ -1,0 +1,8 @@
+{
+  "route": "history",
+  "name": "历史",
+  "nav_type": "tab",
+  "order_index": 4,
+  "icon": "history",
+  "summary": "历史付款记录，可筛选、回看与复用"
+}

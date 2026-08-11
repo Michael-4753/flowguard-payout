@@ -1,0 +1,8 @@
+{
+  "route": "pay",
+  "name": "新建付款",
+  "nav_type": "tab",
+  "order_index": 1,
+  "icon": "workflow",
+  "summary": "三步向导：建单→风险预检→路由与资金流叙事"
+}

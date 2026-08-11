@@ -1,0 +1,10 @@
+{
+  "route": "suppliers/[id]",
+  "name": "供应商详情",
+  "nav_type": "stack",
+  "parent": "suppliers",
+  "order_index": 3,
+  "icon": "building-2",
+  "summary": "单个供应商档案与退回率/时效统计",
+  "preview_route": "suppliers/lumen-viet"
+}

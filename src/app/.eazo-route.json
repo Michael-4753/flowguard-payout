@@ -1,0 +1,8 @@
+{
+  "route": "",
+  "name": "操作台",
+  "nav_type": "tab",
+  "order_index": 0,
+  "icon": "layout-dashboard",
+  "summary": "付款概览与最近记录，发起新付款"
+}
