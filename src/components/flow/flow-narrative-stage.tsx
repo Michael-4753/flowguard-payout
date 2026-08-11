@@ -184,6 +184,26 @@ function HopNode({ hop, last }: { hop: FlowHop; last: boolean }) {
             </span>
           )}
         </div>
+        {/* Handling bank + transparency — de-blackboxes the intermediary */}
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <span className="inline-flex min-w-0 items-center gap-1 text-[11px] text-muted-foreground">
+            <Building2 className="h-3 w-3 shrink-0" aria-hidden />
+            <span className="truncate">{hop.bankName}</span>
+          </span>
+          <span
+            className={cn(
+              "inline-flex shrink-0 items-center gap-1 text-[10px] font-medium",
+              BLACKBOX_META[hop.blackboxLevel].className,
+            )}
+          >
+            {hop.blackboxLevel === "opaque" ? (
+              <EyeOff className="h-3 w-3" aria-hidden />
+            ) : (
+              <Eye className="h-3 w-3" aria-hidden />
+            )}
+            {BLACKBOX_META[hop.blackboxLevel].label}
+          </span>
+        </div>
         <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <ArrowDown className="h-3 w-3" aria-hidden /> {formatUsdCents(hop.remainingUsd)}
