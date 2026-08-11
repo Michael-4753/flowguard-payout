@@ -2,13 +2,14 @@
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, AlertTriangle, Send } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Send, ClipboardCheck, Circle } from "lucide-react";
 import { useEazo } from "@eazo/sdk/react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PaymentRow } from "@/components/shared/payment-row";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { RiskBadge } from "@/components/shared/badges";
 import { fetchSupplier } from "@/lib/api";
+import { corridorRequirements } from "@/lib/engine";
 import { formatPercent, formatHours } from "@/lib/format";
 import { CHANNEL_CLASS_LABEL } from "@/lib/engine/types";
 import type { PaymentRecord, Supplier } from "@/lib/engine/types";
@@ -73,6 +74,7 @@ function SupplierDetailBody({ id }: { id: string }) {
 
   const { supplier, payments } = data;
   const returned = payments.filter((p) => p.status === "returned" || p.riskLevel === "high");
+  const requirements = corridorRequirements(supplier);
 
   return (
     <section className="pt-1" data-el="supplier-detail">
@@ -126,6 +128,46 @@ function SupplierDetailBody({ id }: { id: string }) {
         >
           <Send className="h-4 w-4" /> Pay this payee
         </button>
+      </div>
+
+      {/* Payout requirements checklist (pain point 3: stop re-learning each bank's rules) */}
+      <div className="fg-glass mt-4 rounded-2xl p-4" data-el="payout-requirements">
+        <div className="flex items-center gap-2">
+          <ClipboardCheck className="h-4 w-4 text-primary" aria-hidden />
+          <h2 className="text-sm font-bold">Payout requirements</h2>
+        </div>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          Reusable checklist for this corridor — what this bank / country needs every time.
+        </p>
+        <ul className="mt-3 space-y-2.5">
+          {requirements.map((req) => (
+            <li key={req.id} className="flex gap-2.5" data-el="requirement">
+              {req.mandatory ? (
+                <AlertTriangle
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--warning)]"
+                  aria-hidden
+                />
+              ) : (
+                <Circle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
+              )}
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[13px] font-medium">{req.label}</span>
+                  {req.mandatory ? (
+                    <span className="rounded-full bg-[color:var(--warning)]/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[color:var(--warning)]">
+                      Required
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-[color:var(--fg-soft)] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
+                      Recommended
+                    </span>
+                  )}
+                </div>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-muted-foreground">{req.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {returned.length > 0 && (
