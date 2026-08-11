@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Workflow, Building2, History, BookOpen } from "lucide-react";
+import { LayoutDashboard, Workflow, Building2, History, Scale } from "lucide-react";
 import { cn } from "@/utils/utils";
 import { AuthGate } from "@/components/shell/auth-gate";
 import { FlowGuardDataProvider } from "@/components/shell/data-provider";
@@ -12,7 +12,7 @@ const NAV = [
   { href: "/", label: "Home", icon: LayoutDashboard, el: "nav-dashboard" },
   { href: "/pay", label: "Pay", icon: Workflow, el: "nav-pay" },
   { href: "/suppliers", label: "Payees", icon: Building2, el: "nav-suppliers" },
-  { href: "/cases", label: "Cases", icon: BookOpen, el: "nav-cases" },
+  { href: "/reconcile", label: "Reconcile", icon: Scale, el: "nav-reconcile" },
   { href: "/history", label: "History", icon: History, el: "nav-history" },
 ] as const;
 
