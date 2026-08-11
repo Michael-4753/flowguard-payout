@@ -10,6 +10,9 @@
     "cancel": "取消",
     "edit": "编辑",
     "delete": "删除",
+    "back": "返回",
+    "next": "下一步",
+    "confirm": "确认",
     "userId": "用户 ID"
   },
   "language": {
@@ -34,36 +37,162 @@
       "backHome": "返回首页"
     }
   },
-  "starter": {
-    "badge": "Eazo 应用模板",
-    "title": "用 Eazo 构建你的下一个应用",
-    "subtitle": "你现在拥有干净的基础：认证、数据访问与平台能力已就绪，可直接开发产品功能。",
-    "steps": {
-      "readDocs": {
-        "title": "阅读文档",
-        "desc": "打开 AGENTS.md 与 README.md，了解模板架构与约定。",
-        "code": "AGENTS.md + README.md"
-      },
-      "replacePage": {
-        "title": "替换本页",
-        "desc": "将产品 UI 放到 src/components 下，并保持 page.tsx 为薄入口。",
-        "code": "src/app/page.tsx"
-      },
-      "firstFeature": {
-        "title": "开发第一个功能",
-        "desc": "在 src/app/api 添加接口，并通过 src/lib/api 中的类型化 helper 调用。",
-        "code": "src/app/api/*"
-      },
-      "translations": {
-        "title": "补充翻译",
-        "desc": "在 src/i18n/locales 编辑中英文文案；layout 已接入 LanguageSwitcher 与 I18nProvider。",
-        "code": "src/i18n/locales/"
-      }
+  "app": {
+    "name": "FlowGuard",
+    "tagline": "付款前先看清退回风险与最优路径"
+  },
+  "nav": {
+    "dashboard": "操作台",
+    "pay": "新建付款",
+    "suppliers": "供应商",
+    "history": "历史"
+  },
+  "dashboard": {
+    "title": "付款操作台",
+    "subtitle": "本月跨境结算概览",
+    "newPayment": "发起新付款",
+    "stat": {
+      "count": "本月付款",
+      "countUnit": "笔",
+      "volume": "结算总额",
+      "avgEta": "平均到账",
+      "blocked": "拦截高危"
     },
-    "nextCommand": {
-      "title": "下一步命令",
-      "desc": "启动开发服务器，实时迭代你的产品。",
-      "command": "bun dev"
+    "recent": "最近记录",
+    "viewAll": "查看全部",
+    "empty": "还没有付款记录，发起第一笔付款吧。"
+  },
+  "wizard": {
+    "step1": "建单",
+    "step2": "风险预检",
+    "step3": "路由与流转",
+    "stepOf": "第 {{current}} / {{total}} 步",
+    "build": {
+      "title": "新建付款单",
+      "supplier": "选择供应商",
+      "supplierPlaceholder": "搜索或选择供应商",
+      "amount": "结算金额（USD）",
+      "amountPlaceholder": "输入金额",
+      "coin": "目标稳定币",
+      "coinAuto": "由系统按供应商偏好推荐",
+      "run": "运行风险预检",
+      "noSupplier": "请选择供应商",
+      "invalidAmount": "请输入有效金额"
+    },
+    "precheck": {
+      "title": "退回风险预检",
+      "scanning": "正在逐条扫描风险规则…",
+      "scoreLabel": "退回风险评分",
+      "hitCount": "命中 {{count}} 项",
+      "clean": "未命中风险因素，可安全付款。",
+      "blockerTitle": "存在高危拦截项",
+      "blockerDesc": "需确认下列高危项后才能继续选路。",
+      "acknowledge": "我已知悉高危项，继续",
+      "toRoute": "查看结算路径",
+      "remediation": "整改建议"
+    },
+    "route": {
+      "title": "资金流叙事",
+      "recommended": "推荐",
+      "fee": "综合费用",
+      "eta": "预计到账",
+      "success": "历史成功率",
+      "receive": "到手金额",
+      "score": "综合评分",
+      "switchHint": "点击节点切换结算路径",
+      "hops": "资金流转",
+      "hopFee": "扣费",
+      "hopTime": "耗时",
+      "hopRemaining": "剩余",
+      "confirm": "锁定并发起付款",
+      "locked": "路径已锁定",
+      "confirmed": "付款已发起",
+      "viewHistory": "查看历史记录",
+      "nodePayer": "付款方",
+      "nodeArrive": "供应商到账"
     }
+  },
+  "suppliers": {
+    "title": "供应商档案",
+    "subtitle": "档案历史统计会喂给风险预检",
+    "count": "共 {{count}} 家",
+    "region": "所在地区",
+    "network": "默认网络",
+    "returnRate": "历史退回率",
+    "avgEta": "平均时效",
+    "payments": "付款次数",
+    "trCompleteness": "Travel Rule 完整度",
+    "restricted": "受限地区",
+    "detailTitle": "供应商详情",
+    "recentForSupplier": "该供应商的付款记录",
+    "payThis": "向该供应商付款",
+    "notFound": "供应商不存在"
+  },
+  "history": {
+    "title": "历史记录",
+    "subtitle": "回看预检结果与所选路径，可复用",
+    "filterAll": "全部",
+    "filterLevel": "风险等级",
+    "filterStatus": "状态",
+    "reuse": "以此为模板再来一单",
+    "empty": "没有匹配的记录。",
+    "amount": "金额",
+    "risk": "退回风险",
+    "route": "结算路径"
+  },
+  "risk": {
+    "level": { "low": "低风险", "medium": "中风险", "high": "高风险" },
+    "factor": {
+      "network": {
+        "title": "收款地址与网络匹配",
+        "descHit": "收款地址格式与目标网络不一致，存在选错链导致资金丢失的风险。",
+        "descOk": "收款地址与目标网络格式一致，未发现链路错配。",
+        "fix": "核对供应商收款地址所属链，与目标结算网络保持一致。"
+      },
+      "sanction": {
+        "title": "制裁与受限地区筛查",
+        "descHit": "受益方位于受限/高风险地区，可能触发合规拦截或资金退回。",
+        "descOk": "受益方所在地未命中制裁与受限地区名单。",
+        "fix": "提交合规复核并留存尽调材料后再付款。"
+      },
+      "travelRule": {
+        "title": "Travel Rule 信息完整度",
+        "descHit": "受益方身份信息不完整（名称/账号/地址存在缺项），跨境转账可能被退回。",
+        "descOk": "受益方 Travel Rule 信息齐全。",
+        "fix": "补齐受益方登记名称、账号与完整地址。"
+      },
+      "history": {
+        "title": "供应商历史退回记录",
+        "descHit": "该供应商历史退回率偏高，本次付款退回概率上升。",
+        "descOk": "该供应商历史退回率处于健康区间。",
+        "fix": "优先选择高成功率通道，并预留资金缓冲。"
+      },
+      "amount": {
+        "title": "金额异常",
+        "descHit": "本次金额显著高于该供应商历史均值，建议复核或走审批。",
+        "descOk": "本次金额处于该供应商历史正常区间。",
+        "fix": "确认发票与合同金额一致，必要时走大额审批。"
+      }
+    }
+  },
+  "route": {
+    "reason": {
+      "recommendedBalanced": "费用与成功率综合最优",
+      "recommendedHighRisk": "高风险单，优先最高成功率通道",
+      "cheapest": "费用最低，时效略慢",
+      "fastest": "到账最快",
+      "safest": "成功率最高",
+      "alternative": "可选备用路径"
+    }
+  },
+  "status": {
+    "draft": "草稿",
+    "initiated": "已发起",
+    "settling": "结算中",
+    "arrived": "已到账"
+  },
+  "auth": {
+    "required": "登录后即可查看和管理你的付款",
+    "signInCta": "登录 FlowGuard"
   }
 }
