@@ -14,7 +14,7 @@ export function PaymentRow({ record }: { record: PaymentRecord }) {
   return (
     <button
       type="button"
-      onClick={() => router.push(`/history?focus=${record.id}`)}
+      onClick={() => router.push("/history")}
       className="fg-glass flex w-full items-center gap-3 rounded-2xl p-3 text-left transition-transform active:scale-[0.99]"
       data-el="payment-row"
     >
