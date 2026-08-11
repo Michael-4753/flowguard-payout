@@ -79,10 +79,15 @@ export default async function RootLayout({
     <html
       lang={locale}
       suppressHydrationWarning
-      className={cn("h-full antialiased", "font-sans", geist.variable)}
+      className={cn(
+        "h-full antialiased dark",
+        "font-sans",
+        notoSans.variable,
+        plexMono.variable,
+      )}
     >
       <body
-        className="min-h-full flex flex-col"
+        className="min-h-full flex flex-col bg-background text-foreground"
         data-eazo-preview-inspector-runtime=""
       >
         <I18nProvider>
