@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import { RotateCcw } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
-import { usePayments } from "@/lib/mock/store";
+import { useFlowGuardData } from "@/components/shell/data-provider";
+import { LoadingBlock } from "@/components/shared/loading-block";
 import { formatUsd, formatDate, formatPercent } from "@/lib/format";
 import { useCurrentLocale } from "@/lib/use-locale";
 import type { PaymentStatus, RiskLevel } from "@/lib/engine/types";
@@ -16,10 +17,18 @@ const LEVELS: (RiskLevel | "all")[] = ["all", "low", "medium", "high"];
 const STATUSES: (PaymentStatus | "all")[] = ["all", "draft", "initiated", "settling", "arrived"];
 
 export default function HistoryPage() {
+  return (
+    <AppShell>
+      <HistoryBody />
+    </AppShell>
+  );
+}
+
+function HistoryBody() {
   const { t } = useTranslation();
   const router = useRouter();
   const locale = useCurrentLocale();
-  const payments = usePayments();
+  const { payments, loading } = useFlowGuardData();
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
 
@@ -32,8 +41,7 @@ export default function HistoryPage() {
   );
 
   return (
-    <AppShell>
-      <section className="pt-1" data-el="history">
+    <section className="pt-1" data-el="history">
         <h1 className="text-2xl font-bold tracking-tight">{t("history.title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{t("history.subtitle")}</p>
 
@@ -55,7 +63,11 @@ export default function HistoryPage() {
           </FilterRow>
         </div>
 
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="mt-4">
+            <LoadingBlock rows={4} />
+          </div>
+        ) : filtered.length === 0 ? (
           <p className="fg-glass mt-4 rounded-2xl p-6 text-center text-sm text-muted-foreground">
             {t("history.empty")}
           </p>
@@ -94,8 +106,7 @@ export default function HistoryPage() {
             ))}
           </div>
         )}
-      </section>
-    </AppShell>
+    </section>
   );
 }
 
