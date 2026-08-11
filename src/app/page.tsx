@@ -2,12 +2,13 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Coins, Timer, ShieldAlert, Send } from "lucide-react";
+import { ArrowRight, Coins, Timer, ShieldAlert, Send, Globe, AlertTriangle } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PaymentRow } from "@/components/shared/payment-row";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
-import { formatUsd, formatHours } from "@/lib/format";
+import { formatUsd, formatHours, formatPercent } from "@/lib/format";
+import { groupByCountry } from "@/lib/analytics";
 import { cn } from "@/utils/utils";
 
 export default function DashboardPage() {
@@ -20,7 +21,7 @@ export default function DashboardPage() {
 
 function DashboardBody() {
   const router = useRouter();
-  const { payments, loading } = useFlowGuardData();
+  const { suppliers, payments, loading } = useFlowGuardData();
 
   const stats = useMemo(() => {
     const count = payments.length;
@@ -33,6 +34,10 @@ function DashboardBody() {
     return { count, volume, avgEta, highRisk };
   }, [payments]);
 
+  const countries = useMemo(
+    () => groupByCountry(suppliers, payments).slice(0, 6),
+    [suppliers, payments],
+  );
   const recent = payments.slice(0, 4);
 
   return (
@@ -66,6 +71,49 @@ function DashboardBody() {
           danger={stats.highRisk > 0}
         />
       </div>
+
+      {/* Country exposure overview (multi-country payees) */}
+      {!loading && countries.length > 0 && (
+        <div className="mt-6" data-el="country-exposure">
+          <div className="mb-3 flex items-center gap-2">
+            <Globe className="h-4 w-4 text-primary" aria-hidden />
+            <h2 className="text-sm font-semibold text-muted-foreground">Country exposure</h2>
+          </div>
+          <div className="-mx-4 flex gap-2.5 overflow-x-auto px-4 pb-1">
+            {countries.map((g) => (
+              <button
+                key={g.countryCode || g.country}
+                type="button"
+                onClick={() => router.push("/suppliers")}
+                className="fg-glass w-40 shrink-0 rounded-2xl p-3 text-left transition-transform active:scale-[0.99]"
+                data-el="country-card"
+              >
+                <div className="flex items-center gap-1.5">
+                  <span className="truncate text-[13px] font-semibold">{g.country}</span>
+                  {g.restricted && (
+                    <AlertTriangle
+                      className="h-3 w-3 shrink-0 text-[color:var(--danger)]"
+                      aria-hidden
+                    />
+                  )}
+                </div>
+                <div className="mt-2 font-mono text-base font-bold tabular-nums">
+                  {formatUsd(g.volumeUsd)}
+                </div>
+                <div className="mt-1 flex flex-wrap gap-x-2 font-mono text-[9px] text-muted-foreground">
+                  <span>{g.suppliers.length} payee(s)</span>
+                  <span style={g.returnRate > 0.05 ? { color: "var(--danger)" } : undefined}>
+                    ret {formatPercent(g.returnRate, 0)}
+                  </span>
+                </div>
+                <div className="mt-0.5 font-mono text-[9px] text-muted-foreground">
+                  {g.currencies.join(" · ")}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="mb-4 mt-6 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-muted-foreground">Recent payments</h2>
