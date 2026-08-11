@@ -1,5 +1,7 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
+
 // Guest mode: a purely client-side "Continue as guest" session. Eazo has no
 // anonymous login and every backend API requires a real session, so guests run
 // entirely in the browser — the built-in engine computes pre-check/routing, the
