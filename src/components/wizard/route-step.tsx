@@ -47,6 +47,19 @@ export function RouteStep({
         ))}
       </div>
 
+      {/* Guest notice */}
+      {guest && !confirmed && (
+        <div
+          className="flex items-start gap-2 rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3 text-[11px] leading-relaxed text-muted-foreground"
+          data-el="guest-payment-notice"
+        >
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
+          <span>
+            游客模式：付款记录仅保存在本设备（浏览器本地），退出游客后将被清除。登录后可同步到你的账户。
+          </span>
+        </div>
+      )}
+
       {/* Confirm */}
       <button
         type="button"
