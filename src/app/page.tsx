@@ -1,74 +1,113 @@
-// EAZO_TEMPLATE_PLACEHOLDER_PAGE
 "use client";
 
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { UserBadge } from "@/components/user-profile/user-badge";
-import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { ArrowRight, Coins, Timer, ShieldAlert, Send } from "lucide-react";
+import { AppShell } from "@/components/shell/app-shell";
+import { PaymentRow } from "@/components/shared/payment-row";
+import { usePayments } from "@/lib/mock/store";
+import { formatUsd, formatHours } from "@/lib/format";
+import { useCurrentLocale } from "@/lib/use-locale";
 
-const STEP_KEYS = [
-  "readDocs",
-  "replacePage",
-  "firstFeature",
-  "translations",
-] as const;
-
-export default function Home() {
+export default function DashboardPage() {
   const { t } = useTranslation();
+  const router = useRouter();
+  const locale = useCurrentLocale();
+  const payments = usePayments();
+
+  const stats = useMemo(() => {
+    const count = payments.length;
+    const volume = payments.reduce((s, p) => s + p.amountUsd, 0);
+    const avgEta =
+      payments.length > 0
+        ? payments.reduce((s, p) => s + p.route.etaMinutes, 0) / payments.length / 60
+        : 0;
+    const blocked = payments.filter((p) => p.riskLevel === "high").length;
+    return { count, volume, avgEta, blocked };
+  }, [payments]);
+
+  const recent = payments.slice(0, 4);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,theme(colors.orange.500/0.18),transparent_50%)]"
-      />
+    <AppShell>
+      <section className="pt-1" data-el="dashboard">
+        <h1 className="text-2xl font-bold tracking-tight">{t("dashboard.title")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t("dashboard.subtitle")}</p>
 
-      <header className="absolute right-4 top-4 z-10 flex items-center gap-2">
-        <LanguageSwitcher />
-        <UserBadge />
-      </header>
-
-      <main className="relative z-10 mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center gap-10 px-6 py-20 md:px-10">
-        <section className="space-y-4 text-center md:text-left">
-          <span className="inline-flex rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1 text-xs font-medium text-orange-600 dark:text-orange-300">
-            {t("starter.badge")}
+        <button
+          type="button"
+          onClick={() => router.push("/pay")}
+          className="mt-4 flex w-full items-center justify-between rounded-[24px] bg-primary px-5 py-4 text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.99]"
+          data-el="dashboard-new-payment"
+        >
+          <span className="flex items-center gap-3">
+            <Send className="h-5 w-5" aria-hidden />
+            <span className="text-base font-bold">{t("dashboard.newPayment")}</span>
           </span>
-          <h1 className="text-4xl font-semibold tracking-tight text-balance md:text-5xl">
-            {t("starter.title")}
-          </h1>
-          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-            {t("starter.subtitle")}
-          </p>
-        </section>
+          <ArrowRight className="h-5 w-5" aria-hidden />
+        </button>
 
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {STEP_KEYS.map((key) => (
-            <article
-              key={key}
-              className="rounded-2xl border bg-card/60 p-5 shadow-sm backdrop-blur"
-            >
-              <h2 className="text-base font-medium">
-                {t(`starter.steps.${key}.title`)}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {t(`starter.steps.${key}.desc`)}
-              </p>
-              <code className="mt-4 inline-block rounded-md bg-muted px-2 py-1 text-xs text-muted-foreground">
-                {t(`starter.steps.${key}.code`)}
-              </code>
-            </article>
-          ))}
-        </section>
+        <div className="mt-4 grid grid-cols-2 gap-3" data-el="dashboard-stats">
+          <StatCard icon={<Coins className="h-4 w-4" />} label={t("dashboard.stat.count")} value={`${stats.count}`} />
+          <StatCard icon={<Send className="h-4 w-4" />} label={t("dashboard.stat.volume")} value={formatUsd(stats.volume, locale)} />
+          <StatCard icon={<Timer className="h-4 w-4" />} label={t("dashboard.stat.avgEta")} value={formatHours(stats.avgEta)} />
+          <StatCard
+            icon={<ShieldAlert className="h-4 w-4" />}
+            label={t("dashboard.stat.blocked")}
+            value={`${stats.blocked}`}
+            danger={stats.blocked > 0}
+          />
+        </div>
 
-        <section className="rounded-2xl border bg-card/50 p-5 md:p-6">
-          <h3 className="text-sm font-medium">{t("starter.nextCommand.title")}</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {t("starter.nextCommand.desc")}
+        <div className="mb-4 mt-6 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-muted-foreground">{t("dashboard.recent")}</h2>
+          <button
+            type="button"
+            onClick={() => router.push("/history")}
+            className="text-xs font-medium text-primary"
+            data-el="dashboard-view-all"
+          >
+            {t("dashboard.viewAll")}
+          </button>
+        </div>
+
+        {recent.length === 0 ? (
+          <p className="fg-glass rounded-2xl p-6 text-center text-sm text-muted-foreground">
+            {t("dashboard.empty")}
           </p>
-          <pre className="mt-4 overflow-x-auto rounded-lg bg-muted p-3 text-sm">
-            <code>{t("starter.nextCommand.command")}</code>
-          </pre>
-        </section>
-      </main>
+        ) : (
+          <div className="space-y-2.5">
+            {recent.map((p) => (
+              <PaymentRow key={p.id} record={p} />
+            ))}
+          </div>
+        )}
+      </section>
+    </AppShell>
+  );
+}
+
+function StatCard({
+  icon,
+  label,
+  value,
+  danger,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  danger?: boolean;
+}) {
+  return (
+    <div className="fg-glass rounded-2xl p-4" data-el="stat-card">
+      <div className="flex items-center gap-1.5 text-muted-foreground">
+        <span className={danger ? "text-[color:var(--danger)]" : "text-primary"}>{icon}</span>
+        <span className="text-[11px]">{label}</span>
+      </div>
+      <div className="mt-2 font-mono text-xl font-bold" style={danger ? { color: "var(--danger)" } : undefined}>
+        {value}
+      </div>
     </div>
   );
 }
