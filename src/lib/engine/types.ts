@@ -94,6 +94,14 @@ export interface ReturnReason {
   source: string;
 }
 
+/** Quantified cost of a bounce (module 1 — "what a return actually costs"). */
+export interface ReturnCost {
+  /** Estimated days lost (bounce + investigate + re-send). */
+  lostDays: number;
+  /** Sunk / non-refundable fees on a returned wire (USD). */
+  sunkFeesUsd: number;
+}
+
 /**
  * Return-risk pre-check report (module 1).
  * tier: low / medium (needs supporting docs) / high (blocked).
@@ -111,6 +119,8 @@ export interface RiskAssessment {
   factors: RiskFactor[];
   /** Top predicted return reasons, highest probability first. */
   returnReasons: ReturnReason[];
+  /** Quantified cost if this payment is returned. */
+  returnCost: ReturnCost;
   /** True when a critical blocker requires acknowledgement. */
   hasBlocker: boolean;
 }
@@ -192,7 +202,23 @@ export interface PaymentRecord {
   selectedRouteId: string;
   route: RouteOption;
   status: PaymentStatus;
+  /** Off-chain proof: bank wire reference / MT103 UETR. */
+  offchainRef: string;
+  /** Off-chain invoice number tied to this payout. */
+  invoiceNo: string;
+  /** On-chain / PSP proof: tx hash or PSP settlement reference. */
+  onchainRef: string;
   createdAt: string;
+}
+
+/** One payout-requirement checklist item for a corridor (module 4). */
+export interface CorridorRequirement {
+  id: string;
+  label: string;
+  /** Whether it is mandatory or a recommended best practice. */
+  mandatory: boolean;
+  /** Short why/how detail. */
+  detail: string;
 }
 
 /** A failure-case library entry (module 3). */
