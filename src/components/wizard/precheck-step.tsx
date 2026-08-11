@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown } from "lucide-react";
+import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp } from "lucide-react";
 import type { RiskAssessment } from "@/lib/engine/types";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
@@ -83,6 +83,40 @@ export function PrecheckStep({
             <ShieldCheck className="h-4 w-4" />
             <span className="text-sm font-medium">All checks passed — safe to route.</span>
           </div>
+        </div>
+      )}
+
+      {/* Return-reason prediction: "why it might bounce" (top-3) */}
+      {!scanning && (
+        <div className="fg-glass rounded-2xl p-4" data-el="return-reasons">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4 text-primary" aria-hidden />
+            <h3 className="text-sm font-bold">Why it might bounce</h3>
+          </div>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Most likely return reasons on this corridor, ranked by probability.
+          </p>
+          <ul className="mt-3 space-y-2">
+            {risk.returnReasons.map((r) => (
+              <li key={r.id} data-el="return-reason">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="min-w-0 truncate text-[13px] font-medium">{r.title}</span>
+                  <span className="shrink-0 font-mono text-[11px] font-bold text-primary">
+                    {formatPercent(r.probability, 0)}
+                  </span>
+                </div>
+                <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--fg-soft)]">
+                  <div
+                    className="h-full rounded-full bg-primary"
+                    style={{ width: `${Math.max(4, Math.round(r.probability * 100))}%` }}
+                  />
+                </div>
+                <div className="mt-0.5 font-mono text-[9px] uppercase tracking-wide text-muted-foreground">
+                  {r.source}
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
