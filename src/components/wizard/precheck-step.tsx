@@ -5,7 +5,7 @@ import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp } from "l
 import type { RiskAssessment } from "@/lib/engine/types";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
-import { formatPercent } from "@/lib/format";
+import { formatPercent, formatUsdCents } from "@/lib/format";
 import { cn } from "@/utils/utils";
 
 export function PrecheckStep({
@@ -96,6 +96,20 @@ export function PrecheckStep({
           <p className="mt-1 text-[11px] text-muted-foreground">
             Most likely return reasons on this corridor, ranked by probability.
           </p>
+          {/* Quantified cost of a bounce (pain point 2) */}
+          <div
+            className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-[color:var(--warning)]/40 bg-[color:var(--warning)]/10 p-2.5"
+            data-el="return-cost"
+          >
+            <span className="text-[11px] font-semibold text-[color:var(--warning)]">If returned:</span>
+            <span className="font-mono text-[11px] text-foreground">
+              ≈ {risk.returnCost.lostDays} days lost
+            </span>
+            <span className="text-muted-foreground">·</span>
+            <span className="font-mono text-[11px] text-foreground">
+              {formatUsdCents(risk.returnCost.sunkFeesUsd)} sunk fees
+            </span>
+          </div>
           <ul className="mt-3 space-y-2">
             {risk.returnReasons.map((r) => (
               <li key={r.id} data-el="return-reason">
