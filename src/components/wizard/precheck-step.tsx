@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown } from "lucide-react";
 import type { RiskAssessment } from "@/lib/engine/types";
