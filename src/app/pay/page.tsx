@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { AppShell } from "@/components/shell/app-shell";
 import { WizardStepper } from "@/components/wizard/wizard-stepper";
@@ -12,26 +11,21 @@ import { RouteStep } from "@/components/wizard/route-step";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { assessPayment, createPayment } from "@/lib/api";
-import type {
-  RiskAssessment,
-  RoutingResult,
-  StableCoin,
-  Supplier,
-} from "@/lib/engine/types";
+import type { ChannelClass, RiskAssessment, RoutingResult, Supplier } from "@/lib/engine/types";
+import { formatUsd } from "@/lib/format";
 
-// 预览切片：无参数时对默认草稿（Lumen Viet, $18,400）跑预检并进入预检态。
-const PREVIEW_DRAFT = { supplierId: "lumen-viet", amountUsd: 18400 };
+// Preview slice: with no params, run the pre-check on a default draft.
+const PREVIEW_DRAFT = { supplierId: "meridian-freight", amountUsd: 18400 };
 
 interface Assessed {
   supplier: Supplier;
   risk: RiskAssessment;
   routing: RoutingResult;
   amountUsd: number;
-  targetCoin?: StableCoin;
+  preferredChannel?: ChannelClass;
 }
 
 function PayWizard() {
-  const { t } = useTranslation();
   const router = useRouter();
   const params = useSearchParams();
   const { suppliers, loading, refresh } = useFlowGuardData();
@@ -46,28 +40,29 @@ function PayWizard() {
   const [confirmed, setConfirmed] = useState(false);
   const previewTried = useRef(false);
 
-  async function runAssess(v: { supplierId: string; amountUsd: number; targetCoin?: StableCoin }) {
+  async function runAssess(v: { supplierId: string; amountUsd: number; preferredChannel?: ChannelClass }) {
     setAssessing(true);
     try {
       const res = await assessPayment(v);
-      setAssessed({ ...res, amountUsd: v.amountUsd, targetCoin: v.targetCoin });
+      setAssessed({ ...res, amountUsd: v.amountUsd, preferredChannel: v.preferredChannel });
       setStep(1);
     } catch {
-      toast.error(t("errors.generic.title"));
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setAssessing(false);
     }
   }
 
-  // 预览切片：无参数、供应商已加载且包含默认草稿时，自动跑预检。
   useEffect(() => {
     if (hasQuery || loading || previewTried.current || suppliers.length === 0) return;
-    if (!suppliers.some((s) => s.id === PREVIEW_DRAFT.supplierId)) return;
+    const draftId = suppliers.some((s) => s.id === PREVIEW_DRAFT.supplierId)
+      ? PREVIEW_DRAFT.supplierId
+      : suppliers[0].id;
     previewTried.current = true;
     let alive = true;
     void (async () => {
       await Promise.resolve();
-      if (alive) await runAssess(PREVIEW_DRAFT);
+      if (alive) await runAssess({ supplierId: draftId, amountUsd: PREVIEW_DRAFT.amountUsd });
     })();
     return () => {
       alive = false;
@@ -81,15 +76,15 @@ function PayWizard() {
       await createPayment({
         supplierId: assessed.supplier.id,
         amountUsd: assessed.amountUsd,
-        targetCoin: assessed.targetCoin,
+        preferredChannel: assessed.preferredChannel,
         selectedRouteId: routeId,
       });
       setConfirmed(true);
-      toast.success(t("wizard.route.confirmed"));
+      toast.success("Payment initiated");
       await refresh();
       setTimeout(() => router.push("/history"), 900);
     } catch {
-      toast.error(t("errors.generic.title"));
+      toast.error("Something went wrong. Please try again.");
     }
   }
 
@@ -135,9 +130,7 @@ function DraftBanner({ name, amount }: { name: string; amount: number }) {
   return (
     <div className="mb-3 flex items-center justify-between rounded-2xl border border-border px-4 py-2.5">
       <span className="truncate text-sm font-semibold">{name}</span>
-      <span className="shrink-0 font-mono text-sm font-bold text-primary">
-        ${amount.toLocaleString("en-US")}
-      </span>
+      <span className="shrink-0 font-mono text-sm font-bold text-primary">{formatUsd(amount)}</span>
     </div>
   );
 }
