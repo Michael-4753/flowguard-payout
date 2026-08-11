@@ -1,0 +1,8 @@
+{
+  "route": "cases",
+  "name": "Cases",
+  "nav_type": "tab",
+  "order_index": 5,
+  "icon": "book-open",
+  "summary": "Failure-case library with return reasons and remediation"
+}
