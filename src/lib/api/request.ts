@@ -1,7 +1,6 @@
 "use client";
 
 import { auth } from "@eazo/sdk";
-import { getResolvedLocale } from "@/i18n";
 import { appAIRequest } from "@/lib/api/app-ai-request";
 
 /**
