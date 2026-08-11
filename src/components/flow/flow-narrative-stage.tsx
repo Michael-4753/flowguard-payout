@@ -1,30 +1,43 @@
 "use client";
 
-import { AlertTriangle, ArrowDown, Clock, TrendingDown } from "lucide-react";
+import { AlertTriangle, ArrowDown, Clock, TrendingDown, Eye, EyeOff, Building2 } from "lucide-react";
 import { cn } from "@/utils/utils";
 import type { FlowHop, RiskFactor, RouteOption } from "@/lib/engine/types";
 import { CHANNEL_CLASS_LABEL } from "@/lib/engine/types";
 import { formatMinutes, formatUsdCents } from "@/lib/format";
 
+const BLACKBOX_META: Record<
+  FlowHop["blackboxLevel"],
+  { label: string; className: string }
+> = {
+  clear: { label: "Traceable", className: "text-[color:var(--success)]" },
+  partial: { label: "Partial visibility", className: "text-[color:var(--warning)]" },
+  opaque: { label: "Black box", className: "text-[color:var(--danger)]" },
+};
+
 /**
  * Money-flow link board (module 3). A vertical, flex-based rail — origin →
  * intermediaries → beneficiary — with the chokepoint layer highlighted, per-hop
- * ETA / withholding, and route-selector chips. No absolute positioning, so it
- * never overlaps at any viewport width.
+ * ETA / withholding, per-hop handling bank + transparency, and route-selector
+ * chips. No absolute positioning, so it never overlaps at any viewport width.
  */
 export function FlowNarrativeStage({
   options,
   selectedId,
   onSelect,
   riskHits,
+  avgHops,
 }: {
   options: RouteOption[];
   selectedId: string;
   onSelect: (id: string) => void;
   riskHits: RiskFactor[];
+  avgHops?: number;
 }) {
   const selected = options.find((o) => o.id === selectedId) ?? options[0];
   const criticalHits = riskHits.filter((f) => f.hit && f.severity === "critical");
+  const intermediaries = selected.hops.filter((h) => h.role === "intermediary").length;
+  const opaque = selected.hops.filter((h) => h.blackboxLevel === "opaque").length;
 
   return (
     <div className="fg-glass w-full overflow-hidden rounded-[28px] p-4" data-el="flow-stage">
@@ -79,6 +92,26 @@ export function FlowNarrativeStage({
           </div>
         </div>
       )}
+
+      {/* Corridor transparency summary (de-blackboxing intermediaries) */}
+      <div
+        className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-2xl border border-border bg-[color:var(--fg-soft)] px-3 py-2 font-mono text-[10px] text-muted-foreground"
+        data-el="flow-corridor-summary"
+      >
+        <span className="inline-flex items-center gap-1">
+          <Building2 className="h-3 w-3" aria-hidden /> {intermediaries} intermediary hop(s)
+        </span>
+        {typeof avgHops === "number" && <span>corridor avg {avgHops}</span>}
+        <span
+          className={cn(
+            "inline-flex items-center gap-1",
+            opaque > 0 ? "text-[color:var(--danger)]" : "text-[color:var(--success)]",
+          )}
+        >
+          {opaque > 0 ? <EyeOff className="h-3 w-3" aria-hidden /> : <Eye className="h-3 w-3" aria-hidden />}
+          {opaque > 0 ? `${opaque} black-box hop(s)` : "fully traceable"}
+        </span>
+      </div>
 
       {/* Vertical hop rail */}
       <ol className="relative flex flex-col gap-0" data-el="flow-rail">
