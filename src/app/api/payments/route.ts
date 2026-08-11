@@ -9,11 +9,11 @@ import type { PaymentRecord } from "@/lib/engine/types";
 const createSchema = z.object({
   supplierId: z.string().min(1),
   amountUsd: z.number().positive(),
-  targetCoin: z.enum(["USDC", "USDT", "PYUSD"]).optional(),
+  preferredChannel: z.enum(["swift-gpi", "licensed-psp", "stablecoin-gateway"]).optional(),
   selectedRouteId: z.string().min(1),
 });
 
-/** GET /api/payments — 列出当前用户的付款记录。 */
+/** GET /api/payments — list the current user's payment records. */
 export async function GET(request: NextRequest) {
   const auth = requireAuth(request);
   if (!auth.ok) return auth.response;
@@ -22,8 +22,9 @@ export async function GET(request: NextRequest) {
 }
 
 /**
- * POST /api/payments — 落库一条付款记录。
- * 风险与路由在服务端重算（不信任客户端提交的分数/路径），只取所选路径 id。
+ * POST /api/payments — persist a payment record.
+ * Risk & routing are recomputed server-side (client scores are never trusted);
+ * only the selected route id is taken from the request.
  */
 export async function POST(request: NextRequest) {
   const auth = requireAuth(request);
@@ -44,10 +45,10 @@ export async function POST(request: NextRequest) {
   const { risk, routing } = assessAndRoute(supplier, {
     supplierId: parsed.data.supplierId,
     amountUsd: parsed.data.amountUsd,
-    targetCoin: parsed.data.targetCoin,
+    preferredChannel: parsed.data.preferredChannel,
   });
   const route =
-    routing.options.find((o) => o.id === parsed.data.selectedRouteId) ??
+    routing.options.find((o) => o.id === parsed.data.selectedRouteId && o.available) ??
     routing.options.find((o) => o.id === routing.recommendedId)!;
 
   const record: PaymentRecord = {
@@ -56,9 +57,11 @@ export async function POST(request: NextRequest) {
     supplierName: supplier.name,
     supplierCodeName: supplier.codeName,
     amountUsd: parsed.data.amountUsd,
-    targetCoin: parsed.data.targetCoin ?? supplier.preferredCoin,
+    currency: supplier.currency,
     riskScore: risk.score,
     riskLevel: risk.level,
+    returnProbability: risk.returnProbability,
+    chokepointBank: risk.chokepointBank,
     riskFactors: risk.factors,
     selectedRouteId: route.id,
     route,
