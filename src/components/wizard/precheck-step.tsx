@@ -27,10 +27,15 @@ export function PrecheckStep({
   const [scanning, setScanning] = useState(true);
   const [acknowledged, setAcknowledged] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const riskRef = useRef(risk);
 
   useEffect(() => {
-    setScanning(true);
-    setAcknowledged(false);
+    // 每次 risk 变化时重置扫描态并在动画结束后揭晓评分。
+    if (riskRef.current !== risk) {
+      riskRef.current = risk;
+      setScanning(true);
+      setAcknowledged(false);
+    }
     const id = setTimeout(() => setScanning(false), 1100);
     return () => clearTimeout(id);
   }, [risk]);
