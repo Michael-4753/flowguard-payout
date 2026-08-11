@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import type { PaymentRecord } from "@/lib/engine/types";
@@ -9,7 +8,6 @@ import { formatUsd, formatDate } from "@/lib/format";
 import { useCurrentLocale } from "@/lib/use-locale";
 
 export function PaymentRow({ record }: { record: PaymentRecord }) {
-  const { t } = useTranslation();
   const router = useRouter();
   const locale = useCurrentLocale();
 
