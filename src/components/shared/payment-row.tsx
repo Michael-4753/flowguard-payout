@@ -3,13 +3,12 @@
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import type { PaymentRecord } from "@/lib/engine/types";
+import { CHANNEL_CLASS_LABEL } from "@/lib/engine/types";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
 import { formatUsd, formatDate } from "@/lib/format";
-import { useCurrentLocale } from "@/lib/use-locale";
 
 export function PaymentRow({ record }: { record: PaymentRecord }) {
   const router = useRouter();
-  const locale = useCurrentLocale();
 
   return (
     <button
@@ -24,13 +23,13 @@ export function PaymentRow({ record }: { record: PaymentRecord }) {
           <RiskBadge level={record.riskLevel} />
         </div>
         <div className="mt-1 flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
-          <span>{record.route.name}</span>
+          <span className="truncate">{CHANNEL_CLASS_LABEL[record.route.channelClass]}</span>
           <span>·</span>
-          <span>{formatDate(record.createdAt, locale)}</span>
+          <span className="shrink-0">{formatDate(record.createdAt)}</span>
         </div>
       </div>
       <div className="flex shrink-0 flex-col items-end gap-1">
-        <span className="font-mono text-sm font-semibold">{formatUsd(record.amountUsd, locale)}</span>
+        <span className="font-mono text-sm font-semibold">{formatUsd(record.amountUsd)}</span>
         <StatusPill status={record.status} />
       </div>
       <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
