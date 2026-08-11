@@ -1,13 +1,15 @@
 "use client";
 
-import { LogIn, ShieldCheck } from "lucide-react";
+import { LogIn, ShieldCheck, UserRound } from "lucide-react";
 import { auth } from "@eazo/sdk";
 import { useEazo } from "@eazo/sdk/react";
+import { enterGuestMode, useIsGuest } from "@/lib/guest/guest-session";
 
-/** Auth gate: shows a sign-in CTA when logged out, renders children once authed. */
+/** Auth gate: shows a sign-in / guest CTA when logged out, renders children once authed. */
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const user = useEazo((s) => s.auth.user);
   const loading = useEazo((s) => s.auth.loading);
+  const guest = useIsGuest();
 
   if (loading) {
     return (
@@ -17,7 +19,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!user) {
+  if (!user && !guest) {
     return (
       <div className="grid min-h-[50vh] place-items-center px-4" data-el="auth-gate">
         <div className="fg-glass w-full max-w-sm rounded-[24px] p-6 text-center">
@@ -25,7 +27,7 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
             <ShieldCheck className="h-6 w-6" />
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            Sign in to access your payout console.
+            Sign in to sync your payout console, or continue as a guest to try it out.
           </p>
           <button
             type="button"
@@ -35,6 +37,18 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
           >
             <LogIn className="h-4 w-4" /> Sign in
           </button>
+          <button
+            type="button"
+            onClick={() => enterGuestMode()}
+            className="mt-2.5 flex w-full items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-[color:var(--fg-soft)]"
+            data-el="auth-guest"
+          >
+            <UserRound className="h-4 w-4" /> Continue as guest
+          </button>
+          <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+            Guest data (payments you initiate) is stored only on this device and is
+            cleared when you leave guest mode.
+          </p>
         </div>
       </div>
     );
