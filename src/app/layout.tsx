@@ -67,16 +67,14 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getServerLocale();
-
   return (
     <html
-      lang={locale}
+      lang="en"
       suppressHydrationWarning
       className={cn(
         "h-full antialiased dark",
@@ -89,15 +87,12 @@ export default async function RootLayout({
         className="min-h-full flex flex-col bg-background text-foreground"
         data-eazo-preview-inspector-runtime=""
       >
-        <I18nProvider>
-          <EazoProvider>
-            <LocaleSyncEffect />
-            <UserSyncEffect />
-            {children}
-            <Toaster />
-            {INSPECTOR_ENABLED && <PreviewInspector />}
-          </EazoProvider>
-        </I18nProvider>
+        <EazoProvider>
+          <UserSyncEffect />
+          {children}
+          <Toaster />
+          {INSPECTOR_ENABLED && <PreviewInspector />}
+        </EazoProvider>
       </body>
     </html>
   );
