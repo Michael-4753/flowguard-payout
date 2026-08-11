@@ -8,11 +8,11 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
-import type { RiskFactor, RiskLevel, RouteOption, PaymentStatus } from "@/lib/engine/types";
+import type { Currency, RiskFactor, RiskLevel, RouteOption, PaymentStatus } from "@/lib/engine/types";
 
 /**
- * 付款记录。存输入 + 预检快照(jsonb) + 所选路径(jsonb) + 状态。
- * 预检与路由由确定性引擎产出，快照用于历史回看的保真。
+ * Payment record: input + pre-check snapshot (jsonb) + selected route (jsonb) + status.
+ * Risk & routing come from the deterministic engine; the snapshot preserves history.
  */
 export const payments = pgTable(
   "payments",
@@ -25,9 +25,11 @@ export const payments = pgTable(
     supplierName: varchar("supplier_name", { length: 256 }).notNull(),
     supplierCodeName: varchar("supplier_code_name", { length: 64 }).notNull(),
     amountUsd: doublePrecision("amount_usd").notNull(),
-    targetCoin: varchar("target_coin", { length: 16 }).notNull(),
+    currency: varchar("currency", { length: 8 }).notNull().$type<Currency>(),
     riskScore: doublePrecision("risk_score").notNull(),
     riskLevel: varchar("risk_level", { length: 16 }).notNull().$type<RiskLevel>(),
+    returnProbability: doublePrecision("return_probability").notNull().default(0),
+    chokepointBank: varchar("chokepoint_bank", { length: 128 }).notNull().default(""),
     riskFactors: jsonb("risk_factors").notNull().$type<RiskFactor[]>(),
     selectedRouteId: varchar("selected_route_id", { length: 64 }).notNull(),
     route: jsonb("route").notNull().$type<RouteOption>(),
