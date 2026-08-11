@@ -524,3 +524,29 @@ export function formatMinutes(minutes: number): string {
   if (m <= 0) return `${h}h`;
   return `${h}h${m}m`;
 }
+
+/**
+ * Deterministic reconciliation vouchers (module 4). Derives off-chain (bank
+ * wire ref + invoice no) and on-chain/PSP references from the payment id +
+ * channel, so on-chain / off-chain proofs can be matched at reconciliation time
+ * without extra storage. On-chain ref is only present for PSP / stablecoin.
+ */
+export function deriveVouchers(
+  id: string,
+  channelClass: ChannelClass,
+  status: string,
+): { offchainRef: string; invoiceNo: string; onchainRef: string } {
+  const seed = Math.abs(Math.round(seededJitter(id) * 1e6));
+  const hex = seed.toString(16).padStart(6, "0");
+  const offchainRef = `MT103-${hex.toUpperCase()}`;
+  const invoiceNo = `INV-${seed % 100000}`;
+  // Only arrived/settling PSP or stablecoin transfers expose an on-chain proof.
+  const hasOnchain =
+    channelClass !== "swift-gpi" && (status === "arrived" || status === "settling");
+  const onchainRef = hasOnchain
+    ? channelClass === "stablecoin-gateway"
+      ? `0x${seed.toString(16).padStart(8, "0")}`
+      : `PSP-${hex.toUpperCase()}`
+    : "";
+  return { offchainRef, invoiceNo, onchainRef };
+}
