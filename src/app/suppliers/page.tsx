@@ -4,25 +4,38 @@ import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { ChevronRight, MapPin, AlertTriangle } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
-import { useSuppliers } from "@/lib/mock/store";
+import { useFlowGuardData } from "@/components/shell/data-provider";
+import { LoadingBlock } from "@/components/shared/loading-block";
 import { formatPercent, formatHours } from "@/lib/format";
 import { useCurrentLocale } from "@/lib/use-locale";
 
 export default function SuppliersPage() {
+  return (
+    <AppShell>
+      <SuppliersBody />
+    </AppShell>
+  );
+}
+
+function SuppliersBody() {
   const { t } = useTranslation();
   const router = useRouter();
   const locale = useCurrentLocale();
-  const suppliers = useSuppliers();
+  const { suppliers, loading } = useFlowGuardData();
 
   return (
-    <AppShell>
-      <section className="pt-1" data-el="suppliers">
-        <h1 className="text-2xl font-bold tracking-tight">{t("suppliers.title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t("suppliers.subtitle")}</p>
-        <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-          {t("suppliers.count", { count: suppliers.length })}
-        </p>
+    <section className="pt-1" data-el="suppliers">
+      <h1 className="text-2xl font-bold tracking-tight">{t("suppliers.title")}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">{t("suppliers.subtitle")}</p>
+      <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+        {t("suppliers.count", { count: suppliers.length })}
+      </p>
 
+      {loading ? (
+        <div className="mt-4">
+          <LoadingBlock rows={4} />
+        </div>
+      ) : (
         <div className="mt-4 space-y-2.5">
           {suppliers.map((s) => (
             <button
@@ -65,7 +78,7 @@ export default function SuppliersPage() {
             </button>
           ))}
         </div>
-      </section>
-    </AppShell>
+      )}
+    </section>
   );
 }
