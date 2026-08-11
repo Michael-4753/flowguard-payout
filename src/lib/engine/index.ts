@@ -252,8 +252,8 @@ interface ChannelSpec {
   baseMinutes: number;
   baseSuccessRate: number;
   baseFxLoss: number;
-  /** Layer labels for the money-flow link board. */
-  layers: { label: string; role: FlowHop["role"] }[];
+  /** Layer specs for the money-flow link board (label + handling bank). */
+  layers: { label: string; role: FlowHop["role"]; bank: string }[];
 }
 
 export const CHANNELS: ChannelSpec[] = [
@@ -267,10 +267,10 @@ export const CHANNELS: ChannelSpec[] = [
     baseSuccessRate: 0.94,
     baseFxLoss: 0.011,
     layers: [
-      { label: "Originating bank", role: "origin" },
-      { label: "Correspondent (US)", role: "intermediary" },
-      { label: "Intermediary (EU)", role: "intermediary" },
-      { label: "Beneficiary bank", role: "beneficiary" },
+      { label: "Originating bank", role: "origin", bank: "Your originating bank" },
+      { label: "Correspondent (US)", role: "intermediary", bank: "Citibank N.A. (New York)" },
+      { label: "Intermediary (EU)", role: "intermediary", bank: "Deutsche Bank (Frankfurt)" },
+      { label: "Beneficiary bank", role: "beneficiary", bank: "Beneficiary bank" },
     ],
   },
   {
@@ -283,9 +283,9 @@ export const CHANNELS: ChannelSpec[] = [
     baseSuccessRate: 0.968,
     baseFxLoss: 0.006,
     layers: [
-      { label: "PSP collection", role: "origin" },
-      { label: "PSP netting hub", role: "intermediary" },
-      { label: "Local payout bank", role: "beneficiary" },
+      { label: "PSP collection", role: "origin", bank: "Licensed PSP collection account" },
+      { label: "PSP netting hub", role: "intermediary", bank: "PSP in-network netting hub" },
+      { label: "Local payout bank", role: "beneficiary", bank: "In-country payout partner bank" },
     ],
   },
   {
@@ -298,9 +298,9 @@ export const CHANNELS: ChannelSpec[] = [
     baseSuccessRate: 0.985,
     baseFxLoss: 0.003,
     layers: [
-      { label: "On-ramp (USDC)", role: "origin" },
-      { label: "Chain settlement", role: "intermediary" },
-      { label: "Local off-ramp", role: "beneficiary" },
+      { label: "On-ramp (USDC)", role: "origin", bank: "Regulated on-ramp (USDC)" },
+      { label: "Chain settlement", role: "intermediary", bank: "Public-chain settlement (on-chain)" },
+      { label: "Local off-ramp", role: "beneficiary", bank: "Licensed local off-ramp" },
     ],
   },
 ];
