@@ -102,6 +102,14 @@ export function toReconcileRows(payments: PaymentRecord[]): ReconcileRow[] {
     const expectedUsd = p.route.receiveUsd;
     const arrived = p.status === "arrived";
     const receivedUsd = arrived ? expectedUsd : 0;
+    // Proof match: SWIFT has no on-chain leg; PSP/stablecoin should carry one
+    // once settling/arrived — flag it unmatched if the on-chain ref is missing.
+    const hasOnchainLeg = p.route.channelClass !== "swift-gpi";
+    let matchStatus: ReconcileRow["matchStatus"];
+    if (!hasOnchainLeg) matchStatus = "n/a";
+    else if (p.onchainRef) matchStatus = "matched";
+    else if (p.status === "settling" || p.status === "arrived") matchStatus = "unmatched";
+    else matchStatus = "n/a";
     return {
       id: p.id,
       createdAt: p.createdAt,
@@ -115,6 +123,10 @@ export function toReconcileRows(payments: PaymentRecord[]): ReconcileRow[] {
       expectedUsd,
       receivedUsd,
       varianceUsd: Math.round((receivedUsd - expectedUsd) * 100) / 100,
+      offchainRef: p.offchainRef,
+      invoiceNo: p.invoiceNo,
+      onchainRef: p.onchainRef,
+      matchStatus,
       reconciled: flags[p.id] === true,
     };
   });
