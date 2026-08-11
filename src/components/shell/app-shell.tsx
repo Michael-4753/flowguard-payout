@@ -48,6 +48,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </Link>
+        <GuestBadge />
       </header>
 
       {/* Content */}
