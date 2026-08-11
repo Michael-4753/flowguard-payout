@@ -6,6 +6,7 @@
 
 import type {
   ChannelClass,
+  CorridorRequirement,
   FlowHop,
   PaymentInput,
   RiskAssessment,
@@ -244,6 +245,81 @@ export function predictReturnReasons(
     })
     .sort((a, b) => b.probability - a.probability)
     .slice(0, 3);
+}
+
+/**
+ * Payout requirements for a corridor (module 4). Turns "re-learning each bank's
+ * rules every time" into a reusable, per-payee checklist derived from country,
+ * currency, entity type and account status.
+ */
+export function corridorRequirements(supplier: Supplier): CorridorRequirement[] {
+  const reqs: CorridorRequirement[] = [];
+  const isEuro = supplier.currency === "EUR" || supplier.currency === "GBP";
+  const controlled =
+    supplier.currency === "INR" || supplier.currency === "VND" || supplier.currency === "AED";
+
+  reqs.push({
+    id: "legal-name",
+    label: "Exact legal name incl. suffix",
+    mandatory: true,
+    detail: "Beneficiary name must match the bank record character-for-character (Ltd/LLC/Pte etc.).",
+  });
+  reqs.push({
+    id: "swift",
+    label: "Valid 8 or 11-char SWIFT/BIC",
+    mandatory: true,
+    detail: `On file: ${supplier.swift}. Confirm branch code with the beneficiary bank.`,
+  });
+  reqs.push({
+    id: "iban",
+    label: isEuro ? "IBAN (mandatory in this corridor)" : "IBAN or local account number",
+    mandatory: isEuro,
+    detail: isEuro
+      ? "EUR/GBP corridors require a valid IBAN with correct country + check digits."
+      : "Provide IBAN where supported, otherwise the local account + routing number.",
+  });
+
+  if (controlled) {
+    reqs.push({
+      id: "invoice",
+      label: "Commercial invoice + business purpose",
+      mandatory: true,
+      detail: `${supplier.currency} is under FX control — attach an invoice and stated purpose or funds are held.`,
+    });
+    reqs.push({
+      id: "local-tax",
+      label: "Local tax / registration ID",
+      mandatory: true,
+      detail: "Controlled corridors screen for a beneficiary tax or company registration number.",
+    });
+  }
+
+  if (supplier.restrictedRegion) {
+    reqs.push({
+      id: "kyc",
+      label: "Enhanced due-diligence pack",
+      mandatory: true,
+      detail: "High-risk/sanctioned region — keep KYC and source-of-funds records before sending.",
+    });
+  }
+
+  if (supplier.accountStatus !== "active") {
+    reqs.push({
+      id: "account-confirm",
+      label: "Confirm account is active",
+      mandatory: true,
+      detail: `Account is ${supplier.accountStatus} — have the beneficiary confirm it accepts inbound wires.`,
+    });
+  }
+
+  reqs.push({
+    id: "prenote",
+    label: "Send a small pre-note first",
+    mandatory: false,
+    detail: "For a new corridor, a small test transfer verifies the details before the full amount.",
+  });
+
+  return reqs;
 }
 
 // ---------- module 2: channel pool + router ----------
