@@ -181,8 +181,64 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
   const chokepointBank =
     CHOKEPOINT_BANKS[Math.abs(Math.round(jitter * 1000)) % CHOKEPOINT_BANKS.length];
   const hasBlocker = factors.some((f) => f.hit && f.severity === "critical");
+  // Controlled/high-risk corridors route through more intermediaries.
+  const avgHops = supplier.restrictedRegion ? 4 : controlled ? 3 : supplier.entityType === "domestic" ? 1 : 2;
+  const returnReasons = predictReturnReasons(supplier, factors, returnProbability);
 
-  return { score, level, returnProbability, chokepointBank, factors, hasBlocker };
+  return {
+    score,
+    level,
+    returnProbability,
+    chokepointBank,
+    avgHops,
+    factors,
+    returnReasons,
+    hasBlocker,
+  };
+}
+
+/**
+ * "Why it might bounce": rank the hit factors into the top-3 most likely return
+ * reasons, each with a probability share and a plain-language source. Explains
+ * the otherwise-mysterious return before the money leaves.
+ */
+export function predictReturnReasons(
+  supplier: Supplier,
+  factors: RiskFactor[],
+  returnProbability: number,
+): RiskAssessment["returnReasons"] {
+  const REASON_META: Record<string, { title: string; source: string }> = {
+    swift: { title: "Malformed SWIFT/BIC bounces at routing bank", source: "Rule: SWIFT format check" },
+    iban: { title: "Invalid IBAN → invalid-account return", source: "Rule: IBAN structure check" },
+    "company-name": { title: "Name mismatch at beneficiary screening", source: "Rule: name & suffix check" },
+    "account-status": { title: "Dormant account rejects inbound wire", source: "Ledger: account status" },
+    sanction: { title: "Sanctions/compliance hold at correspondent", source: "List: sanctions & high-risk" },
+    "bank-blacklist": { title: "Beneficiary bank intercepts the wire", source: "List: bank blacklist" },
+    "currency-control": { title: "FX-control hold — missing documentation", source: `Corridor: ${supplier.currency} controls` },
+  };
+
+  const hits = factors.filter((f) => f.hit && f.points > 0);
+  if (hits.length === 0) {
+    return [
+      {
+        id: "none",
+        title: "No specific return cause detected",
+        probability: clamp(returnProbability, 0.01, 0.2),
+        source: "Corridor baseline",
+      },
+    ];
+  }
+
+  const totalPoints = hits.reduce((s, f) => s + f.points, 0);
+  return hits
+    .map((f) => {
+      const meta = REASON_META[f.id] ?? { title: f.title, source: "Rule" };
+      // Share of overall return probability attributable to this factor.
+      const probability = clamp((f.points / totalPoints) * returnProbability, 0.01, 0.97);
+      return { id: f.id, title: meta.title, probability, source: meta.source };
+    })
+    .sort((a, b) => b.probability - a.probability)
+    .slice(0, 3);
 }
 
 // ---------- module 2: channel pool + router ----------
