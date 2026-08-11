@@ -320,16 +320,28 @@ function buildHops(
     const feeUsd = Math.round(perFee * (i === n - 1 ? 0.6 : 1.2) * 100) / 100;
     remaining = Math.round((remaining - feeUsd) * 100) / 100;
     const chokepoint = i === chokepointIdx && layer.role === "intermediary";
+    // Transparency: stablecoin chain settlement is fully traceable; a chokepoint
+    // intermediary is opaque; other intermediaries are partial; endpoints clear.
+    let blackboxLevel: FlowHop["blackboxLevel"];
+    if (layer.role === "intermediary") {
+      if (channel.channelClass === "stablecoin-gateway") blackboxLevel = "clear";
+      else if (chokepoint) blackboxLevel = "opaque";
+      else blackboxLevel = "partial";
+    } else {
+      blackboxLevel = layer.role === "origin" ? "clear" : "partial";
+    }
     return {
       id: `${channel.id}-hop-${i}`,
       label: layer.label,
       role: layer.role,
+      bankName: layer.bank,
       minutes: Math.round(perMin),
       feeUsd,
       remainingUsd: remaining,
       idleMinutes: chokepoint ? Math.round(perMin * 1.8) : Math.round(perMin * 0.3),
       chokepoint,
-      note: `${layer.label} · ${channel.name}`,
+      blackboxLevel,
+      note: `${layer.bank} · ${channel.name}`,
     };
   });
 }
