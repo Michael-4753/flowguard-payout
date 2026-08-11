@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { AlertCircle, Home, RotateCcw } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ErrorPageShell } from "@/components/errors/error-page-shell";
@@ -15,8 +14,6 @@ type ErrorProps = {
 };
 
 export default function Error({ error, reset }: ErrorProps) {
-  const { t } = useTranslation();
-
   useEffect(() => {
     console.error("[app-error]", error);
   }, [error]);
@@ -35,10 +32,10 @@ export default function Error({ error, reset }: ErrorProps) {
         </div>
 
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          {t("errors.generic.title")}
+          Something went wrong
         </h1>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          {t("errors.generic.description")}
+          An unexpected error occurred. You can try again or go back home.
         </p>
 
         {showDetails ? (
@@ -55,14 +52,14 @@ export default function Error({ error, reset }: ErrorProps) {
         <div className="mt-8 flex w-full flex-col gap-2 sm:flex-row sm:justify-center">
           <Button size="lg" className="gap-2" onClick={() => reset()}>
             <RotateCcw className="size-4" />
-            {t("errors.generic.tryAgain")}
+            Try again
           </Button>
           <Link
             href="/"
             className={cn(buttonVariants({ variant: "outline", size: "lg" }), "gap-2")}
           >
             <Home className="size-4" />
-            {t("errors.generic.backHome")}
+            Back home
           </Link>
         </div>
       </div>
