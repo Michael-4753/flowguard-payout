@@ -23,7 +23,13 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
   const [error, setError] = useState(false);
 
   const refresh = useCallback(async () => {
-    if (!user) return;
+    if (!user) {
+      setSuppliers([]);
+      setPayments([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
     setError(false);
     try {
       const [s, p] = await Promise.all([fetchSuppliers(), fetchPayments()]);
@@ -37,15 +43,9 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
   }, [user]);
 
   useEffect(() => {
-    if (user) {
-      setLoading(true);
-      void refresh();
-    } else {
-      setSuppliers([]);
-      setPayments([]);
-      setLoading(false);
-    }
-  }, [user, refresh]);
+    // 用户态变化时同步加载数据（外部系统同步）。
+    void refresh();
+  }, [refresh]);
 
   const value = useMemo(
     () => ({ suppliers, payments, loading, error, refresh }),
