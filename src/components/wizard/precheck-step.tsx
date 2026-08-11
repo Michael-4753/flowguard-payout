@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown } from "lucide-react";
 import type { RiskAssessment } from "@/lib/engine/types";
@@ -27,18 +27,12 @@ export function PrecheckStep({
   const [scanning, setScanning] = useState(true);
   const [acknowledged, setAcknowledged] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
-  const riskRef = useRef(risk);
 
   useEffect(() => {
-    // 每次 risk 变化时重置扫描态并在动画结束后揭晓评分。
-    if (riskRef.current !== risk) {
-      riskRef.current = risk;
-      setScanning(true);
-      setAcknowledged(false);
-    }
+    // 挂载后播放扫描动画，结束揭晓评分。父级通过 key 重挂载以重置。
     const id = setTimeout(() => setScanning(false), 1100);
     return () => clearTimeout(id);
-  }, [risk]);
+  }, []);
 
   const hits = risk.factors.filter((f) => f.hit);
   const shown = risk.factors.slice().sort((a, b) => Number(b.hit) - Number(a.hit) || b.points - a.points);
