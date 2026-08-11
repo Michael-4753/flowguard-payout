@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useEazo } from "@eazo/sdk/react";
 import { fetchSuppliers, fetchPayments } from "@/lib/api";
+import { subscribeGuest, useIsGuest } from "@/lib/guest/guest-session";
 import type { PaymentRecord, Supplier } from "@/lib/engine/types";
 
 interface DataState {
@@ -17,13 +18,15 @@ const Ctx = createContext<DataState | null>(null);
 
 export function FlowGuardDataProvider({ children }: { children: React.ReactNode }) {
   const user = useEazo((s) => s.auth.user);
+  const guest = useIsGuest();
+  const hasIdentity = Boolean(user) || guest;
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [payments, setPayments] = useState<PaymentRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   const refresh = useCallback(async () => {
-    if (!user) {
+    if (!hasIdentity) {
       setSuppliers([]);
       setPayments([]);
       setLoading(false);
@@ -40,10 +43,11 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [hasIdentity]);
 
   useEffect(() => {
-    // 用户态变化时异步加载数据。首个语句为 await，避免在 effect 体内同步 setState。
+    // Load data when identity changes. First statement awaits to avoid a
+    // synchronous setState inside the effect body.
     let alive = true;
     void (async () => {
       await Promise.resolve();
@@ -53,6 +57,14 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
       alive = false;
     };
   }, [refresh]);
+
+  useEffect(() => {
+    // In guest mode, refresh when local payments change (e.g. after a payment).
+    if (!guest) return;
+    return subscribeGuest(() => {
+      void refresh();
+    });
+  }, [guest, refresh]);
 
   const value = useMemo(
     () => ({ suppliers, payments, loading, error, refresh }),
