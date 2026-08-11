@@ -6,6 +6,7 @@ import { LayoutDashboard, Workflow, Building2, History, BookOpen } from "lucide-
 import { cn } from "@/utils/utils";
 import { AuthGate } from "@/components/shell/auth-gate";
 import { FlowGuardDataProvider } from "@/components/shell/data-provider";
+import { GuestBadge } from "@/components/shell/guest-badge";
 
 const NAV = [
   { href: "/", label: "Home", icon: LayoutDashboard, el: "nav-dashboard" },
