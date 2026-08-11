@@ -1,129 +1,174 @@
-// FlowGuard 核心领域类型 —— 供应商、付款单、风险预检、结算通道与路由。
-// 这些类型是模拟引擎与后续真实后端共享的契约。
+// FlowGuard core domain types — payee ledger, risk pre-check, channel routing,
+// money-flow link board, and failure-case library. Shared by the mock engine
+// and the backend. English-only product: display strings live directly on the
+// domain objects, no i18n keys.
 
 export type RiskLevel = "low" | "medium" | "high";
 export type Severity = "info" | "warn" | "critical";
-export type PaymentStatus = "draft" | "initiated" | "settling" | "arrived";
+export type PaymentStatus = "draft" | "initiated" | "settling" | "arrived" | "returned";
 
-export type StableCoin = "USDC" | "USDT" | "PYUSD";
-export type ChainId = "base" | "polygon" | "arbitrum" | "tron" | "ethereum";
+/** Settlement channel classes (module 2). */
+export type ChannelClass = "swift-gpi" | "licensed-psp" | "stablecoin-gateway";
 
-/** 供应商档案：静态资料 + 历史统计（历史统计会喂给风险预检）。 */
+export const CHANNEL_CLASS_LABEL: Record<ChannelClass, string> = {
+  "swift-gpi": "SWIFT-GPI Bank",
+  "licensed-psp": "Licensed PSP",
+  "stablecoin-gateway": "Stablecoin Gateway",
+};
+
+export type Currency = "USD" | "EUR" | "GBP" | "SGD" | "INR" | "VND" | "AED";
+
+/** Whether the beneficiary is an overseas entity (gates stablecoin-gateway). */
+export type EntityType = "overseas" | "domestic";
+
+export type AccountStatus = "active" | "dormant" | "unverified";
+
+/**
+ * Supplier / payee ledger record (module 4). Static profile + historical stats
+ * that feed the risk pre-check. Every record is owned by one user.
+ */
 export interface Supplier {
   id: string;
+  /** Legal company / beneficiary name. */
   name: string;
-  /** 简短代号，用于草稿角标，如 "LUMEN VIET"。 */
+  /** Short code for the draft badge, e.g. "LUMEN VIET". */
   codeName: string;
-  region: string;
+  country: string;
   countryCode: string;
-  /** 是否位于受限/高风险地区。 */
+  currency: Currency;
+  entityType: EntityType;
+  /** Beneficiary bank name. */
+  bankName: string;
+  /** SWIFT / BIC code (8 or 11 chars). */
+  swift: string;
+  /** IBAN (demo format, not a real account). */
+  iban: string;
+  accountStatus: AccountStatus;
+  /** Whether the region is sanctioned / high-risk. */
   restrictedRegion: boolean;
-  preferredChain: ChainId;
-  preferredCoin: StableCoin;
-  /** 收款地址（演示用，非真实资金）。 */
-  payoutAddress: string;
-  /** Travel Rule 受益方信息完整度 0-1。 */
-  travelRuleCompleteness: number;
-  /** 收款地址与目标网络是否匹配。 */
-  addressNetworkMatch: boolean;
-  /** 历史付款次数。 */
+  /** Whether the beneficiary bank is on the internal risk blacklist. */
+  bankBlacklisted: boolean;
+  /** Preferred channel class. */
+  preferredChannel: ChannelClass;
+  /** Manual risk tag on the ledger. */
+  riskTag: RiskLevel;
   paymentCount: number;
-  /** 历史退回率 0-1。 */
+  /** Historical return rate 0-1. */
   historicalReturnRate: number;
-  /** 历史平均到账时效（小时）。 */
+  /** Average settlement time (hours). */
   avgSettlementHours: number;
-  /** 历史单笔均值（USD），用于金额异常判断。 */
+  /** Historical average amount (USD), for amount-anomaly checks. */
   avgAmountUsd: number;
   createdAt: string;
 }
 
-/** 付款单输入。 */
+/** Payment draft input. */
 export interface PaymentInput {
   supplierId: string;
   amountUsd: number;
-  /** 目标稳定币偏好，留空由系统按供应商偏好推荐。 */
-  targetCoin?: StableCoin;
+  /** Preferred channel class; empty lets the router pick. */
+  preferredChannel?: ChannelClass;
 }
 
-/** 单条风险因素命中项。 */
+/** A single hit risk factor (module 1). */
 export interface RiskFactor {
   id: string;
   title: string;
   severity: Severity;
-  /** 对总分的贡献（分）。 */
+  /** Contribution to the total score (points). */
   points: number;
   description: string;
   remediation: string;
-  /** 是否命中（未命中则不进入清单）。 */
+  /** Whether it hit (non-hits still shown as "passed"). */
   hit: boolean;
 }
 
-/** 风险预检结果。 */
+/**
+ * Return-risk pre-check report (module 1).
+ * tier: low / medium (needs supporting docs) / high (blocked).
+ */
 export interface RiskAssessment {
-  /** 退回风险评分 0-100，越高越危险。 */
+  /** Return-risk score 0-100, higher = more dangerous. */
   score: number;
   level: RiskLevel;
+  /** Estimated return probability 0-1. */
+  returnProbability: number;
+  /** Name of the chokepoint intermediary bank most likely to hold funds. */
+  chokepointBank: string;
   factors: RiskFactor[];
-  /** 是否存在需要拦截确认的高危项。 */
+  /** True when a critical blocker requires acknowledgement. */
   hasBlocker: boolean;
 }
 
-/** 一跳资金流转节点。 */
+/** One hop on the money-flow link board (module 3). */
 export interface FlowHop {
   id: string;
   label: string;
-  /** 该跳耗时（分钟）。 */
+  /** Layer role: origin, intermediary, or beneficiary. */
+  role: "origin" | "intermediary" | "beneficiary";
+  /** Hop duration (minutes). */
   minutes: number;
-  /** 该跳扣费（USD）。 */
+  /** Hop fee (USD). */
   feeUsd: number;
-  /** 该跳结束后剩余金额（USD）。 */
+  /** Remaining amount after this hop (USD). */
   remainingUsd: number;
+  /** Estimated idle/hold time at this layer (minutes). */
+  idleMinutes: number;
+  /** Whether this layer is a risk chokepoint. */
+  chokepoint: boolean;
   note: string;
 }
 
-/** 一条结算通道的路由评估结果。 */
+/** A scored settlement route (module 2). */
 export interface RouteOption {
   id: string;
   name: string;
-  chain: ChainId;
-  coin: StableCoin;
-  /** 综合费用（USD）。 */
+  channelClass: ChannelClass;
+  /** Total fee (USD). */
   totalFeeUsd: number;
-  /** 综合费率 0-1。 */
+  /** Total fee rate 0-1. */
   feeRate: number;
-  /** 预计总到账时效（分钟）。 */
+  /** Estimated total settlement time (minutes). */
   etaMinutes: number;
-  /** 历史成功率 0-1。 */
+  /** Historical success rate 0-1. */
   successRate: number;
-  /** 到手金额（USD）。 */
+  /** Return risk 0-1 (lower is better). */
+  returnRisk: number;
+  /** FX conversion loss 0-1. */
+  fxLoss: number;
+  /** Amount received (USD). */
   receiveUsd: number;
-  /** 综合评分 0-100，越高越优。 */
+  /** Composite score 0-100, higher is better. */
   score: number;
-  /** 推荐理由。 */
+  /** Recommendation reason. */
   reason: string;
-  /** 资金流转分段链路。 */
+  /** Whether this class is unavailable for this payee (e.g. stablecoin for domestic). */
+  available: boolean;
+  /** Money-flow hops for the link board. */
   hops: FlowHop[];
-  /** 是否为系统推荐路径。 */
+  /** Whether it is the system-recommended route. */
   recommended: boolean;
 }
 
-/** 完整的路由结果。 */
+/** Full routing result. */
 export interface RoutingResult {
   options: RouteOption[];
   recommendedId: string;
 }
 
-/** 一条落库的付款记录（含预检快照与所选路径）。 */
+/** A persisted payment record (with pre-check snapshot + selected route). */
 export interface PaymentRecord {
   id: string;
   supplierId: string;
   supplierName: string;
   supplierCodeName: string;
   amountUsd: number;
-  targetCoin: StableCoin;
+  currency: Currency;
   riskScore: number;
   riskLevel: RiskLevel;
-  /** 预检命中项快照。 */
+  returnProbability: number;
+  chokepointBank: string;
+  /** Pre-check factor snapshot. */
   riskFactors: RiskFactor[];
   selectedRouteId: string;
   route: RouteOption;
@@ -131,15 +176,34 @@ export interface PaymentRecord {
   createdAt: string;
 }
 
+/** A failure-case library entry (module 3). */
+export interface FailureCase {
+  id: string;
+  corridor: string;
+  channelClass: ChannelClass;
+  amountUsd: number;
+  /** Short return-reason headline. */
+  reason: string;
+  /** Which layer failed. */
+  failedAt: string;
+  /** Days funds were held before return. */
+  heldDays: number;
+  /** Concrete remediation plan. */
+  remediation: string;
+  /** Risk factor family this case maps to. */
+  factorId: string;
+}
+
 export const RISK_LEVEL_LABEL: Record<RiskLevel, string> = {
-  low: "risk.level.low",
-  medium: "risk.level.medium",
-  high: "risk.level.high",
+  low: "Low risk",
+  medium: "Medium — needs docs",
+  high: "High — do not send",
 };
 
 export const STATUS_LABEL: Record<PaymentStatus, string> = {
-  draft: "status.draft",
-  initiated: "status.initiated",
-  settling: "status.settling",
-  arrived: "status.arrived",
+  draft: "Draft",
+  initiated: "Initiated",
+  settling: "Settling",
+  arrived: "Arrived",
+  returned: "Returned",
 };
