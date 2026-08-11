@@ -28,6 +28,18 @@ export interface ReconcileRow {
   receivedUsd: number;
   /** Variance = received − expected (USD). */
   varianceUsd: number;
+  /** Off-chain proof: bank wire reference. */
+  offchainRef: string;
+  /** Off-chain invoice number. */
+  invoiceNo: string;
+  /** On-chain / PSP proof (empty if none for this channel/status). */
+  onchainRef: string;
+  /**
+   * Proof match: "matched" when off-chain + on-chain proofs both exist,
+   * "unmatched" when an on-chain proof is expected but missing, "n/a" for
+   * pure bank rails (SWIFT) that have no on-chain leg.
+   */
+  matchStatus: "matched" | "unmatched" | "n/a";
   reconciled: boolean;
 }
 
