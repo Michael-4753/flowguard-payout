@@ -184,6 +184,10 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
   // Controlled/high-risk corridors route through more intermediaries.
   const avgHops = supplier.restrictedRegion ? 4 : controlled ? 3 : supplier.entityType === "domestic" ? 1 : 2;
   const returnReasons = predictReturnReasons(supplier, factors, returnProbability);
+  // Cost of a bounce: base 3d + 2d per extra hop; sunk fees rise with hops.
+  const lostDays = Math.round((3 + avgHops * 2) * (1 + supplier.historicalReturnRate));
+  const sunkFeesUsd = Math.round((45 + avgHops * 22) * 100) / 100;
+  const returnCost = { lostDays, sunkFeesUsd };
 
   return {
     score,
@@ -193,6 +197,7 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
     avgHops,
     factors,
     returnReasons,
+    returnCost,
     hasBlocker,
   };
 }
