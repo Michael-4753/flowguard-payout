@@ -16,6 +16,7 @@ import type {
   PaymentRecord,
   RiskAssessment,
   RoutingResult,
+  SettlementProof,
   Supplier,
   CaseActor,
   VerificationCase,
@@ -114,6 +115,18 @@ export function guestDispatchPayment(input: { id: string }): PaymentRecord | nul
   const current = readGuestPayments().find((p) => p.id === input.id);
   if (!current || current.status !== "initiated") return null;
   const updated: PaymentRecord = { ...current, status: "settling" };
+  updateGuestPayment(updated);
+  return updated;
+}
+
+/** Attach settlement proof (guest): store bank slip / on-chain tx on the payment. */
+export function guestAttachSettlementProof(input: {
+  id: string;
+  proof: SettlementProof;
+}): PaymentRecord | null {
+  const current = readGuestPayments().find((p) => p.id === input.id);
+  if (!current) return null;
+  const updated: PaymentRecord = { ...current, settlementProof: input.proof };
   updateGuestPayment(updated);
   return updated;
 }
