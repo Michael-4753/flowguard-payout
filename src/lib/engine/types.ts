@@ -87,6 +87,13 @@ export interface RiskFactor {
   remediation: string;
   /** Whether it hit (non-hits still shown as "passed"). */
   hit: boolean;
+  /**
+   * Risk family. `data-quality` issues (name, account, IBAN/SWIFT format) can be
+   * resolved by verifying with the payee/business — these get a "Generate
+   * verification request" action. `structural` issues (sanctions, FX controls,
+   * blacklisted bank) are jurisdiction-level and can only be avoided via routing.
+   */
+  category: "data-quality" | "structural";
 }
 
 /** A predicted return reason (module 1 — "why it might bounce"). */
