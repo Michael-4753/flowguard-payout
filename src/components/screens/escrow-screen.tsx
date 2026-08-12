@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Lock, Plus, Trash2, CheckCircle2, Circle, Unlock } from "lucide-react";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
+import { EmptyState } from "@/components/shared/empty-state";
 import { formatUsdCents, formatDate } from "@/lib/format";
 import {
   createEscrow,
@@ -84,9 +85,14 @@ export function EscrowScreen() {
           <LoadingBlock rows={3} />
         </div>
       ) : escrows.length === 0 ? (
-        <p className="fg-glass mt-4 rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          No escrow contracts yet. Create one to lock milestone funds.
-        </p>
+        <div className="mt-4">
+          <EmptyState
+            icon={Lock}
+            title="No escrow contracts yet"
+            description="Create a contract to lock funds and release them milestone by milestone."
+            action={creating ? undefined : { label: "Create contract", onClick: () => setCreating(true) }}
+          />
+        </div>
       ) : (
         <div className="mt-4 space-y-3">
           {escrows.map((e) => (

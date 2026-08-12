@@ -54,9 +54,13 @@ export function ReviewScreen() {
           <LoadingBlock rows={3} />
         </div>
       ) : pending.length === 0 ? (
-        <p className="fg-glass mt-4 rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          Nothing awaiting review. Payments a cashier submits will appear here.
-        </p>
+        <div className="mt-4">
+          <EmptyState
+            icon={ShieldCheck}
+            title="Nothing awaiting review"
+            description="Payments a cashier submits for approval will appear here."
+          />
+        </div>
       ) : (
         <div className="mt-4 space-y-3">
           {pending.map((p) => (
