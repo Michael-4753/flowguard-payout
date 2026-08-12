@@ -12,7 +12,6 @@ import { LoadingBlock } from "@/components/shared/loading-block";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { assessPayment, createPayment } from "@/lib/api";
 import type { ChannelClass, Currency, RiskAssessment, RoutingResult, Supplier } from "@/lib/engine/types";
-import { formatUsd } from "@/lib/format";
 
 interface Assessed {
   supplier: Supplier;
