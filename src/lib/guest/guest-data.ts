@@ -7,6 +7,7 @@
 
 import { assessRisk, deriveVouchers, routePayment } from "@/lib/engine";
 import { initialReview, applyDecision } from "@/lib/review";
+import { buildTemplate, isVerifiable } from "@/lib/verification";
 import { SEED_SUPPLIERS } from "@/lib/db/seed-suppliers";
 import { FAILURE_CASES } from "@/lib/engine/failure-cases";
 import type {
@@ -16,8 +17,17 @@ import type {
   RiskAssessment,
   RoutingResult,
   Supplier,
+  VerificationCase,
+  VerificationStatus,
 } from "@/lib/engine/types";
-import { addGuestPayment, readGuestPayments, updateGuestPayment } from "./guest-session";
+import {
+  addGuestPayment,
+  readGuestPayments,
+  updateGuestPayment,
+  addGuestVerificationCase,
+  readGuestVerificationCases,
+  updateGuestVerificationStatus,
+} from "./guest-session";
 
 /** Stable createdAt for seed payees so guest data is reproducible. */
 const GUEST_SEED_TS = "2026-01-01T00:00:00.000Z";
