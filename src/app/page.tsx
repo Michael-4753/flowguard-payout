@@ -168,11 +168,6 @@ function StatCard({
   value,
   danger,
 }: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  danger?: boolean;
-}) {
   return (
     <div className="fg-glass min-w-0 rounded-2xl p-4" data-el="stat-card">
       <div className="flex items-center gap-1.5 text-muted-foreground">
