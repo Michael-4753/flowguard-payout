@@ -4,6 +4,7 @@ import {
   guestCreatePayment,
   guestFailureCases,
   guestPayments,
+  guestReviewPayment,
   guestSupplier,
   guestSuppliers,
 } from "@/lib/guest/guest-data";
@@ -81,6 +82,27 @@ export async function createPayment(input: {
     body: JSON.stringify(input),
   });
   if (!res.ok) throw new Error("failed_to_create_payment");
+  const json = (await res.json()) as { payment: PaymentRecord };
+  return json.payment;
+}
+
+/** Checker decision: approve or reject a pending-review payment. */
+export async function reviewPayment(input: {
+  id: string;
+  approve: boolean;
+  note?: string;
+}): Promise<PaymentRecord> {
+  if (isGuest()) {
+    const updated = guestReviewPayment(input);
+    if (!updated) throw new Error("not_pending");
+    return updated;
+  }
+  const res = await request(`/api/payments/${encodeURIComponent(input.id)}/review`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ approve: input.approve, note: input.note }),
+  });
+  if (!res.ok) throw new Error("failed_to_review_payment");
   const json = (await res.json()) as { payment: PaymentRecord };
   return json.payment;
 }
