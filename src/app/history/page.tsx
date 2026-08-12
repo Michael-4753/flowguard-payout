@@ -43,7 +43,7 @@ export default function HistoryPage() {
 
 function HistoryBody() {
   const router = useRouter();
-  const { payments, suppliers, loading, error, refresh, clarifiedFactors } = useFlowGuardData();
+  const { payments, suppliers, loading, error, refresh, clarifiedFactors, effectiveRisk } = useFlowGuardData();
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
   const [execId, setExecId] = useState<string | null>(null);
@@ -108,13 +108,15 @@ function HistoryBody() {
         </div>
       ) : (
         <div className="mt-4 space-y-2.5">
-          {filtered.map((p, i) => (
+          {filtered.map((p, i) => {
+            const eff = effectiveRisk(p);
+            return (
             <article key={p.id} className="fg-enter fg-glass rounded-2xl p-4" style={{ "--i": i } as React.CSSProperties} data-el="history-item">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="flex min-w-0 items-center gap-2">
                     <span className="truncate text-sm font-semibold">{p.supplierName}</span>
-                    <span className="shrink-0"><RiskBadge level={p.riskLevel} /></span>
+                    <span className="shrink-0"><RiskBadge level={eff.riskLevel} /></span>
                   </div>
                   <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
                     {formatDate(p.createdAt)}
@@ -126,7 +128,7 @@ function HistoryBody() {
               <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
                 <Cell label="Amount (USD)" value={formatUsd(p.amountUsd)} />
                 <Cell label="Channel" value={CHANNEL_CLASS_LABEL[p.route.channelClass]} />
-                <Cell label="Return prob." value={formatPercent(p.returnProbability, 0)} />
+                <Cell label="Return prob." value={formatPercent(eff.returnProbability, 0)} />
               </div>
 
               <ClarifiedChips record={p} clarified={clarifiedFactors(p.supplierId)} />
