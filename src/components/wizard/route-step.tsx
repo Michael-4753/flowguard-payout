@@ -103,7 +103,7 @@ export function RouteStep({
       <button
         type="button"
         disabled={confirmed}
-        onClick={() => onConfirm(selectedId)}
+        onClick={handleConfirm}
         className={cn(
           "flex w-full items-center justify-center gap-2 rounded-full px-4 py-3.5 text-sm font-bold transition-transform active:scale-[0.99]",
           confirmed
