@@ -21,6 +21,7 @@ const NAV = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const pendingCases = usePendingVerificationCount();
 
   return (
     <div
