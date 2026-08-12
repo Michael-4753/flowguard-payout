@@ -153,18 +153,14 @@ function VerificationCard({
   record: VerificationCase;
   onChange: React.Dispatch<React.SetStateAction<VerificationCase[]>>;
 }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"idle" | "ok" | "fail">("idle");
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(false);
 
   async function copy() {
-    try {
-      await navigator.clipboard.writeText(record.template);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* ignore */
-    }
+    const ok = await copyText(record.template);
+    setCopied(ok ? "ok" : "fail");
+    setTimeout(() => setCopied("idle"), 1800);
   }
 
   async function mark(status: VerificationStatus) {
@@ -220,8 +216,14 @@ function VerificationCard({
           className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium transition-colors hover:bg-primary/10"
           data-el="verification-copy"
         >
-          {copied ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <Copy className="h-3 w-3" />}
-          {copied ? "Copied" : "Copy"}
+          {copied === "ok" ? (
+            <Check className="h-3 w-3 text-[color:var(--success)]" />
+          ) : copied === "fail" ? (
+            <AlertTriangle className="h-3 w-3 text-[color:var(--danger)]" />
+          ) : (
+            <Copy className="h-3 w-3" />
+          )}
+          {copied === "ok" ? "Copied" : copied === "fail" ? "Copy failed — select manually" : "Copy"}
         </button>
         {record.status === "open" ? (
           <>
@@ -281,18 +283,14 @@ function VerificationCard({
 }
 
 function ShareLinks({ record }: { record: VerificationCase }) {
-  const [copied, setCopied] = useState<"read" | "write" | null>(null);
+  const [copied, setCopied] = useState<"read" | "write" | "fail" | null>(null);
   const guest = useIsGuest();
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   async function copy(kind: "read" | "write", token: string) {
-    try {
-      await navigator.clipboard.writeText(`${origin}/case/${token}`);
-      setCopied(kind);
-      setTimeout(() => setCopied(null), 1500);
-    } catch {
-      /* ignore */
-    }
+    const ok = await copyText(`${origin}/case/${token}`);
+    setCopied(ok ? kind : "fail");
+    setTimeout(() => setCopied(null), 1800);
   }
 
   // Guest (offline) cases live only on this device and are never persisted, so a
