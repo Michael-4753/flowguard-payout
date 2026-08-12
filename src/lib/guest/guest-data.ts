@@ -6,7 +6,7 @@
 // history. No network, no auth — usable offline.
 
 import { assessRisk, deriveVouchers, routePayment } from "@/lib/engine";
-import { initialReview } from "@/lib/review";
+import { initialReview, applyDecision } from "@/lib/review";
 import { SEED_SUPPLIERS } from "@/lib/db/seed-suppliers";
 import { FAILURE_CASES } from "@/lib/engine/failure-cases";
 import type {
@@ -17,7 +17,7 @@ import type {
   RoutingResult,
   Supplier,
 } from "@/lib/engine/types";
-import { addGuestPayment, readGuestPayments } from "./guest-session";
+import { addGuestPayment, readGuestPayments, updateGuestPayment } from "./guest-session";
 
 /** Stable createdAt for seed payees so guest data is reproducible. */
 const GUEST_SEED_TS = "2026-01-01T00:00:00.000Z";
@@ -37,6 +37,27 @@ export function guestSupplier(
 
 export function guestPayments(): PaymentRecord[] {
   return readGuestPayments();
+}
+
+/** Checker action: approve (→ initiated) or reject (→ rejected) a pending payment. */
+export function guestReviewPayment(input: {
+  id: string;
+  approve: boolean;
+  note?: string;
+}): PaymentRecord | null {
+  const current = readGuestPayments().find((p) => p.id === input.id);
+  if (!current || current.status !== "pending_review") return null;
+  const { review, status } = applyDecision(current.review, {
+    checkerId: "guest",
+    approve: input.approve,
+    note: input.note,
+  });
+  const vouchers = input.approve
+    ? deriveVouchers(`guest-${current.supplierId}-${current.selectedRouteId}`, current.route.channelClass, status)
+    : { offchainRef: current.offchainRef, invoiceNo: current.invoiceNo, onchainRef: current.onchainRef };
+  const updated: PaymentRecord = { ...current, ...vouchers, status, review };
+  updateGuestPayment(updated);
+  return updated;
 }
 
 export function guestFailureCases(): FailureCase[] {
