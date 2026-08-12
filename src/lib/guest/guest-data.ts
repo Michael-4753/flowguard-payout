@@ -6,6 +6,7 @@
 // history. No network, no auth — usable offline.
 
 import { assessRisk, deriveVouchers, routePayment } from "@/lib/engine";
+import { initialReview } from "@/lib/review";
 import { SEED_SUPPLIERS } from "@/lib/db/seed-suppliers";
 import { FAILURE_CASES } from "@/lib/engine/failure-cases";
 import type {
