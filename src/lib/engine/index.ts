@@ -14,6 +14,7 @@ import type {
   RiskLevel,
   RouteOption,
   RoutingResult,
+  Severity,
   Supplier,
 } from "./types";
 
