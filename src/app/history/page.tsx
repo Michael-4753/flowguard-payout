@@ -19,7 +19,15 @@ import {
 import { cn } from "@/utils/utils";
 
 const LEVELS: (RiskLevel | "all")[] = ["all", "low", "medium", "high"];
-const STATUSES: (PaymentStatus | "all")[] = ["all", "initiated", "settling", "arrived", "returned"];
+const STATUSES: (PaymentStatus | "all")[] = [
+  "all",
+  "pending_review",
+  "rejected",
+  "initiated",
+  "settling",
+  "arrived",
+  "returned",
+];
 
 export default function HistoryPage() {
   return (
@@ -99,7 +107,9 @@ function HistoryBody() {
                 <Cell label="Return prob." value={formatPercent(p.returnProbability, 0)} />
               </div>
 
-              {p.status !== "draft" && <FlowProgressTimeline record={p} />}
+              {p.status !== "draft" &&
+                p.status !== "pending_review" &&
+                p.status !== "rejected" && <FlowProgressTimeline record={p} />}
 
               <button
                 type="button"
