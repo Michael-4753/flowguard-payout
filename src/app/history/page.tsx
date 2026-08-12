@@ -135,30 +135,33 @@ function HistoryBody() {
                 p.status !== "pending_review" &&
                 p.status !== "rejected" && <FlowProgressTimeline record={p} />}
 
-              {p.status === "initiated" && (
-                <div className="mt-3">
-                  {execId === p.id ? (
-                    <PayoutExecutionPanel
-                      payment={p}
-                      supplier={suppliers.find((s) => s.id === p.supplierId)!}
-                      onSent={async () => {
-                        setExecId(null);
-                        await refresh();
-                      }}
-                    />
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={!suppliers.some((s) => s.id === p.supplierId)}
-                      onClick={() => setExecId(p.id)}
-                      className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98] disabled:opacity-60"
-                      data-el="history-execute"
-                    >
-                      <Send className="h-3.5 w-3.5" /> Execute payout
-                    </button>
-                  )}
-                </div>
-              )}
+              {p.status === "initiated" && (() => {
+                const supplier = suppliers.find((s) => s.id === p.supplierId);
+                if (!supplier) return null;
+                return (
+                  <div className="mt-3">
+                    {execId === p.id ? (
+                      <PayoutExecutionPanel
+                        payment={p}
+                        supplier={supplier}
+                        onSent={async () => {
+                          setExecId(null);
+                          await refresh();
+                        }}
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setExecId(p.id)}
+                        className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98]"
+                        data-el="history-execute"
+                      >
+                        <Send className="h-3.5 w-3.5" /> Execute payout
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
 
               <button
                 type="button"
