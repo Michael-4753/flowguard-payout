@@ -17,7 +17,7 @@ export const CHANNEL_CLASS_LABEL: Record<ChannelClass, string> = {
 
 export type Currency = "USD" | "EUR" | "GBP" | "SGD" | "INR" | "VND" | "AED";
 
-/** Whether the beneficiary is an overseas entity (gates stablecoin-gateway). */
+/** Whether the beneficiary is an overseas entity (gates stablecoin-direct). */
 export type EntityType = "overseas" | "domestic";
 
 export type AccountStatus = "active" | "dormant" | "unverified";
