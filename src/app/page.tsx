@@ -8,6 +8,7 @@ import { PaymentRow } from "@/components/shared/payment-row";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
+import { ErrorState } from "@/components/errors/error-state";
 import { formatUsd, formatHours, formatPercent } from "@/lib/format";
 import { groupByCountry } from "@/lib/analytics";
 import { cn } from "@/utils/utils";
@@ -22,7 +23,7 @@ export default function DashboardPage() {
 
 function DashboardBody() {
   const router = useRouter();
-  const { suppliers, payments, loading } = useFlowGuardData();
+  const { suppliers, payments, loading, error, refresh } = useFlowGuardData();
 
   const stats = useMemo(() => {
     const count = payments.length;
@@ -148,6 +149,8 @@ function DashboardBody() {
 
       {loading ? (
         <LoadingBlock rows={3} />
+      ) : error ? (
+        <ErrorState onRetry={() => void refresh()} />
       ) : recent.length === 0 ? (
         <EmptyState
           icon={Send}
