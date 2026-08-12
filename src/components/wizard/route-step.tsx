@@ -95,15 +95,15 @@ export function RouteStep({
       >
         {confirmed ? (
           <>
-            <Check className="h-4 w-4" /> 付款已发起
+            <Check className="h-4 w-4" /> Payment initiated
           </>
         ) : highRisk ? (
           <>
-            <ShieldAlert className="h-4 w-4" /> 仍要发起高风险付款
+            <ShieldAlert className="h-4 w-4" /> Initiate high-risk payment anyway
           </>
         ) : (
           <>
-            <Lock className="h-4 w-4" /> 确认并发起
+            <Lock className="h-4 w-4" /> Confirm &amp; initiate
           </>
         )}
       </button>
