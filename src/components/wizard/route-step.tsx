@@ -49,7 +49,8 @@ export function RouteStep({
       />
 
       <p className="text-center text-[11px] text-muted-foreground">
-        Tap a channel to compare its money-flow, fees and return risk.
+        Tap a channel to compare its money-flow, fees and return risk. All amounts settle in{" "}
+        <b className="text-foreground">USD</b>; the payee is credited in their local currency by the rail.
       </p>
 
       {/* Route comparison cards */}
@@ -151,7 +152,7 @@ function RouteCard({
           <Metric label="Fee" value={formatUsdCents(option.totalFeeUsd)} />
           <Metric label="ETA" value={formatMinutes(option.etaMinutes)} />
           <Metric label="Return risk" value={formatPercent(option.returnRisk, 0)} />
-          <Metric label="Received" value={formatUsdCents(option.receiveUsd)} highlight />
+          <Metric label="Received (USD)" value={formatUsdCents(option.receiveUsd)} highlight />
         </div>
       )}
     </button>
