@@ -7,6 +7,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { PaymentRow } from "@/components/shared/payment-row";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
+import { EmptyState } from "@/components/shared/empty-state";
 import { formatUsd, formatHours, formatPercent } from "@/lib/format";
 import { groupByCountry } from "@/lib/analytics";
 import { cn } from "@/utils/utils";
@@ -148,9 +149,12 @@ function DashboardBody() {
       {loading ? (
         <LoadingBlock rows={3} />
       ) : recent.length === 0 ? (
-        <p className="fg-glass rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          No payments yet. Start with a new payment above.
-        </p>
+        <EmptyState
+          icon={Send}
+          title="No payments yet"
+          description="Run a return-risk pre-check and route your first payment — it will show up here."
+          action={{ label: "New payment", onClick: () => router.push("/pay") }}
+        />
       ) : (
         <div className="space-y-2.5">
           {recent.map((p) => (

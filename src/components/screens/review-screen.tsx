@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { ShieldCheck, ShieldAlert, Check, X, Clock } from "lucide-react";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
+import { EmptyState } from "@/components/shared/empty-state";
 import { RiskBadge } from "@/components/shared/badges";
 import { reviewPayment } from "@/lib/api";
 import { formatUsd, formatDate, formatPercent } from "@/lib/format";
