@@ -8,6 +8,13 @@
       "when": 1786423750865,
       "tag": "0000_fair_roughhouse",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1786532333430,
+      "tag": "0001_high_sleeper",
+      "breakpoints": true
     }
   ]
 }
