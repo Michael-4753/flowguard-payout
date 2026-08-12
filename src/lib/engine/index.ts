@@ -83,6 +83,7 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
       : "SWIFT/BIC code format is valid.",
     remediation: "Confirm the 8 or 11-character SWIFT/BIC with the beneficiary bank.",
     hit: swiftBad,
+    category: "data-quality",
   });
 
   // 2. IBAN validation
@@ -97,6 +98,7 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
       : "IBAN structure is valid.",
     remediation: "Re-collect the IBAN and verify the country + check digits.",
     hit: ibanBad,
+    category: "data-quality",
   });
 
   // 3. Company name spelling / suffix
@@ -111,6 +113,7 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
       : "Beneficiary legal name looks well-formed.",
     remediation: "Match the name exactly to the bank record, including the legal suffix.",
     hit: nameBad,
+    category: "data-quality",
   });
 
   // 4. Dormant / unverified account
@@ -125,6 +128,7 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
       : "Beneficiary account is active.",
     remediation: "Ask the beneficiary to confirm the account is active before sending.",
     hit: dormant,
+    category: "data-quality",
   });
 
   // 5. Sanctions & high-risk region
@@ -139,6 +143,7 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
       : "Region hits no sanctions or high-risk list.",
     remediation: "Route through a compliance review; keep due-diligence records on file.",
     hit: sanctionHit,
+    category: "structural",
   });
 
   // 6. Beneficiary bank blacklist
@@ -153,6 +158,7 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
       : "Beneficiary bank is not blacklisted.",
     remediation: "Request an alternate beneficiary bank or use a licensed PSP corridor.",
     hit: bankHit,
+    category: "structural",
   });
 
   // 7. Currency control / interception probability
@@ -169,6 +175,7 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
       : "Destination currency has no significant FX-control interception risk.",
     remediation: "Attach an invoice + business purpose; consider a licensed local PSP corridor.",
     hit: controlled,
+    category: "structural",
   });
 
   const rawScore = factors.reduce((s, f) => s + f.points, 0);
