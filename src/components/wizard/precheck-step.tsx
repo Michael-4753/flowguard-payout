@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp, Copy, Check, FileCheck2, Route as RouteIcon } from "lucide-react";
+import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp, Copy, Check, AlertTriangle, FileCheck2, Route as RouteIcon } from "lucide-react";
 import type { RiskAssessment, RiskFactor, Supplier } from "@/lib/engine/types";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
 import { AiPrecheckExplainer } from "@/components/wizard/ai-precheck-explainer";
 import { createVerificationCase } from "@/lib/api";
 import { formatPercent, formatUsdCents } from "@/lib/format";
+import { copyText } from "@/utils/copy-text";
 import { cn } from "@/utils/utils";
 
 export function PrecheckStep({
@@ -256,7 +257,7 @@ export function PrecheckStep({
 function FactorAction({ factor, supplier }: { factor: RiskFactor; supplier: Supplier }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"idle" | "ok" | "fail">("idle");
   const [template, setTemplate] = useState<string | null>(null);
   const [err, setErr] = useState(false);
 
@@ -291,13 +292,9 @@ function FactorAction({ factor, supplier }: { factor: RiskFactor; supplier: Supp
 
   async function copy() {
     if (!template) return;
-    try {
-      await navigator.clipboard.writeText(template);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* ignore */
-    }
+    const ok = await copyText(template);
+    setCopied(ok ? "ok" : "fail");
+    setTimeout(() => setCopied("idle"), 1800);
   }
 
   if (template) {
@@ -316,8 +313,14 @@ function FactorAction({ factor, supplier }: { factor: RiskFactor; supplier: Supp
             className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium transition-colors hover:bg-primary/10"
             data-el="factor-verification-copy"
           >
-            {copied ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <Copy className="h-3 w-3" />}
-            {copied ? "Copied" : "Copy message"}
+            {copied === "ok" ? (
+              <Check className="h-3 w-3 text-[color:var(--success)]" />
+            ) : copied === "fail" ? (
+              <AlertTriangle className="h-3 w-3 text-[color:var(--danger)]" />
+            ) : (
+              <Copy className="h-3 w-3" />
+            )}
+            {copied === "ok" ? "Copied" : copied === "fail" ? "Copy failed — select manually" : "Copy message"}
           </button>
           <button
             type="button"
