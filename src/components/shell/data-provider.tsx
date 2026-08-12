@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useEazo } from "@eazo/sdk/react";
 import { fetchSuppliers, fetchPayments, fetchVerificationCases } from "@/lib/api";
-import { clarifiedBySupplier } from "@/lib/verification";
+import { clarifiedBySupplier, recomputePaymentRisk, type EffectiveRisk } from "@/lib/verification";
 import { subscribeGuest, useIsGuest } from "@/lib/guest/guest-session";
 import type { PaymentRecord, Supplier, VerificationCase } from "@/lib/engine/types";
 
@@ -16,6 +16,8 @@ interface DataState {
   refresh: () => Promise<void>;
   /** Set of risk factorIds already clarified for a payee (verification feedback). */
   clarifiedFactors: (supplierId: string) => Set<string>;
+  /** Clarified-adjusted risk (score/level/blocker recomputed after resolved cases). */
+  effectiveRisk: (record: PaymentRecord) => EffectiveRisk;
   /** Identity of the signed-in user (or "guest"), matched against a payment's makerId. */
   currentUserId: string;
 }
@@ -92,6 +94,8 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
       error,
       refresh,
       clarifiedFactors: (supplierId: string) => map[supplierId] ?? empty,
+      effectiveRisk: (record: PaymentRecord) =>
+        recomputePaymentRisk(record, map[record.supplierId] ?? empty),
       currentUserId,
     };
   }, [suppliers, payments, verificationCases, loading, error, refresh, currentUserId]);
