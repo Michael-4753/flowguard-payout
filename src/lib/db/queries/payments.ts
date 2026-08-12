@@ -3,7 +3,7 @@ import { db } from "../client";
 import { payments, type PaymentRow } from "../schema/payments";
 import { deriveVouchers } from "@/lib/engine";
 import { initialReview, applyDecision } from "@/lib/review";
-import type { Currency, PaymentRecord, PaymentStatus, ReviewInfo } from "@/lib/engine/types";
+import type { Currency, PaymentRecord, PaymentStatus, ReviewInfo, SettlementProof } from "@/lib/engine/types";
 
 function toDomain(row: PaymentRow): PaymentRecord {
   return {
@@ -129,8 +129,7 @@ export async function reviewPayment(input: {
   return { ok: true, payment: toDomain(rows[0]) };
 }
 
-/**
- * Post-approval dispatch: the payer has actually sent the funds at the bank /
+export async function countPayments(userId: string): Promise<number> {
  * on-chain. Advances an approved (`initiated`) payment to `settling` so the
  * money-flow tracker starts. Only the owner can dispatch their own payment.
  */
