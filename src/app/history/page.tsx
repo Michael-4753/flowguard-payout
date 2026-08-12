@@ -93,9 +93,9 @@ function HistoryBody() {
             <article key={p.id} className="fg-glass rounded-2xl p-4" data-el="history-item">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex min-w-0 items-center gap-2">
                     <span className="truncate text-sm font-semibold">{p.supplierName}</span>
-                    <RiskBadge level={p.riskLevel} />
+                    <span className="shrink-0"><RiskBadge level={p.riskLevel} /></span>
                   </div>
                   <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
                     {formatDate(p.createdAt)}
