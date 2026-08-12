@@ -7,6 +7,8 @@ import { clarifiedBySupplier, recomputePaymentRisk, type EffectiveRisk } from "@
 import { subscribeGuest, useIsGuest } from "@/lib/guest/guest-session";
 import type { PaymentRecord, Supplier, VerificationCase } from "@/lib/engine/types";
 
+export type ActiveRole = "maker" | "checker";
+
 interface DataState {
   suppliers: Supplier[];
   payments: PaymentRecord[];
@@ -20,7 +22,12 @@ interface DataState {
   effectiveRisk: (record: PaymentRecord) => EffectiveRisk;
   /** Identity of the signed-in user (or "guest"), matched against a payment's makerId. */
   currentUserId: string;
+  /** Which duty the user is currently acting as (maker=cashier, checker=reviewer). */
+  activeRole: ActiveRole;
+  setActiveRole: (role: ActiveRole) => void;
 }
+
+const ROLE_KEY = "flowguard.activeRole";
 
 const Ctx = createContext<DataState | null>(null);
 
@@ -33,6 +40,25 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
   const [verificationCases, setVerificationCases] = useState<VerificationCase[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [activeRole, setActiveRoleState] = useState<ActiveRole>("maker");
+
+  const setActiveRole = useCallback((role: ActiveRole) => {
+    setActiveRoleState(role);
+    try {
+      window.localStorage.setItem(ROLE_KEY, role);
+    } catch {
+      /* storage may be unavailable */
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(ROLE_KEY);
+      if (saved === "maker" || saved === "checker") setActiveRoleState(saved);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   const refresh = useCallback(async () => {
     if (!hasIdentity) {
@@ -97,8 +123,10 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
       effectiveRisk: (record: PaymentRecord) =>
         recomputePaymentRisk(record, map[record.supplierId] ?? empty),
       currentUserId,
+      activeRole,
+      setActiveRole,
     };
-  }, [suppliers, payments, verificationCases, loading, error, refresh, currentUserId]);
+  }, [suppliers, payments, verificationCases, loading, error, refresh, currentUserId, activeRole, setActiveRole]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
