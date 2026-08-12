@@ -39,7 +39,7 @@ export default function HistoryPage() {
 
 function HistoryBody() {
   const router = useRouter();
-  const { payments, loading } = useFlowGuardData();
+  const { payments, loading, clarifiedFactors } = useFlowGuardData();
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
 
@@ -106,6 +106,8 @@ function HistoryBody() {
                 <Cell label="Channel" value={CHANNEL_CLASS_LABEL[p.route.channelClass]} />
                 <Cell label="Return prob." value={formatPercent(p.returnProbability, 0)} />
               </div>
+
+              <ClarifiedChips record={p} clarified={clarifiedFactors(p.supplierId)} />
 
               {p.status !== "draft" &&
                 p.status !== "pending_review" &&
