@@ -60,9 +60,9 @@ function PayWizard() {
         selectedRouteId: routeId,
       });
       setConfirmed(true);
-      toast.success("Payment initiated");
+      toast.success("Submitted for review — awaiting checker approval");
       await refresh();
-      setTimeout(() => router.push("/history"), 900);
+      setTimeout(() => router.push("/review"), 900);
     } catch {
       toast.error("Something went wrong. Please try again.");
     }
