@@ -16,6 +16,8 @@ interface DataState {
   refresh: () => Promise<void>;
   /** Set of risk factorIds already clarified for a payee (verification feedback). */
   clarifiedFactors: (supplierId: string) => Set<string>;
+  /** Identity of the signed-in user (or "guest"), matched against a payment's makerId. */
+  currentUserId: string;
 }
 
 const Ctx = createContext<DataState | null>(null);
@@ -77,6 +79,8 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
     });
   }, [guest, refresh]);
 
+  const currentUserId = user?.id ?? (guest ? "guest" : "");
+
   const value = useMemo(() => {
     const map = clarifiedBySupplier(verificationCases);
     const empty = new Set<string>();
@@ -88,8 +92,9 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
       error,
       refresh,
       clarifiedFactors: (supplierId: string) => map[supplierId] ?? empty,
+      currentUserId,
     };
-  }, [suppliers, payments, verificationCases, loading, error, refresh]);
+  }, [suppliers, payments, verificationCases, loading, error, refresh, currentUserId]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
