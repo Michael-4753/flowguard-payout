@@ -95,7 +95,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   <Icon className="h-[18px] w-[18px]" aria-hidden />
                   {badge > 0 && (
                     <span
-                      className="absolute -right-2 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-[color:var(--danger)] px-1 text-[9px] font-bold leading-none text-white"
+                      className="absolute -right-2 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-[color:var(--danger)] px-1 text-[9px] font-bold leading-none text-[color:var(--primary-foreground)]"
                       aria-label={`${badge} awaiting reply`}
                       data-el="nav-cases-badge"
                     >
