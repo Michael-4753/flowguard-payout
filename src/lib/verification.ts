@@ -132,3 +132,24 @@ export function applyComment(
   const ev = makeEvent({ actor, kind: "comment", message: message.trim() });
   return { timeline: [...(prev.timeline ?? []), ev], updatedAt: ev.at };
 }
+
+// ---- feedback into the main flow ("clarified" downgrade) ----
+
+/** A verification case is resolved once a party confirms the detail. */
+export function isResolved(c: VerificationCase): boolean {
+  return c.status === "verified" || c.status === "clarified";
+}
+
+/**
+ * Map supplierId → set of factorIds that have a resolved verification case.
+ * A payment's risk factor that appears here is shown as "Clarified" and its
+ * reviewer warning is softened (the deterministic score is left untouched).
+ */
+export function clarifiedBySupplier(cases: VerificationCase[]): Record<string, Set<string>> {
+  const map: Record<string, Set<string>> = {};
+  for (const c of cases) {
+    if (!isResolved(c)) continue;
+    (map[c.supplierId] ??= new Set()).add(c.factorId);
+  }
+  return map;
+}
