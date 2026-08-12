@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Lock, Info } from "lucide-react";
+import { Check, Lock, Info, ShieldAlert } from "lucide-react";
 import type { RiskAssessment, RouteOption, RoutingResult } from "@/lib/engine/types";
 import { FlowNarrativeStage } from "@/components/flow/flow-narrative-stage";
 import { formatUsdCents, formatPercent, formatMinutes } from "@/lib/format";
@@ -21,9 +21,24 @@ export function RouteStep({
 }) {
   const [selectedId, setSelectedId] = useState(routing.recommendedId);
   const guest = useIsGuest();
+  const highRisk = risk.level === "high";
 
   return (
     <div className="space-y-4" data-el="wizard-route">
+      {/* Persistent high-risk warning through routing + confirm */}
+      {highRisk && (
+        <div
+          className="flex items-start gap-2 rounded-2xl border border-[color:var(--danger)]/50 bg-[color:var(--danger)]/10 p-3"
+          data-el="route-high-risk-banner"
+        >
+          <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--danger)]" aria-hidden />
+          <p className="text-[11px] leading-relaxed text-[color:var(--danger)]">
+            <b>高风险付款（{risk.score}/100，退回概率约 {formatPercent(risk.returnProbability, 0)}）。</b>
+            你已知晓风险并选择继续。选择路由后发起，代表你自行承担合规与资金损失责任。
+          </p>
+        </div>
+      )}
+
       <FlowNarrativeStage
         options={routing.options}
         selectedId={selectedId}
@@ -72,17 +87,23 @@ export function RouteStep({
           "flex w-full items-center justify-center gap-2 rounded-full px-4 py-3.5 text-sm font-bold transition-transform active:scale-[0.99]",
           confirmed
             ? "bg-[color:var(--success)] text-black"
-            : "bg-primary text-primary-foreground shadow-[var(--fg-shadow-sm)]",
+            : highRisk
+              ? "border border-[color:var(--danger)]/60 bg-[color:var(--danger)]/15 text-[color:var(--danger)]"
+              : "bg-primary text-primary-foreground shadow-[var(--fg-shadow-sm)]",
         )}
         data-el="wizard-confirm"
       >
         {confirmed ? (
           <>
-            <Check className="h-4 w-4" /> Payment initiated
+            <Check className="h-4 w-4" /> 付款已发起
+          </>
+        ) : highRisk ? (
+          <>
+            <ShieldAlert className="h-4 w-4" /> 仍要发起高风险付款
           </>
         ) : (
           <>
-            <Lock className="h-4 w-4" /> Confirm &amp; initiate
+            <Lock className="h-4 w-4" /> 确认并发起
           </>
         )}
       </button>
