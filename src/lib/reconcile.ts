@@ -34,10 +34,16 @@ export interface ReconcileRow {
   invoiceNo: string;
   /** On-chain / PSP proof (empty if none for this channel/status). */
   onchainRef: string;
+  /** Real settlement proof reference (bank MT103 confirmation / tx hash), if captured. */
+  settlementRef: string;
+  /** How the funds were sent, when a proof exists. */
+  settlementMethod: "bank-slip" | "onchain-tx" | "";
+  /** Uploaded remittance slip / receipt URL, if any. */
+  settlementAttachmentUrl: string;
   /**
-   * Proof match: "matched" when off-chain + on-chain proofs both exist,
-   * "unmatched" when an on-chain proof is expected but missing, "n/a" for
-   * pure bank rails (SWIFT) that have no on-chain leg.
+   * Proof match: "matched" once a real settlement proof is captured (any
+   * channel), or when the derived on-chain proof exists; "unmatched" when a
+   * proof is expected but missing; "n/a" before the payment is sent.
    */
   matchStatus: "matched" | "unmatched" | "n/a";
   reconciled: boolean;

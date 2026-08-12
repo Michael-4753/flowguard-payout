@@ -163,6 +163,32 @@ export async function dispatchPayment(input: { id: string }): Promise<PaymentRec
   return json.payment;
 }
 
+/** Settlement-proof input from the UI (server / guest path stamps confirmedAt). */
+export type SettlementProofInput = Omit<SettlementProof, "confirmedAt">;
+
+/** Attach settlement proof (bank slip / on-chain tx) to a dispatched payment. */
+export async function attachSettlementProof(
+  id: string,
+  proof: SettlementProofInput,
+): Promise<PaymentRecord> {
+  if (isGuest()) {
+    const updated = guestAttachSettlementProof({
+      id,
+      proof: { ...proof, confirmedAt: new Date().toISOString() },
+    });
+    if (!updated) throw new Error("not_found");
+    return updated;
+  }
+  const res = await request(`/api/payments/${encodeURIComponent(id)}/proof`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(proof),
+  });
+  if (!res.ok) throw new Error("failed_to_attach_proof");
+  const json = (await res.json()) as { payment: PaymentRecord };
+  return json.payment;
+}
+
 export async function fetchFailureCases(): Promise<FailureCase[]> {
   if (isGuest()) return guestFailureCases();
   const res = await request("/api/cases");
