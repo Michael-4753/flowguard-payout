@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, Clock, Wrench, Copy, Check, FileCheck2, Inbox, Link as LinkIcon, Send } from "lucide-react";
 import { useEazo } from "@eazo/sdk/react";
 import { LoadingBlock } from "@/components/shared/loading-block";
+import { EmptyState } from "@/components/shared/empty-state";
 import {
   fetchFailureCases,
   fetchVerificationCases,
