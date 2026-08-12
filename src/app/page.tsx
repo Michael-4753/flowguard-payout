@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Coins, Timer, ShieldAlert, Send, Globe, AlertTriangle } from "lucide-react";
+import { ArrowRight, Coins, Timer, ShieldAlert, Send, Globe, AlertTriangle, Lock, Scale } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PaymentRow } from "@/components/shared/payment-row";
 import { useFlowGuardData } from "@/components/shell/data-provider";
@@ -69,6 +69,24 @@ function DashboardBody() {
           label="High risk"
           value={`${stats.highRisk}`}
           danger={stats.highRisk > 0}
+        />
+      </div>
+
+      {/* Secondary tools (kept reachable off the primary nav) */}
+      <div className="mt-4 grid grid-cols-2 gap-3" data-el="dashboard-tools">
+        <ToolCard
+          icon={<Lock className="h-4 w-4" />}
+          label="Milestone escrow"
+          hint="Lock & release funds"
+          onClick={() => router.push("/escrow")}
+          el="tool-escrow"
+        />
+        <ToolCard
+          icon={<Scale className="h-4 w-4" />}
+          label="Reconcile"
+          hint="Match payouts & proofs"
+          onClick={() => router.push("/reconcile")}
+          el="tool-reconcile"
         />
       </div>
 
