@@ -7,8 +7,7 @@ import {
   insertVerificationCase,
 } from "@/lib/db/queries/verification-cases";
 import { assessRisk } from "@/lib/engine";
-import { buildTemplate, isVerifiable } from "@/lib/verification";
-import type { VerificationCase } from "@/lib/engine/types";
+import { buildVerificationCase, isVerifiable } from "@/lib/verification";
 
 const createSchema = z.object({
   supplierId: z.string().min(1),
@@ -48,18 +47,12 @@ export async function POST(request: NextRequest) {
   }
 
   const factor = assessRisk(supplier).factors.find((f) => f.id === parsed.data.factorId);
-  const now = new Date().toISOString();
-  const record: VerificationCase = {
+  const record = buildVerificationCase({
     id: `vc-${Date.now().toString(36)}`,
-    supplierId: supplier.id,
-    supplierName: supplier.name,
+    supplier,
     factorId: parsed.data.factorId,
-    factorTitle: factor?.title ?? parsed.data.factorId,
-    template: buildTemplate(parsed.data.factorId, supplier),
-    status: "open",
-    createdAt: now,
-    updatedAt: now,
-  };
+    factor,
+  });
   const saved = await insertVerificationCase(userId, record);
   return NextResponse.json({ case: saved }, { status: 201 });
 }
