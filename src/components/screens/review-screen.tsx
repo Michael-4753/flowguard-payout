@@ -216,10 +216,10 @@ function ReviewCard({
 
       {isOwnSubmission && (
         <div
-          className="mt-3 flex items-start gap-2 rounded-xl border border-[color:var(--warn)]/40 bg-[color:var(--warn)]/10 p-2.5 text-[11px] text-foreground"
+          className="mt-3 flex items-start gap-2 rounded-xl border border-[color:var(--warning)]/40 bg-[color:var(--warning)]/10 p-2.5 text-[11px] text-foreground"
           data-el="review-self"
         >
-          <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--warn)]" aria-hidden />
+          <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--warning)]" aria-hidden />
           <span>
             You submitted this payment. Segregation of duties requires a different
             person to approve it — you can only return it to yourself.
