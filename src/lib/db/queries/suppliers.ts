@@ -31,6 +31,7 @@ function toDomain(row: SupplierRow): Supplier {
     historicalReturnRate: row.historicalReturnRate,
     avgSettlementHours: row.avgSettlementHours,
     avgAmountUsd: row.avgAmountUsd,
+    stablecoinWallet: row.stablecoinWallet ?? undefined,
     createdAt: row.createdAt.toISOString(),
   };
 }
