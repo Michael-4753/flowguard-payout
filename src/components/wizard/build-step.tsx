@@ -42,6 +42,7 @@ export function BuildStep({
   const liveAmountError = amountError(amount);
   const amountInvalid = amount.trim() !== "" && liveAmountError !== null;
   const canSubmit = Boolean(supplierId) && amount.trim() !== "" && liveAmountError === null;
+  const selected = suppliers.find((s) => s.id === supplierId);
 
   function submit() {
     if (!supplierId) return setError("Select a payee to continue.");
@@ -92,8 +93,11 @@ export function BuildStep({
       </div>
 
       {/* Amount */}
-      <label className="mt-4 block text-xs text-muted-foreground" htmlFor="amount">
-        Amount (USD)
+      <label className="mt-4 flex items-center justify-between text-xs text-muted-foreground" htmlFor="amount">
+        <span>Amount</span>
+        <span className="rounded-full border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide">
+          Settlement currency: USD
+        </span>
       </label>
       <input
         id="amount"
