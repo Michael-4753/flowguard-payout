@@ -5,6 +5,7 @@ import { ShieldCheck, ShieldAlert, Check, X, Clock } from "lucide-react";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
+import { ErrorState } from "@/components/errors/error-state";
 import { RiskBadge } from "@/components/shared/badges";
 import { reviewPayment } from "@/lib/api";
 import { formatUsd, formatDate, formatPercent } from "@/lib/format";
@@ -19,7 +20,7 @@ import { cn } from "@/utils/utils";
  * user, distinguished by role labels and a persisted approval trail.
  */
 export function ReviewScreen() {
-  const { payments, loading, refresh, clarifiedFactors } = useFlowGuardData();
+  const { payments, loading, error, refresh, clarifiedFactors } = useFlowGuardData();
   const pending = useMemo(
     () => payments.filter((p) => p.status === "pending_review"),
     [payments],
@@ -52,6 +53,10 @@ export function ReviewScreen() {
       {loading ? (
         <div className="mt-4">
           <LoadingBlock rows={3} />
+        </div>
+      ) : error ? (
+        <div className="mt-4">
+          <ErrorState onRetry={() => void refresh()} />
         </div>
       ) : pending.length === 0 ? (
         <div className="mt-4">
