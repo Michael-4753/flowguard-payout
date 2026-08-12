@@ -128,6 +128,29 @@ export async function reviewPayment(input: {
   return { ok: true, payment: toDomain(rows[0]) };
 }
 
+/**
+ * Post-approval dispatch: the payer has actually sent the funds at the bank /
+ * on-chain. Advances an approved (`initiated`) payment to `settling` so the
+ * money-flow tracker starts. Only the owner can dispatch their own payment.
+ */
+export async function dispatchPayment(input: {
+  userId: string;
+  id: string;
+}): Promise<PaymentRecord | undefined> {
+  const rows = await db
+    .update(payments)
+    .set({ status: "settling" })
+    .where(
+      and(
+        eq(payments.userId, input.userId),
+        eq(payments.id, input.id),
+        eq(payments.status, "initiated"),
+      ),
+    )
+    .returning();
+  return rows[0] ? toDomain(rows[0]) : undefined;
+}
+
 export async function countPayments(userId: string): Promise<number> {
   const rows = await db
     .select({ value: count() })
