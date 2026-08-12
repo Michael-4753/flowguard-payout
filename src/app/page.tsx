@@ -120,13 +120,13 @@ function DashboardBody() {
                 <div className="mt-2 font-mono text-base font-bold tabular-nums">
                   {formatUsd(g.volumeUsd)}
                 </div>
-                <div className="mt-1 flex flex-wrap gap-x-2 font-mono text-[9px] text-muted-foreground">
+                <div className="mt-1 flex flex-wrap gap-x-2 font-mono text-[10px] text-muted-foreground">
                   <span>{g.suppliers.length} payee(s)</span>
                   <span style={g.returnRate > 0.05 ? { color: "var(--danger)" } : undefined}>
                     ret {formatPercent(g.returnRate, 0)}
                   </span>
                 </div>
-                <div className="mt-0.5 font-mono text-[9px] text-muted-foreground">
+                <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
                   {g.currencies.join(" · ")}
                 </div>
               </button>

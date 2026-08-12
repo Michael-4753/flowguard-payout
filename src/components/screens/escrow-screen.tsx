@@ -319,7 +319,7 @@ function EscrowCard({ contract, onChange }: { contract: EscrowContract; onChange
                 <span className="shrink-0 font-mono text-[11px]">{formatUsdCents(m.amountUsd)}</span>
               </div>
               {m.status === "released" && m.releasedAt && (
-                <span className="font-mono text-[9px] text-muted-foreground">
+                <span className="font-mono text-[10px] text-muted-foreground">
                   released {formatDate(m.releasedAt)}
                 </span>
               )}
