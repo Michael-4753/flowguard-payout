@@ -65,6 +65,8 @@ export interface Supplier {
   avgSettlementHours: number;
   /** Historical average amount (USD), for amount-anomaly checks. */
   avgAmountUsd: number;
+  /** Stablecoin wallet address (e.g. USDC). Required before a stablecoin-direct payout. */
+  stablecoinWallet?: string;
   createdAt: string;
 }
 
