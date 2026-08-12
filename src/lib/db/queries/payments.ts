@@ -24,6 +24,8 @@ function toDomain(row: PaymentRow): PaymentRecord {
     ...deriveVouchers(`${row.supplierId}-${row.selectedRouteId}`, row.route.channelClass, row.status),
     review: (row.review as ReviewInfo | null) ?? initialReview(row.userId),
     settlementProof: (row.settlementProof as PaymentRecord["settlementProof"]) ?? undefined,
+    receiptToken: row.receiptToken || undefined,
+    receipt: (row.receipt as PaymentRecord["receipt"]) ?? undefined,
     createdAt: row.createdAt.toISOString(),
   };
 }
