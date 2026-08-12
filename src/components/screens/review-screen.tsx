@@ -10,6 +10,7 @@ import { RiskBadge } from "@/components/shared/badges";
 import { reviewPayment } from "@/lib/api";
 import { formatUsd, formatDate, formatPercent } from "@/lib/format";
 import { CHANNEL_CLASS_LABEL, type PaymentRecord } from "@/lib/engine/types";
+import type { EffectiveRisk } from "@/lib/verification";
 import { MAKER_LABEL, CHECKER_LABEL } from "@/lib/review";
 import { cn } from "@/utils/utils";
 
@@ -20,7 +21,7 @@ import { cn } from "@/utils/utils";
  * user, distinguished by role labels and a persisted approval trail.
  */
 export function ReviewScreen() {
-  const { payments, loading, error, refresh, clarifiedFactors, currentUserId } = useFlowGuardData();
+  const { payments, loading, error, refresh, clarifiedFactors, effectiveRisk, currentUserId } = useFlowGuardData();
   const pending = useMemo(
     () => payments.filter((p) => p.status === "pending_review"),
     [payments],
@@ -73,6 +74,7 @@ export function ReviewScreen() {
               key={p.id}
               record={p}
               clarified={clarifiedFactors(p.supplierId)}
+              eff={effectiveRisk(p)}
               currentUserId={currentUserId}
               onDone={refresh}
             />
