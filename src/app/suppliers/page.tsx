@@ -2,13 +2,14 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronRight, MapPin, AlertTriangle } from "lucide-react";
+import { ChevronRight, MapPin, AlertTriangle, Plus } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/errors/error-state";
 import { RiskBadge } from "@/components/shared/badges";
+import { AddPayeeForm } from "@/components/screens/add-payee-form";
 import { formatPercent, formatHours, formatUsd } from "@/lib/format";
 import { distinctCurrencies, groupByCountry } from "@/lib/analytics";
 import type { Currency, Supplier } from "@/lib/engine/types";
@@ -25,6 +26,7 @@ export default function SuppliersPage() {
 function SuppliersBody() {
   const { suppliers, payments, loading, error, refresh } = useFlowGuardData();
   const [currency, setCurrency] = useState<Currency | "all">("all");
+  const [adding, setAdding] = useState(false);
 
   const currencies = useMemo(() => distinctCurrencies(suppliers), [suppliers]);
 
@@ -37,13 +39,27 @@ function SuppliersBody() {
 
   return (
     <section className="pt-1" data-el="suppliers">
-      <h1 className="text-2xl font-bold tracking-tight">Payee ledger</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Beneficiaries grouped by country, with SWIFT/IBAN, channel and failure history.
-      </p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold tracking-tight">Payee ledger</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Beneficiaries grouped by country, with SWIFT/IBAN, channel and failure history.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setAdding(true)}
+          className="flex shrink-0 items-center gap-1.5 rounded-full bg-[color:var(--primary)] px-3.5 py-2 text-sm font-bold text-[color:var(--primary-foreground)] transition-transform active:scale-[0.98]"
+          data-el="add-payee-btn"
+        >
+          <Plus className="h-4 w-4" /> Add payee
+        </button>
+      </div>
       <p className="mt-1 font-mono text-[11px] text-muted-foreground">
         {suppliers.length} payees · {groups.length} countries
       </p>
+
+      {adding && <AddPayeeForm onClose={() => setAdding(false)} onAdded={() => void refresh()} />}
 
       {/* Currency / corridor filter */}
       <div className="mt-3 flex flex-wrap items-center gap-2 pb-1" data-el="currency-filter">
