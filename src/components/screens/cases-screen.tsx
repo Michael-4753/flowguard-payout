@@ -12,6 +12,7 @@ import {
 } from "@/lib/api";
 import { useIsGuest, subscribeGuest } from "@/lib/guest/guest-session";
 import { formatUsd, formatDate } from "@/lib/format";
+import { copyText } from "@/utils/copy-text";
 import {
   CHANNEL_CLASS_LABEL,
   CASE_ACTOR_LABEL,
@@ -329,6 +330,12 @@ function ShareLinks({ record }: { record: VerificationCase }) {
         {copied === "write" ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <LinkIcon className="h-3 w-3" />}
         {copied === "write" ? "Copied" : "Write link (business/supplier)"}
       </button>
+      {copied === "fail" && (
+        <span className="flex w-full items-center gap-1 text-[10px] text-[color:var(--danger)]">
+          <AlertTriangle className="h-3 w-3 shrink-0" />
+          Couldn’t copy automatically — long-press or select the link to copy it manually.
+        </span>
+      )}
     </div>
   );
 }
