@@ -208,6 +208,9 @@ export interface PaymentRecord {
   supplierCodeName: string;
   amountUsd: number;
   currency: Currency;
+  /** Settlement (source) currency the payer sends in. Default USD. The payee is
+   *  credited in `currency` (their local currency) by the payout rail. */
+  settleCurrency: Currency;
   riskScore: number;
   riskLevel: RiskLevel;
   returnProbability: number;
