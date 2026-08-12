@@ -97,13 +97,13 @@ function DashboardBody() {
             <Globe className="h-4 w-4 text-primary" aria-hidden />
             <h2 className="text-sm font-semibold text-muted-foreground">Country exposure</h2>
           </div>
-          <div className="-mx-4 flex gap-2.5 overflow-x-auto px-4 pb-1">
+          <div className="grid grid-cols-2 gap-2.5">
             {countries.map((g) => (
               <button
                 key={g.countryCode || g.country}
                 type="button"
                 onClick={() => router.push("/suppliers")}
-                className="fg-glass w-40 shrink-0 rounded-2xl p-3 text-left transition-transform active:scale-[0.99]"
+                className="fg-glass min-w-0 rounded-2xl p-3 text-left transition-transform active:scale-[0.99]"
                 data-el="country-card"
               >
                 <div className="flex items-center gap-1.5">
