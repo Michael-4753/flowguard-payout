@@ -13,8 +13,7 @@ const NAV = [
   { href: "/pay", label: "Pay", icon: Workflow, el: "nav-pay" },
   { href: "/suppliers", label: "Payees", icon: Building2, el: "nav-suppliers" },
   { href: "/review", label: "Review", icon: ShieldCheck, el: "nav-review" },
-  { href: "/escrow", label: "Escrow", icon: Lock, el: "nav-escrow" },
-  { href: "/reconcile", label: "Reconcile", icon: Scale, el: "nav-reconcile" },
+  { href: "/cases", label: "Cases", icon: FileCheck2, el: "nav-cases" },
   { href: "/history", label: "History", icon: History, el: "nav-history" },
 ] as const;
 
@@ -66,7 +65,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         style={{ paddingBottom: "var(--eazo-safe-area-bottom)" }}
         data-el="bottom-nav"
       >
-        <div className="fg-glass pointer-events-auto mx-auto mb-2 grid w-full grid-cols-7 gap-0.5 rounded-2xl p-1.5">
+        <div className="fg-glass pointer-events-auto mx-auto mb-2 grid w-full grid-cols-6 gap-0.5 rounded-2xl p-1.5">
           {NAV.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             const Icon = item.icon;
