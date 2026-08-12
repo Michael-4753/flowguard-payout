@@ -13,6 +13,7 @@ const createSchema = z.object({
   amountUsd: z.number().positive(),
   preferredChannel: z.enum(["stablecoin-direct", "local-fiat"]).optional(),
   selectedRouteId: z.string().min(1),
+  settleCurrency: z.enum(["USD", "EUR", "GBP", "SGD", "INR", "VND", "AED"]).optional(),
 });
 
 /** GET /api/payments — list the current user's payment records. */
@@ -60,6 +61,7 @@ export async function POST(request: NextRequest) {
     supplierCodeName: supplier.codeName,
     amountUsd: parsed.data.amountUsd,
     currency: supplier.currency,
+    settleCurrency: parsed.data.settleCurrency ?? "USD",
     riskScore: risk.score,
     riskLevel: risk.level,
     returnProbability: risk.returnProbability,

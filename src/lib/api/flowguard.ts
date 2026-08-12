@@ -112,6 +112,7 @@ export async function createPayment(input: {
   amountUsd: number;
   preferredChannel?: ChannelClass;
   selectedRouteId: string;
+  settleCurrency?: Currency;
 }): Promise<PaymentRecord> {
   if (isGuest()) return guestCreatePayment(input);
   const res = await request("/api/payments", {
