@@ -14,6 +14,7 @@ const GUEST_FLAG_KEY = "flowguard_guest";
 const GUEST_PAYMENTS_KEY = "flowguard_guest_payments";
 const GUEST_VCASES_KEY = "flowguard_guest_vcases";
 const GUEST_SUPPLIERS_KEY = "flowguard_guest_suppliers";
+const GUEST_WALLETS_KEY = "flowguard_guest_wallets";
 
 export const GUEST_USER: User = {
   id: "guest",
@@ -51,6 +52,7 @@ export function exitGuestMode(): void {
     window.localStorage.removeItem(GUEST_PAYMENTS_KEY);
     window.localStorage.removeItem(GUEST_VCASES_KEY);
     window.localStorage.removeItem(GUEST_SUPPLIERS_KEY);
+    window.localStorage.removeItem(GUEST_WALLETS_KEY);
     window.dispatchEvent(new Event(GUEST_EVENT));
   } catch {
     /* ignore */
