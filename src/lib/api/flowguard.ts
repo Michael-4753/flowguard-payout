@@ -119,3 +119,51 @@ export async function fetchFailureCases(): Promise<FailureCase[]> {
   const json = (await res.json()) as { cases: FailureCase[] };
   return json.cases;
 }
+
+// ---- verification cases (data-quality risk close-out) ----
+
+export async function fetchVerificationCases(): Promise<VerificationCase[]> {
+  if (isGuest()) return guestVerificationCases();
+  const res = await request("/api/verification-cases");
+  if (!res.ok) throw new Error("failed_to_load_verification_cases");
+  const json = (await res.json()) as { cases: VerificationCase[] };
+  return json.cases;
+}
+
+export async function createVerificationCase(input: {
+  supplierId: string;
+  factorId: string;
+}): Promise<VerificationCase> {
+  if (isGuest()) {
+    const created = guestCreateVerificationCase(input);
+    if (!created) throw new Error("not_verifiable");
+    return created;
+  }
+  const res = await request("/api/verification-cases", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error("failed_to_create_verification_case");
+  const json = (await res.json()) as { case: VerificationCase };
+  return json.case;
+}
+
+export async function setVerificationStatus(
+  id: string,
+  status: VerificationStatus,
+): Promise<VerificationCase> {
+  if (isGuest()) {
+    const updated = guestSetVerificationStatus(id, status);
+    if (!updated) throw new Error("not_found");
+    return updated;
+  }
+  const res = await request(`/api/verification-cases/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) throw new Error("failed_to_update_verification_case");
+  const json = (await res.json()) as { case: VerificationCase };
+  return json.case;
+}
