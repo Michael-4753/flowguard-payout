@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { Copy, Check, Printer, Send, Landmark, Wallet, Clock } from "lucide-react";
-import { dispatchPayment } from "@/lib/api";
+import { storage } from "@eazo/sdk";
+import { Copy, Check, Printer, Send, Landmark, Wallet, Clock, Paperclip } from "lucide-react";
+import { dispatchPayment, attachSettlementProof } from "@/lib/api";
 import { buildPayoutInstruction, type PayoutInstruction } from "@/lib/payout-instruction";
 import { formatUsd } from "@/lib/format";
 import type { PaymentRecord, Supplier } from "@/lib/engine/types";
@@ -13,7 +14,8 @@ import { cn } from "@/utils/utils";
  * Post-approval execution panel. Turns an approved (`initiated`) payment into the
  * concrete material a finance operator uses: an MT103 remittance advice for Local
  * Fiat, or a wallet-address QR card for Stablecoin Direct. Supports copy,
- * print-to-PDF, and "Mark as sent" (advances the payment to `settling`).
+ * print-to-PDF, capturing settlement proof (bank confirmation / tx hash + slip),
+ * and "Mark as sent" (records the proof and advances the payment to `settling`).
  */
 export function PayoutExecutionPanel({
   payment,
@@ -28,9 +30,13 @@ export function PayoutExecutionPanel({
     () => buildPayoutInstruction(payment, supplier),
     [payment, supplier],
   );
+  const isStable = instruction.channel === "stablecoin-direct";
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState<null | "generic" | "reference">(null);
+  const [reference, setReference] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [attachment, setAttachment] = useState<{ url: string; key: string; name: string } | null>(null);
 
   async function copyAll() {
     try {
@@ -42,20 +48,49 @@ export function PayoutExecutionPanel({
     }
   }
 
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setErr(null);
+    try {
+      const { key, url } = await storage.upload(
+        `payout-proofs/${payment.id}/${file.name}`,
+        file,
+      );
+      setAttachment({ url, key, name: file.name });
+    } catch {
+      setErr("generic");
+    } finally {
+      setUploading(false);
+    }
+  }
+
   async function markSent() {
     if (busy) return;
+    if (!reference.trim()) {
+      setErr("reference");
+      return;
+    }
     setBusy(true);
-    setErr(false);
+    setErr(null);
     try {
+      // 1. Record the settlement proof (auto-matches in reconciliation).
+      await attachSettlementProof(payment.id, {
+        reference: reference.trim(),
+        method: isStable ? "onchain-tx" : "bank-slip",
+        attachmentUrl: attachment?.url,
+        attachmentKey: attachment?.key,
+      });
+      // 2. Advance the payment to settling.
       await dispatchPayment({ id: payment.id });
       await onSent();
     } catch {
-      setErr(true);
+      setErr("generic");
       setBusy(false);
     }
   }
 
-  const isStable = instruction.channel === "stablecoin-direct";
 
   return (
     <div className="fg-glass rounded-2xl p-4" data-el="payout-execution">
@@ -87,9 +122,48 @@ export function PayoutExecutionPanel({
         ))}
       </dl>
 
+      {/* Settlement proof capture — records what was actually sent for reconciliation. */}
+      <div className="mt-3 rounded-xl border border-border/60 p-3">
+        <label className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+          {isStable ? "On-chain tx hash" : "Bank confirmation / MT103 ref"}
+        </label>
+        <input
+          value={reference}
+          onChange={(e) => setReference(e.target.value)}
+          placeholder={isStable ? "0x…" : "e.g. FT24… / UETR"}
+          className="mt-1 w-full rounded-lg border border-border bg-[color:var(--fg-soft)] px-3 py-2 font-mono text-[12px]"
+          data-el="payout-proof-ref"
+        />
+        <div className="mt-2 flex items-center gap-2">
+          <label
+            className={cn(
+              "flex cursor-pointer items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold hover:bg-[color:var(--fg-soft)]",
+              uploading && "opacity-60",
+            )}
+            data-el="payout-proof-upload"
+          >
+            <Paperclip className="h-3.5 w-3.5" />
+            {uploading ? "Uploading…" : attachment ? "Replace slip" : "Attach slip"}
+            <input type="file" accept="image/*,application/pdf" className="hidden" onChange={handleUpload} disabled={uploading} />
+          </label>
+          {attachment && (
+            <a
+              href={attachment.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="truncate text-[11px] text-primary underline"
+            >
+              {attachment.name}
+            </a>
+          )}
+        </div>
+      </div>
+
       {err && (
         <p className="mt-2 text-[11px] text-[color:var(--danger)]">
-          Could not mark as sent. Please try again.
+          {err === "reference"
+            ? `Enter the ${isStable ? "on-chain tx hash" : "bank confirmation reference"} before marking as sent.`
+            : "Something went wrong. Please try again."}
         </p>
       )}
 
