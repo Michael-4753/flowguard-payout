@@ -5,7 +5,8 @@
 // Each template is a ready-to-copy message the cashier sends out-of-band
 // (email / IM); no realtime channel is implied.
 
-import type { CaseEvent, RiskFactor, Supplier, VerificationCase } from "@/lib/engine/types";
+import type { CaseEvent, RiskFactor, Supplier, VerificationCase, PaymentRecord, RiskAssessment } from "@/lib/engine/types";
+import { recomputeWithClarified } from "@/lib/engine";
 
 /** Data-quality factor ids that can be closed out by a verification request. */
 export const VERIFIABLE_FACTOR_IDS = ["company-name", "account-status", "iban", "swift"] as const;
