@@ -289,7 +289,15 @@ export interface VerificationCase {
   factorTitle: string;
   /** Ready-to-copy request message shown to the cashier. */
   template: string;
+  /** Bank-side raw risk description, verbatim — first-hand, not relayed. */
+  bankRawDescription: string;
   status: VerificationStatus;
+  /** Public read-only link token. */
+  readToken: string;
+  /** Write token — holders can comment / change status. */
+  writeToken: string;
+  /** Shared activity timeline (who / when / what). */
+  timeline: CaseEvent[];
   createdAt: string;
   updatedAt: string;
 }
