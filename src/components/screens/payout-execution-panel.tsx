@@ -103,7 +103,8 @@ export function PayoutExecutionPanel({
         <h3 className="text-sm font-bold">{instruction.title}</h3>
       </div>
       <p className="mt-1 text-[11px] text-muted-foreground">
-        Approved · {formatUsd(payment.amountUsd)} settled in USD. Execute at your{" "}
+        Approved · {payment.amountUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {payment.settleCurrency} settled
+        {payment.currency !== payment.settleCurrency ? ` → credited in ${payment.currency}` : ""}. Execute at your{" "}
         {isStable ? "company wallet" : "bank / PSP"}, then mark it as sent.
       </p>
 
