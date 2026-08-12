@@ -5,6 +5,7 @@ import { getSupplierById } from "@/lib/db/queries/suppliers";
 import { listPayments, insertPayment } from "@/lib/db/queries/payments";
 import { assessAndRoute } from "@/lib/engine/service";
 import { deriveVouchers } from "@/lib/engine";
+import { initialReview } from "@/lib/review";
 import type { PaymentRecord } from "@/lib/engine/types";
 
 const createSchema = z.object({
@@ -66,8 +67,9 @@ export async function POST(request: NextRequest) {
     riskFactors: risk.factors,
     selectedRouteId: route.id,
     route,
-    status: "initiated",
-    ...deriveVouchers(`${supplier.id}-${route.id}`, route.channelClass, "initiated"),
+    status: "pending_review",
+    ...deriveVouchers(`${supplier.id}-${route.id}`, route.channelClass, "pending_review"),
+    review: initialReview(userId),
     createdAt: new Date().toISOString(),
   };
 
