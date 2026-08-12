@@ -226,7 +226,7 @@ function SummaryCard({ label, value, highlight }: { label: string; value: string
 function Cell({ label, value, danger }: { label: string; value: string; danger?: boolean }) {
   return (
     <div className="min-w-0">
-      <div className="text-[9px] uppercase text-muted-foreground">{label}</div>
+      <div className="text-[10px] uppercase text-muted-foreground">{label}</div>
       <div className="mt-0.5 truncate" style={danger ? { color: "var(--danger)" } : undefined}>
         {value}
       </div>

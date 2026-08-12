@@ -161,7 +161,7 @@ function RouteCard({
 function Metric({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
     <div className="min-w-0">
-      <div className="text-[8px] uppercase text-muted-foreground">{label}</div>
+      <div className="text-[10px] uppercase text-muted-foreground">{label}</div>
       <div className={cn("mt-0.5 truncate", highlight ? "font-semibold text-primary" : "text-foreground")}>
         {value}
       </div>

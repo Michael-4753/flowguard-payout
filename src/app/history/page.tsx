@@ -184,7 +184,7 @@ function Chip({
 function Cell({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-0">
-      <div className="text-[9px] text-muted-foreground">{label}</div>
+      <div className="text-[10px] text-muted-foreground">{label}</div>
       <div className="mt-0.5 truncate text-foreground">{value}</div>
     </div>
   );
