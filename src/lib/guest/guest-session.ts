@@ -169,3 +169,30 @@ export function addGuestSupplier(record: Supplier): void {
     /* ignore */
   }
 }
+
+// ---- guest wallet overrides (keyed by supplierId) ----
+// Works for both seed and user-added payees without duplicating ledger rows.
+
+export function readGuestWalletOverrides(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = window.localStorage.getItem(GUEST_WALLETS_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as Record<string, string>;
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function setGuestWalletOverride(supplierId: string, wallet: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    const map = readGuestWalletOverrides();
+    map[supplierId] = wallet;
+    window.localStorage.setItem(GUEST_WALLETS_KEY, JSON.stringify(map));
+    window.dispatchEvent(new Event(GUEST_EVENT));
+  } catch {
+    /* ignore */
+  }
+}
