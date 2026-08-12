@@ -72,16 +72,19 @@ function PayWizard() {
     <section className="pt-1" data-el="pay-wizard">
       <WizardStepper current={step} />
 
-      {step === 0 && (
-        <BuildStep
-          suppliers={suppliers}
-          initialSupplierId={querySupplier}
-          initialAmount={queryAmount}
-          onSubmit={runAssess}
-        />
-      )}
+      {step === 0 &&
+        (loading && suppliers.length === 0 ? (
+          <LoadingBlock rows={4} />
+        ) : (
+          <BuildStep
+            suppliers={suppliers}
+            initialSupplierId={querySupplier}
+            initialAmount={queryAmount}
+            onSubmit={runAssess}
+          />
+        ))}
 
-      {step === 1 && !assessed && (assessing || loading) && <LoadingBlock rows={4} />}
+      {step === 1 && !assessed && assessing && <LoadingBlock rows={4} />}
 
       {step === 1 && assessed && (
         <>
