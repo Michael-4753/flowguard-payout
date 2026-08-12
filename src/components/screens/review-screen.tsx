@@ -214,9 +214,24 @@ function ReviewCard({
         />
       )}
 
+      {isOwnSubmission && (
+        <div
+          className="mt-3 flex items-start gap-2 rounded-xl border border-[color:var(--warn)]/40 bg-[color:var(--warn)]/10 p-2.5 text-[11px] text-foreground"
+          data-el="review-self"
+        >
+          <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--warn)]" aria-hidden />
+          <span>
+            You submitted this payment. Segregation of duties requires a different
+            person to approve it — you can only return it to yourself.
+          </span>
+        </div>
+      )}
+
       {err && (
         <p className="mt-2 text-[11px] text-[color:var(--danger)]">
-          Could not record the decision. Please try again.
+          {err === "self_review"
+            ? "Approval blocked: the person who submitted a payment cannot approve it. Another reviewer must sign off."
+            : "Could not record the decision. Please try again."}
         </p>
       )}
 
@@ -236,12 +251,14 @@ function ReviewCard({
         </button>
         <button
           type="button"
-          disabled={busy}
+          disabled={busy || isOwnSubmission}
           onClick={() => decide(true)}
+          title={isOwnSubmission ? "You submitted this payment — another reviewer must approve it" : undefined}
           className={cn(
             "flex flex-1 items-center justify-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98]",
             highRisk && !softened ? "bg-[color:var(--danger)]" : "bg-primary",
-            busy && "opacity-60",
+            (busy || isOwnSubmission) && "opacity-60",
+            isOwnSubmission && "cursor-not-allowed",
           )}
           data-el="review-approve"
         >
