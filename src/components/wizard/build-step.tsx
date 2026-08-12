@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowRight, Check, Wallet } from "lucide-react";
 import type { ChannelClass, Supplier } from "@/lib/engine/types";
 import { CHANNEL_CLASS_LABEL, RISK_LEVEL_LABEL } from "@/lib/engine/types";
+import { WalletBackfillModal } from "./wallet-backfill-modal";
 import { cn } from "@/utils/utils";
 
 const CHANNELS: (ChannelClass | "auto")[] = ["auto", "stablecoin-direct", "local-fiat"];
@@ -23,6 +24,7 @@ export function BuildStep({
   const [amount, setAmount] = useState(initialAmount ? String(initialAmount) : "");
   const [channel, setChannel] = useState<ChannelClass | "auto">("auto");
   const [error, setError] = useState<string | null>(null);
+  const [walletGate, setWalletGate] = useState(false);
 
   const MAX_AMOUNT = 100_000_000; // $100M ceiling — guards against overflow / typos.
 
