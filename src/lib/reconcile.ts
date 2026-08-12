@@ -40,6 +40,8 @@ export interface ReconcileRow {
   settlementMethod: "bank-slip" | "onchain-tx" | "";
   /** Uploaded remittance slip / receipt URL, if any. */
   settlementAttachmentUrl: string;
+  /** When the beneficiary confirmed receipt via the login-free link (proof of arrival). */
+  payeeConfirmedAt: string;
   /**
    * Proof match: "matched" once a real settlement proof is captured (any
    * channel), or when the derived on-chain proof exists; "unmatched" when a
