@@ -49,7 +49,7 @@ export function ReviewScreen() {
             <div className="mt-1 font-mono text-2xl font-bold tabular-nums">{pending.length}</div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] uppercase tracking-wide text-muted-foreground">操作身份</div>
+            <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Acting role</div>
             <div className="mt-1 inline-flex rounded-full border border-border bg-[color:var(--fg-soft)] p-0.5" data-el="review-role-switch">
               <button
                 type="button"
@@ -60,7 +60,7 @@ export function ReviewScreen() {
                 )}
                 data-el="review-role-maker"
               >
-                经办
+                Maker
               </button>
               <button
                 type="button"
@@ -71,13 +71,14 @@ export function ReviewScreen() {
                 )}
                 data-el="review-role-checker"
               >
-                审批
+                Checker
               </button>
             </div>
           </div>
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground">
-          经办与审批相互制约:以「经办」身份提交的付款,必须切换到「审批」身份才能批准(不能自己批自己)。
+          Maker and checker act as a mutual control: a payment submitted as the Maker must be
+          approved from the Checker role (you can&apos;t approve your own submission).
         </p>
       </div>
 
