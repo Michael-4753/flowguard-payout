@@ -4,6 +4,7 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 import { Download, CheckCircle2, Circle } from "lucide-react";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
+import { EmptyState } from "@/components/shared/empty-state";
 import { StatusPill } from "@/components/shared/badges";
 import { formatUsdCents, formatDate } from "@/lib/format";
 import {
@@ -101,9 +102,17 @@ export function ReconcileScreen() {
           <LoadingBlock rows={4} />
         </div>
       ) : filtered.length === 0 ? (
-        <p className="fg-glass mt-4 rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          Nothing to reconcile here yet.
-        </p>
+        <div className="mt-4">
+          <EmptyState
+            icon={CheckCircle2}
+            title={rows.length === 0 ? "Nothing to reconcile yet" : "No matches for this filter"}
+            description={
+              rows.length === 0
+                ? "Once payments are routed, they show up here to match against arrival proofs."
+                : "Try switching the filter above to see other payments."
+            }
+          />
+        </div>
       ) : (
         <div className="mt-4 space-y-2.5">
           {filtered.map((r) => (
