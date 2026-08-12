@@ -21,7 +21,7 @@ import { cn } from "@/utils/utils";
  * user, distinguished by role labels and a persisted approval trail.
  */
 export function ReviewScreen() {
-  const { payments, loading, error, refresh, clarifiedFactors, effectiveRisk, currentUserId } = useFlowGuardData();
+  const { payments, loading, error, refresh, effectiveRisk, currentUserId } = useFlowGuardData();
   const pending = useMemo(
     () => payments.filter((p) => p.status === "pending_review"),
     [payments],
@@ -73,7 +73,6 @@ export function ReviewScreen() {
             <ReviewCard
               key={p.id}
               record={p}
-              clarified={clarifiedFactors(p.supplierId)}
               eff={effectiveRisk(p)}
               currentUserId={currentUserId}
               onDone={refresh}
@@ -87,13 +86,11 @@ export function ReviewScreen() {
 
 function ReviewCard({
   record,
-  clarified,
   eff,
   currentUserId,
   onDone,
 }: {
   record: PaymentRecord;
-  clarified: Set<string>;
   eff: EffectiveRisk;
   currentUserId: string;
   onDone: () => Promise<void>;
@@ -148,7 +145,7 @@ function ReviewCard({
         <div className="min-w-0">
           <div className="flex min-w-0 items-center gap-2">
             <span className="truncate text-sm font-semibold">{record.supplierName}</span>
-            <span className="shrink-0"><RiskBadge level={record.riskLevel} /></span>
+            <span className="shrink-0"><RiskBadge level={eff.riskLevel} /></span>
           </div>
           <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
             {MAKER_LABEL} · submitted {formatDate(record.review.submittedAt)}
@@ -176,8 +173,8 @@ function ReviewCard({
 
       <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
         <Cell label="Channel" value={CHANNEL_CLASS_LABEL[record.route.channelClass]} />
-        <Cell label="Return prob." value={formatPercent(record.returnProbability, 0)} />
-        <Cell label="Risk score" value={String(record.riskScore)} />
+        <Cell label="Return prob." value={formatPercent(eff.returnProbability, 0)} />
+        <Cell label="Risk score" value={eff.changed ? `${eff.riskScore} (was ${record.riskScore})` : String(eff.riskScore)} />
       </div>
 
       {highRisk && !softened && (
@@ -201,9 +198,11 @@ function ReviewCard({
           <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--success)]" aria-hidden />
           <span>
             {clarifiedHits.length === 1
-              ? `${clarifiedHits[0].title} was clarified with the payee via a verification case.`
-              : `${clarifiedHits.length} flagged data-quality items were clarified with the payee.`}{" "}
-            The risk score is kept for the record; review remaining factors before approving.
+              ? `${clarifiedHits[0].title}已通过核查 case 向供应商核实并清除。`
+              : `${clarifiedHits.length} 项信息问题已通过核查向供应商核实并清除。`}{" "}
+            风险分已从 {record.riskScore} 下调至 {eff.riskScore}
+            {record.riskLevel !== eff.riskLevel ? `，等级由 ${record.riskLevel} 降为 ${eff.riskLevel}` : ""}。
+            请复核其余因子后再审批。
           </span>
         </div>
       )}
