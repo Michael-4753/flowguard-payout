@@ -32,6 +32,8 @@ export function RiskBadge({ level, className }: { level: RiskLevel; className?: 
 
 const STATUS_STYLES: Record<PaymentStatus, string> = {
   draft: "text-muted-foreground border-border",
+  pending_review: "text-[color:var(--warning)] border-[color:var(--warning)]/40",
+  rejected: "text-[color:var(--danger)] border-[color:var(--danger)]/40",
   initiated: "text-foreground border-border",
   settling: "text-[color:var(--warning)] border-[color:var(--warning)]/40",
   arrived: "text-[color:var(--success)] border-[color:var(--success)]/40",
@@ -53,6 +55,8 @@ export function StatusPill({ status, className }: { status: PaymentStatus; class
           "h-1.5 w-1.5 rounded-full",
           status === "arrived" && "bg-[color:var(--success)]",
           status === "settling" && "bg-[color:var(--warning)] animate-pulse",
+          status === "pending_review" && "bg-[color:var(--warning)] animate-pulse",
+          status === "rejected" && "bg-[color:var(--danger)]",
           status === "initiated" && "bg-foreground",
           status === "draft" && "bg-muted-foreground",
           status === "returned" && "bg-[color:var(--danger)]",
