@@ -21,7 +21,8 @@ import { cn } from "@/utils/utils";
  * user, distinguished by role labels and a persisted approval trail.
  */
 export function ReviewScreen() {
-  const { payments, loading, error, refresh, effectiveRisk, currentUserId } = useFlowGuardData();
+  const { payments, loading, error, refresh, effectiveRisk, currentUserId, activeRole, setActiveRole } =
+    useFlowGuardData();
   const pending = useMemo(
     () => payments.filter((p) => p.status === "pending_review"),
     [payments],
@@ -39,16 +40,45 @@ export function ReviewScreen() {
       </p>
 
       <div
-        className="fg-glass mt-4 flex items-center justify-between rounded-2xl p-4"
+        className="fg-glass mt-4 rounded-2xl p-4"
         data-el="review-summary"
       >
-        <div>
-          <div className="text-[11px] text-muted-foreground">Awaiting your approval</div>
-          <div className="mt-1 font-mono text-2xl font-bold tabular-nums">{pending.length}</div>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-[11px] text-muted-foreground">Awaiting approval</div>
+            <div className="mt-1 font-mono text-2xl font-bold tabular-nums">{pending.length}</div>
+          </div>
+          <div className="text-right">
+            <div className="text-[10px] uppercase tracking-wide text-muted-foreground">操作身份</div>
+            <div className="mt-1 inline-flex rounded-full border border-border bg-[color:var(--fg-soft)] p-0.5" data-el="review-role-switch">
+              <button
+                type="button"
+                onClick={() => setActiveRole("maker")}
+                className={cn(
+                  "rounded-full px-3 py-1 text-[11px] font-semibold transition-colors",
+                  activeRole === "maker" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                )}
+                data-el="review-role-maker"
+              >
+                经办
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveRole("checker")}
+                className={cn(
+                  "rounded-full px-3 py-1 text-[11px] font-semibold transition-colors",
+                  activeRole === "checker" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                )}
+                data-el="review-role-checker"
+              >
+                审批
+              </button>
+            </div>
+          </div>
         </div>
-        <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
-          Acting as {CHECKER_LABEL}
-        </span>
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          经办与审批相互制约:以「经办」身份提交的付款,必须切换到「审批」身份才能批准(不能自己批自己)。
+        </p>
       </div>
 
       {loading ? (
@@ -74,7 +104,7 @@ export function ReviewScreen() {
               key={p.id}
               record={p}
               eff={effectiveRisk(p)}
-              currentUserId={currentUserId}
+              activeRole={activeRole}
               onDone={refresh}
             />
           ))}
