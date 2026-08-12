@@ -12,6 +12,8 @@ import type { VerificationCase } from "@/lib/engine/types";
 // the public page does not need either token value to render.
 function stripTokens(c: VerificationCase): Omit<VerificationCase, "readToken" | "writeToken"> {
   const { readToken: _r, writeToken: _w, ...safe } = c;
+  void _r;
+  void _w;
   return safe;
 }
 
