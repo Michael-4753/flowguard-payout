@@ -129,6 +129,7 @@ export async function reviewPayment(input: {
   id: string;
   approve: boolean;
   note?: string;
+  role?: "maker" | "checker";
 }): Promise<PaymentRecord> {
   if (isGuest()) {
     const outcome = guestReviewPayment(input);
@@ -138,7 +139,7 @@ export async function reviewPayment(input: {
   const res = await request(`/api/payments/${encodeURIComponent(input.id)}/review`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ approve: input.approve, note: input.note }),
+    body: JSON.stringify({ approve: input.approve, note: input.note, role: input.role }),
   });
   if (!res.ok) {
     if (res.status === 403) throw new Error("self_review");
