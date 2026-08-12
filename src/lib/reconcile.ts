@@ -187,6 +187,10 @@ export function buildCsv(rows: ReconcileRow[]): string {
     "Expected (USD)",
     "Received (USD)",
     "Variance (USD)",
+    "Invoice no",
+    "Bank ref (off-chain)",
+    "On-chain ref",
+    "Proof match",
     "Reconciled",
   ];
   const lines = rows.map((r) =>
@@ -203,6 +207,10 @@ export function buildCsv(rows: ReconcileRow[]): string {
       r.expectedUsd.toFixed(2),
       r.receivedUsd.toFixed(2),
       r.varianceUsd.toFixed(2),
+      r.invoiceNo,
+      r.offchainRef,
+      r.onchainRef || "—",
+      r.matchStatus,
       r.reconciled ? "yes" : "no",
     ]
       .map(csvCell)
