@@ -57,7 +57,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Content */}
       <main className="mx-auto w-full max-w-[760px] flex-1 px-4 pt-2">
         <AuthGate>
-          <FlowGuardDataProvider>{children}</FlowGuardDataProvider>
+          <FlowGuardDataProvider>
+            {/* Keyed by route so switching tabs gently fades the new screen in. */}
+            <div key={pathname} className="fg-fade">
+              {children}
+            </div>
+          </FlowGuardDataProvider>
         </AuthGate>
       </main>
 
