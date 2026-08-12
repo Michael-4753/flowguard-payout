@@ -86,37 +86,46 @@ export function ReviewScreen() {
 function ReviewCard({
   record,
   clarified,
+  currentUserId,
   onDone,
 }: {
   record: PaymentRecord;
   clarified: Set<string>;
+  currentUserId: string;
   onDone: () => Promise<void>;
 }) {
   const [mode, setMode] = useState<"idle" | "reject">("idle");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState<null | "generic" | "self_review">(null);
   const highRisk = record.riskLevel === "high";
   // Very large payouts (≥ $1M) are forced into the high-risk approval lane by
   // the engine — surface the reason explicitly for the reviewer.
   const veryLargePayout = record.amountUsd >= 1_000_000;
+  // Segregation of duties: the submitter (maker) cannot approve their own payment.
+  const isOwnSubmission = Boolean(currentUserId) && record.review.makerId === currentUserId;
   // Verification feedback: risk factors that hit AND have a resolved case.
   const clarifiedHits = record.riskFactors.filter((f) => f.hit && clarified.has(f.id));
   const softened = clarifiedHits.length > 0;
 
   async function decide(approve: boolean) {
     if (busy) return;
+    // Block self-approval before hitting the network (backend enforces it too).
+    if (approve && isOwnSubmission) {
+      setErr("self_review");
+      return;
+    }
     if (!approve && !note.trim()) {
       setMode("reject");
       return;
     }
     setBusy(true);
-    setErr(false);
+    setErr(null);
     try {
       await reviewPayment({ id: record.id, approve, note: approve ? undefined : note.trim() });
       await onDone();
-    } catch {
-      setErr(true);
+    } catch (e) {
+      setErr(e instanceof Error && e.message === "self_review" ? "self_review" : "generic");
       setBusy(false);
     }
   }
