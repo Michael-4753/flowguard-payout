@@ -28,13 +28,27 @@ import {
   addGuestVerificationCase,
   readGuestVerificationCases,
   updateGuestVerificationCase,
+  addGuestSupplier,
+  readGuestSuppliers,
 } from "./guest-session";
+import { buildSupplier, validateNewSupplier, type NewSupplierInput } from "@/lib/supplier-input";
 
 /** Stable createdAt for seed payees so guest data is reproducible. */
 const GUEST_SEED_TS = "2026-01-01T00:00:00.000Z";
 
 export function guestSuppliers(): Supplier[] {
-  return SEED_SUPPLIERS.map((s) => ({ ...s, createdAt: GUEST_SEED_TS }));
+  const seeded = SEED_SUPPLIERS.map((s) => ({ ...s, createdAt: GUEST_SEED_TS }));
+  // User-added payees appear first, then the seed ledger.
+  return [...readGuestSuppliers(), ...seeded];
+}
+
+/** Guest add-payee: validate + persist a new supplier in localStorage. */
+export function guestCreateSupplier(input: NewSupplierInput): Supplier {
+  const result = validateNewSupplier(input);
+  if (!result.ok || !result.value) throw new Error("invalid_supplier");
+  const supplier: Supplier = { ...buildSupplier(result.value), createdAt: new Date().toISOString() };
+  addGuestSupplier(supplier);
+  return supplier;
 }
 
 export function guestSupplier(
