@@ -163,8 +163,11 @@ function CreateEscrowForm({
 
       <div className="mt-3 space-y-2">
         <span className="text-[11px] font-medium text-muted-foreground">Milestones</span>
-        {rows.map((r, i) => (
-          <div key={i} className="flex gap-2">
+        {rows.map((r, i) => {
+          const rowAmtErr = r.amount.trim() !== "" ? amountError(r.amount) : null;
+          return (
+          <div key={i} className="space-y-1">
+            <div className="flex gap-2">
             <input
               value={r.title}
               onChange={(e) =>
@@ -184,7 +187,11 @@ function CreateEscrowForm({
               }
               inputMode="decimal"
               placeholder="USD"
-              className="w-24 rounded-xl border border-border bg-[color:var(--fg-soft)] px-3 py-2 text-right text-sm font-mono"
+              aria-invalid={rowAmtErr !== null}
+              className={cn(
+                "w-24 rounded-xl border bg-[color:var(--fg-soft)] px-3 py-2 text-right text-sm font-mono",
+                rowAmtErr ? "border-[color:var(--danger)]" : "border-border",
+              )}
             />
             {rows.length > 1 && (
               <button
@@ -196,8 +203,15 @@ function CreateEscrowForm({
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
             )}
+            </div>
+            {rowAmtErr && (
+              <p className="text-right text-[10px] text-[color:var(--danger)]" data-el="escrow-amount-error">
+                {rowAmtErr}
+              </p>
+            )}
           </div>
-        ))}
+          );
+        })}
         <button
           type="button"
           onClick={() => setRows((prev) => [...prev, { title: "", amount: "" }])}
