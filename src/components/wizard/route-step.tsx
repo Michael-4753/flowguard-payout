@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { Check, Lock, Info, ShieldAlert, Wallet } from "lucide-react";
-import type { RiskAssessment, RouteOption, RoutingResult } from "@/lib/engine/types";
+import type { RiskAssessment, RouteOption, RoutingResult, Supplier } from "@/lib/engine/types";
 import { FlowNarrativeStage } from "@/components/flow/flow-narrative-stage";
+import { WalletBackfillModal } from "./wallet-backfill-modal";
 import { formatUsdCents, formatPercent, formatMinutes } from "@/lib/format";
 import { useIsGuest } from "@/lib/guest/guest-session";
 import { cn } from "@/utils/utils";
@@ -11,17 +12,36 @@ import { cn } from "@/utils/utils";
 export function RouteStep({
   routing,
   risk,
+  supplier,
   onConfirm,
   confirmed,
 }: {
   routing: RoutingResult;
   risk: RiskAssessment;
+  supplier: Supplier;
   onConfirm: (routeId: string) => void;
   confirmed: boolean;
 }) {
   const [selectedId, setSelectedId] = useState(routing.recommendedId);
+  const [walletGate, setWalletGate] = useState(false);
   const guest = useIsGuest();
   const highRisk = risk.level === "high";
+
+  const selectedOption = routing.options.find((o) => o.id === selectedId);
+
+  function handleConfirm() {
+    // Hard-stop (no dead angle): whether the cashier picked Stablecoin Direct
+    // explicitly or the router auto-recommended it, a payee with no wallet on
+    // file cannot receive it — capture the address first.
+    if (
+      selectedOption?.channelClass === "stablecoin-direct" &&
+      !supplier.stablecoinWallet
+    ) {
+      setWalletGate(true);
+      return;
+    }
+    onConfirm(selectedId);
+  }
 
   return (
     <div className="space-y-4" data-el="wizard-route">
