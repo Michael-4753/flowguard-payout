@@ -142,11 +142,13 @@ export function PrecheckStep({
         >
           <div className="flex items-center gap-2 text-primary">
             <Users className="h-4 w-4 shrink-0" />
-            <span className="text-sm font-bold">供应商信息需要核查</span>
+            <span className="text-sm font-bold">Supplier details need verification</span>
           </div>
           <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-            这笔付款被标为高风险，主要是收款方基本信息存在问题。这类问题应先向供应商核查、开一个
-            case 存证，而不是直接承认风险发起审批。以下 {verifiableHits.length} 项可一键同步给供应商：
+            This payment is flagged high-risk mainly because of issues in the payee&apos;s basic
+            details. These should first be verified with the supplier and logged as a case — rather
+            than acknowledging the risk and going straight to approval. The {verifiableHits.length}{" "}
+            item(s) below can be synced to the supplier in one click:
           </p>
           <ul className="mt-2 space-y-1">
             {verifiableHits.map((f) => (
@@ -176,22 +178,22 @@ export function PrecheckStep({
             >
               <Send className="h-4 w-4" />
               {syncing
-                ? "正在创建核查 case…"
+                ? "Creating verification case…"
                 : synced.length > 0
-                  ? "同步其余问题给供应商"
-                  : "一键同步问题给供应商核查"}
+                  ? "Sync remaining issues to supplier"
+                  : "Sync issues to supplier for verification"}
             </button>
           )}
           {syncErr && (
             <p className="mt-2 text-[11px] text-[color:var(--danger)]">
-              创建核查请求失败，请重试。
+              Couldn&apos;t create the verification request. Please try again.
             </p>
           )}
 
           {syncTemplate && (
             <div className="mt-3 space-y-2" data-el="wizard-verify-result">
               <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[color:var(--success)]">
-                <FileCheck2 className="h-3.5 w-3.5" /> 已创建核查 case（Cases → 核查请求）
+                <FileCheck2 className="h-3.5 w-3.5" /> Verification case created (Cases → Verification requests)
               </div>
               <textarea
                 readOnly
@@ -213,7 +215,7 @@ export function PrecheckStep({
                   ) : (
                     <Copy className="h-3 w-3" />
                   )}
-                  {syncCopied === "ok" ? "已复制" : syncCopied === "fail" ? "复制失败，请手动选择" : "复制核查消息"}
+                  {syncCopied === "ok" ? "Copied" : syncCopied === "fail" ? "Copy failed — select manually" : "Copy verification message"}
                 </button>
                 <button
                   type="button"
@@ -221,11 +223,12 @@ export function PrecheckStep({
                   className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/10"
                   data-el="wizard-verify-track"
                 >
-                  <FileCheck2 className="h-3 w-3" /> 到 Cases 跟进
+                  <FileCheck2 className="h-3 w-3" /> Track in Cases
                 </button>
               </div>
               <p className="text-[10px] text-muted-foreground">
-                供应商回复后，在 Cases 中更新状态。核查通过即可清除该风险，无需承认风险硬发。
+                Once the supplier replies, update the status in Cases. When verified, the risk clears
+                automatically — no need to force it through by acknowledging the risk.
               </p>
             </div>
           )}
