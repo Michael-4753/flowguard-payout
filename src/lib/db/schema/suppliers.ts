@@ -37,6 +37,7 @@ export const suppliers = pgTable(
     historicalReturnRate: doublePrecision("historical_return_rate").notNull().default(0),
     avgSettlementHours: doublePrecision("avg_settlement_hours").notNull().default(2),
     avgAmountUsd: doublePrecision("avg_amount_usd").notNull().default(0),
+    stablecoinWallet: varchar("stablecoin_wallet", { length: 128 }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
