@@ -256,6 +256,24 @@ export const VERIFICATION_STATUS_LABEL: Record<VerificationStatus, string> = {
   clarified: "Clarified",
 };
 
+/** Who acted on a shared case (no real multi-user auth in this demo). */
+export type CaseActor = "cashier" | "business" | "supplier";
+
+export const CASE_ACTOR_LABEL: Record<CaseActor, string> = {
+  cashier: "Cashier",
+  business: "Business",
+  supplier: "Supplier",
+};
+
+/** One entry in a case's shared activity timeline. */
+export interface CaseEvent {
+  id: string;
+  actor: CaseActor;
+  kind: "created" | "status" | "comment";
+  message: string;
+  at: string;
+}
+
 /**
  * A verification request (data-quality risk close-out). Generated for a
  * data-quality risk factor so the cashier can copy a ready-made message to the
