@@ -26,6 +26,7 @@ export const payments = pgTable(
     supplierCodeName: varchar("supplier_code_name", { length: 64 }).notNull(),
     amountUsd: doublePrecision("amount_usd").notNull(),
     currency: varchar("currency", { length: 8 }).notNull().$type<Currency>(),
+    settleCurrency: varchar("settle_currency", { length: 8 }).notNull().default("USD").$type<Currency>(),
     riskScore: doublePrecision("risk_score").notNull(),
     riskLevel: varchar("risk_level", { length: 16 }).notNull().$type<RiskLevel>(),
     returnProbability: doublePrecision("return_probability").notNull().default(0),
