@@ -357,7 +357,8 @@ export function PrecheckStep({
           data-el="wizard-verify-gate"
         >
           <p className="text-xs leading-relaxed text-muted-foreground">
-            建议先向供应商核查上述信息问题再决定。若确认无法核查、必须带风险发出，可选择直接承认风险。
+            We recommend verifying the issues above with the supplier before deciding. If they truly
+            can&apos;t be verified and the payment must go out with the risk, you can acknowledge it.
           </p>
           <button
             type="button"
@@ -365,7 +366,7 @@ export function PrecheckStep({
             className="mt-2 text-[12px] font-semibold text-[color:var(--danger)] underline underline-offset-2"
             data-el="wizard-verify-override"
           >
-            无法核查，仍要承认风险
+            Can&apos;t verify — acknowledge the risk anyway
           </button>
         </div>
       )}
@@ -420,7 +421,7 @@ export function PrecheckStep({
       )}
       {!scanning && !canContinue && hasVerifiable && !verifyGateSatisfied && (
         <p className="text-center text-[11px] text-muted-foreground" data-el="wizard-gate-hint">
-          请先将上方供应商信息问题一键同步核查,或选择“无法核查仍要承认风险”,才能继续。
+          Sync the supplier-info issues above for verification, or choose &ldquo;Can&apos;t verify — acknowledge the risk anyway&rdquo; to continue.
         </p>
       )}
     </div>
