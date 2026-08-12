@@ -201,6 +201,7 @@ export function buildCsv(rows: ReconcileRow[]): string {
     "Invoice no",
     "Bank ref (off-chain)",
     "On-chain ref",
+    "Settlement ref",
     "Proof match",
     "Reconciled",
   ];
@@ -221,6 +222,7 @@ export function buildCsv(rows: ReconcileRow[]): string {
       r.invoiceNo,
       r.offchainRef,
       r.onchainRef || "—",
+      r.settlementRef || "—",
       r.matchStatus,
       r.reconciled ? "yes" : "no",
     ]
