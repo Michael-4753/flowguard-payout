@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
 import { FlowProgressTimeline } from "@/components/shared/flow-progress-timeline";
@@ -13,6 +13,7 @@ import {
   CHANNEL_CLASS_LABEL,
   RISK_LEVEL_LABEL,
   STATUS_LABEL,
+  type PaymentRecord,
   type PaymentStatus,
   type RiskLevel,
 } from "@/lib/engine/types";
