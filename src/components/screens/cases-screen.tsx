@@ -282,6 +282,7 @@ function VerificationCard({
 
 function ShareLinks({ record }: { record: VerificationCase }) {
   const [copied, setCopied] = useState<"read" | "write" | null>(null);
+  const guest = useIsGuest();
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   async function copy(kind: "read" | "write", token: string) {
@@ -292,6 +293,20 @@ function ShareLinks({ record }: { record: VerificationCase }) {
     } catch {
       /* ignore */
     }
+  }
+
+  // 访客（离线）模式下案例只存在本机、不落库，分享链接对外无效，
+  // 因此隐藏分享按钮，改为提示需登录后才能生成可分享的链接。
+  if (guest) {
+    return (
+      <div
+        className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-border pt-3 text-[10px] text-muted-foreground"
+        data-el="verification-share-guest"
+      >
+        <LinkIcon className="h-3 w-3 shrink-0" />
+        <span>访客模式下的案例仅保存在本机、无法分享。请登录后再创建案例以生成分享链接。</span>
+      </div>
+    );
   }
 
   return (
