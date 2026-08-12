@@ -4,7 +4,7 @@ import { upsertUser } from "@/lib/db/queries";
 import { listSuppliers, countSuppliers, insertSuppliers } from "@/lib/db/queries/suppliers";
 import { SEED_SUPPLIERS } from "@/lib/db/seed-suppliers";
 
-/** GET /api/suppliers — 列出当前用户的供应商，新用户首登时播种默认档案。 */
+/** GET /api/suppliers — list the current user's suppliers; seed default profiles on first sign-in. */
 export async function GET(request: NextRequest) {
   const auth = requireAuth(request);
   if (!auth.ok) return auth.response;

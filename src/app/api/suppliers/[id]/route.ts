@@ -3,7 +3,7 @@ import { requireAuth } from "@/lib/auth";
 import { getSupplierById } from "@/lib/db/queries/suppliers";
 import { listPaymentsBySupplier } from "@/lib/db/queries/payments";
 
-/** GET /api/suppliers/[id] — 单个供应商档案 + 其付款记录。 */
+/** GET /api/suppliers/[id] — a single supplier profile + its payment records. */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },

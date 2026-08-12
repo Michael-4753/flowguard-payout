@@ -13,7 +13,7 @@ export interface AssessResult {
   routing: RoutingResult;
 }
 
-/** 服务端确定性预检 + 路由计算。 */
+/** Server-side deterministic precheck + routing computation. */
 export function assessAndRoute(supplier: Supplier, input: PaymentInput): AssessResult {
   const risk = assessRisk(supplier);
   const routing = routePayment(supplier, input, risk);
