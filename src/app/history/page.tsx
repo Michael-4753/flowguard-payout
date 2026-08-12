@@ -83,7 +83,9 @@ function HistoryBody() {
         </div>
       ) : filtered.length === 0 ? (
         <p className="fg-glass mt-4 rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          No payments match these filters.
+          {payments.length === 0
+            ? "No payments yet. Once you route a payment, it will appear here with its pre-check snapshot."
+            : "No payments match these filters. Try resetting the risk or status filter above."}
         </p>
       ) : (
         <div className="mt-4 space-y-2.5">
