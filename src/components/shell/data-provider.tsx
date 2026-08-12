@@ -52,12 +52,20 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
   }, []);
 
   useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(ROLE_KEY);
-      if (saved === "maker" || saved === "checker") setActiveRoleState(saved);
-    } catch {
-      /* ignore */
-    }
+    let alive = true;
+    void (async () => {
+      await Promise.resolve();
+      if (!alive) return;
+      try {
+        const saved = window.localStorage.getItem(ROLE_KEY);
+        if (saved === "maker" || saved === "checker") setActiveRoleState(saved);
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const refresh = useCallback(async () => {
