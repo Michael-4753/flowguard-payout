@@ -3,7 +3,8 @@ import { db } from "../client";
 import { payments, type PaymentRow } from "../schema/payments";
 import { deriveVouchers } from "@/lib/engine";
 import { initialReview, applyDecision } from "@/lib/review";
-import type { Currency, PaymentRecord, PaymentStatus, ReviewInfo, SettlementProof } from "@/lib/engine/types";
+import { makeToken } from "@/lib/verification";
+import type { Currency, PaymentRecord, PaymentStatus, ReviewInfo, SettlementProof, PayeeReceipt } from "@/lib/engine/types";
 
 function toDomain(row: PaymentRow): PaymentRecord {
   return {
@@ -140,9 +141,11 @@ export async function dispatchPayment(input: {
   userId: string;
   id: string;
 }): Promise<PaymentRecord | undefined> {
+  // Issue a login-free receipt token so the payee can confirm arrival.
+  const receiptToken = makeToken();
   const rows = await db
     .update(payments)
-    .set({ status: "settling" })
+    .set({ status: "settling", receiptToken })
     .where(
       and(
         eq(payments.userId, input.userId),
@@ -150,6 +153,37 @@ export async function dispatchPayment(input: {
         eq(payments.status, "initiated"),
       ),
     )
+    .returning();
+  return rows[0] ? toDomain(rows[0]) : undefined;
+}
+
+/** Public lookup by receipt token (login-free payee link). */
+export async function getPaymentByReceiptToken(
+  token: string,
+): Promise<PaymentRecord | undefined> {
+  if (!token) return undefined;
+  const rows = await db
+    .select()
+    .from(payments)
+    .where(eq(payments.receiptToken, token))
+    .limit(1);
+  return rows[0] ? toDomain(rows[0]) : undefined;
+}
+
+/**
+ * Public payee confirmation: record proof of receipt and advance settling →
+ * arrived. Idempotent-ish — only acts while the payment is still settling.
+ */
+export async function publicConfirmReceipt(
+  token: string,
+  note: string,
+): Promise<PaymentRecord | undefined> {
+  if (!token) return undefined;
+  const receipt: PayeeReceipt = { confirmedAt: new Date().toISOString(), note: note.trim() };
+  const rows = await db
+    .update(payments)
+    .set({ status: "arrived", receipt })
+    .where(and(eq(payments.receiptToken, token), eq(payments.status, "settling")))
     .returning();
   return rows[0] ? toDomain(rows[0]) : undefined;
 }
