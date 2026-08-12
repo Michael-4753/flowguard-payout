@@ -12,7 +12,9 @@ import {
 import { cn } from "@/utils/utils";
 
 interface Payload {
-  case: VerificationCase;
+  // Public API strips the share tokens; a read-only viewer must never receive
+  // the write token. Keep this type honest with the wire shape.
+  case: Omit<VerificationCase, "readToken" | "writeToken">;
   canWrite: boolean;
 }
 
