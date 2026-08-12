@@ -199,6 +199,11 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
               </dd>
             </div>
           )}
+          <ProofLine
+            label="Payee receipt"
+            value={r.payeeConfirmedAt ? `Confirmed ${new Date(r.payeeConfirmedAt).toLocaleDateString()}` : "— awaiting —"}
+            muted={!r.payeeConfirmedAt}
+          />
         </dl>
       </div>
 
