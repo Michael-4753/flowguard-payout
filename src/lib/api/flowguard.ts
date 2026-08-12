@@ -2,11 +2,14 @@ import { request } from "./request";
 import {
   guestAssess,
   guestCreatePayment,
+  guestCreateVerificationCase,
   guestFailureCases,
   guestPayments,
   guestReviewPayment,
+  guestSetVerificationStatus,
   guestSupplier,
   guestSuppliers,
+  guestVerificationCases,
 } from "@/lib/guest/guest-data";
 import { isGuest } from "@/lib/guest/guest-session";
 import type {
@@ -16,6 +19,8 @@ import type {
   RiskAssessment,
   RoutingResult,
   Supplier,
+  VerificationCase,
+  VerificationStatus,
 } from "@/lib/engine/types";
 
 export async function fetchSuppliers(): Promise<Supplier[]> {
