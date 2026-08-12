@@ -6,6 +6,7 @@ import { reviewPayment } from "@/lib/db/queries/payments";
 const reviewSchema = z.object({
   approve: z.boolean(),
   note: z.string().max(500).optional(),
+  role: z.enum(["maker", "checker"]).optional(),
 });
 
 /**
@@ -35,6 +36,7 @@ export async function POST(
     id,
     approve: parsed.data.approve,
     note: parsed.data.note,
+    role: parsed.data.role,
   });
   if (!outcome.ok) {
     if (outcome.reason === "self_review") {
