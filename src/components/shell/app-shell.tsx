@@ -71,6 +71,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {NAV.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             const Icon = item.icon;
+            const badge = item.href === "/cases" ? pendingCases : 0;
             return (
               <button
                 key={item.href}
@@ -85,7 +86,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 )}
                 data-el={item.el}
               >
-                <Icon className="h-[18px] w-[18px]" aria-hidden />
+                <span className="relative">
+                  <Icon className="h-[18px] w-[18px]" aria-hidden />
+                  {badge > 0 && (
+                    <span
+                      className="absolute -right-2 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-[color:var(--danger)] px-1 text-[9px] font-bold leading-none text-white"
+                      aria-label={`${badge} awaiting reply`}
+                      data-el="nav-cases-badge"
+                    >
+                      {badge > 9 ? "9+" : badge}
+                    </span>
+                  )}
+                </span>
                 {item.label}
               </button>
             );
