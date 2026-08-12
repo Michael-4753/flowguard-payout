@@ -2,16 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp } from "lucide-react";
-import type { RiskAssessment } from "@/lib/engine/types";
+import type { RiskAssessment, Supplier } from "@/lib/engine/types";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
+import { AiPrecheckExplainer } from "@/components/wizard/ai-precheck-explainer";
 import { formatPercent, formatUsdCents } from "@/lib/format";
 import { cn } from "@/utils/utils";
 
 export function PrecheckStep({
+  supplier,
   risk,
   onContinue,
 }: {
+  supplier: Supplier;
   risk: RiskAssessment;
   onContinue: () => void;
 }) {
@@ -133,6 +136,9 @@ export function PrecheckStep({
           </ul>
         </div>
       )}
+
+      {/* LLM compliance briefing (DeepSeek, App AI) layered on the rules */}
+      {!scanning && <AiPrecheckExplainer supplier={supplier} risk={risk} />}
 
       {/* Factor list */}
       {!scanning && (
