@@ -108,13 +108,15 @@ export function toReconcileRows(payments: PaymentRecord[]): ReconcileRow[] {
     const expectedUsd = p.route.receiveUsd;
     const arrived = p.status === "arrived";
     const receivedUsd = arrived ? expectedUsd : 0;
-    // Local fiat has no on-chain leg; stablecoin-direct should carry one once
-    // settling/arrived — flag it unmatched if the on-chain ref is missing.
+    const proof = p.settlementProof;
+    const sent = p.status === "settling" || p.status === "arrived";
+    // A real settlement proof (bank slip / on-chain tx) matches ANY channel.
+    // Otherwise fall back to the derived on-chain leg for stablecoin routes.
     const hasOnchainLeg = p.route.channelClass === "stablecoin-direct";
     let matchStatus: ReconcileRow["matchStatus"];
-    if (!hasOnchainLeg) matchStatus = "n/a";
-    else if (p.onchainRef) matchStatus = "matched";
-    else if (p.status === "settling" || p.status === "arrived") matchStatus = "unmatched";
+    if (proof?.reference) matchStatus = "matched";
+    else if (hasOnchainLeg && p.onchainRef) matchStatus = "matched";
+    else if (sent) matchStatus = "unmatched";
     else matchStatus = "n/a";
     return {
       id: p.id,
@@ -132,6 +134,9 @@ export function toReconcileRows(payments: PaymentRecord[]): ReconcileRow[] {
       offchainRef: p.offchainRef,
       invoiceNo: p.invoiceNo,
       onchainRef: p.onchainRef,
+      settlementRef: proof?.reference ?? "",
+      settlementMethod: proof?.method ?? "",
+      settlementAttachmentUrl: proof?.attachmentUrl ?? "",
       matchStatus,
       reconciled: flags[p.id] === true,
     };
