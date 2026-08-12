@@ -107,6 +107,7 @@ function PayWizard() {
           <DraftBanner name={assessed.supplier.name} amount={assessed.amountUsd} />
           <PrecheckStep
             key={assessed.supplier.id + assessed.amountUsd}
+            supplier={assessed.supplier}
             risk={assessed.risk}
             onContinue={() => setStep(2)}
           />
