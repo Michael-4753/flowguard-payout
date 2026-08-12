@@ -64,6 +64,40 @@ export function guestFailureCases(): FailureCase[] {
   return FAILURE_CASES;
 }
 
+export function guestVerificationCases(): VerificationCase[] {
+  return readGuestVerificationCases();
+}
+
+export function guestCreateVerificationCase(input: {
+  supplierId: string;
+  factorId: string;
+}): VerificationCase | null {
+  const supplier = guestSuppliers().find((s) => s.id === input.supplierId);
+  if (!supplier || !isVerifiable(input.factorId)) return null;
+  const factor = assessRisk(supplier).factors.find((f) => f.id === input.factorId);
+  const now = new Date().toISOString();
+  const record: VerificationCase = {
+    id: `vc-guest-${Date.now().toString(36)}`,
+    supplierId: supplier.id,
+    supplierName: supplier.name,
+    factorId: input.factorId,
+    factorTitle: factor?.title ?? input.factorId,
+    template: buildTemplate(input.factorId, supplier),
+    status: "open",
+    createdAt: now,
+    updatedAt: now,
+  };
+  addGuestVerificationCase(record);
+  return record;
+}
+
+export function guestSetVerificationStatus(
+  id: string,
+  status: VerificationStatus,
+): VerificationCase | null {
+  return updateGuestVerificationStatus(id, status);
+}
+
 export function guestAssess(input: {
   supplierId: string;
   amountUsd: number;
