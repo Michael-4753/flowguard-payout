@@ -6,6 +6,7 @@ import { ChevronRight, MapPin, AlertTriangle } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
+import { EmptyState } from "@/components/shared/empty-state";
 import { RiskBadge } from "@/components/shared/badges";
 import { formatPercent, formatHours, formatUsd } from "@/lib/format";
 import { distinctCurrencies, groupByCountry } from "@/lib/analytics";
@@ -60,9 +61,17 @@ function SuppliersBody() {
           <LoadingBlock rows={4} />
         </div>
       ) : groups.length === 0 ? (
-        <p className="fg-glass mt-4 rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          No payees match this currency.
-        </p>
+        <div className="mt-4">
+          <EmptyState
+            icon={MapPin}
+            title={suppliers.length === 0 ? "No payees yet" : "No payees in this currency"}
+            description={
+              suppliers.length === 0
+                ? "Payees appear here once they are added to your workspace."
+                : "Switch the currency filter above to see other payees."
+            }
+          />
+        </div>
       ) : (
         <div className="mt-4 space-y-5">
           {groups.map((g) => (
