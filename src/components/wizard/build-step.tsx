@@ -46,17 +46,26 @@ export function BuildStep({
   const canSubmit = Boolean(supplierId) && amount.trim() !== "" && liveAmountError === null;
   const selected = suppliers.find((s) => s.id === supplierId);
 
+  function proceed() {
+    onSubmit({
+      supplierId,
+      amountUsd: Number(amount),
+      preferredChannel: channel === "auto" ? undefined : channel,
+    });
+  }
+
   function submit() {
     if (!supplierId) return setError("Select a payee to continue.");
     if (amount.trim() === "") return setError("Enter an amount in USD.");
     const amtErr = amountError(amount);
     if (amtErr) return setError(amtErr);
     setError(null);
-    onSubmit({
-      supplierId,
-      amountUsd: Number(amount),
-      preferredChannel: channel === "auto" ? undefined : channel,
-    });
+    // Hard-stop: an explicit Stablecoin Direct choice requires a payee wallet.
+    if (channel === "stablecoin-direct" && selected && !selected.stablecoinWallet) {
+      setWalletGate(true);
+      return;
+    }
+    proceed();
   }
 
   return (
