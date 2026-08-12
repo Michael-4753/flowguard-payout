@@ -128,6 +128,18 @@ export function RouteStep({
           </>
         )}
       </button>
+
+      {walletGate && (
+        <WalletBackfillModal
+          supplierId={supplier.id}
+          supplierName={supplier.name}
+          onClose={() => setWalletGate(false)}
+          onSaved={() => {
+            setWalletGate(false);
+            onConfirm(selectedId);
+          }}
+        />
+      )}
     </div>
   );
 }
