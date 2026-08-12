@@ -140,6 +140,34 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
         <Cell label="Variance" value={formatUsdCents(r.varianceUsd)} danger={r.varianceUsd < 0} />
       </div>
 
+      {/* On-chain / off-chain proof matching (pain point 4) */}
+      <div className="mt-3 rounded-xl border border-border bg-[color:var(--fg-soft)] p-2.5" data-el="reconcile-proofs">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Proof match</span>
+          <span
+            className={cn(
+              "rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
+              r.matchStatus === "matched"
+                ? "bg-[color:var(--success)]/15 text-[color:var(--success)]"
+                : r.matchStatus === "unmatched"
+                  ? "bg-[color:var(--danger)]/15 text-[color:var(--danger)]"
+                  : "bg-[color:var(--fg-soft)] text-muted-foreground",
+            )}
+          >
+            {r.matchStatus === "matched"
+              ? "Matched"
+              : r.matchStatus === "unmatched"
+                ? "Unmatched"
+                : "N/A (bank rail)"}
+          </span>
+        </div>
+        <dl className="mt-2 space-y-1 font-mono text-[10px]">
+          <ProofLine label="Invoice" value={r.invoiceNo} />
+          <ProofLine label="Bank ref" value={r.offchainRef} />
+          <ProofLine label="On-chain" value={r.onchainRef || "—"} muted={!r.onchainRef} />
+        </dl>
+      </div>
+
       <button
         type="button"
         onClick={() => toggleReconciled(r.id)}
