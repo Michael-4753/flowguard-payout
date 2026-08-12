@@ -214,7 +214,30 @@ export interface PaymentRecord {
   invoiceNo: string;
   /** On-chain / PSP proof: tx hash or PSP settlement reference. */
   onchainRef: string;
+  /** Maker/checker approval trail (segregation of duties). */
+  review: ReviewInfo;
   createdAt: string;
+}
+
+/**
+ * Maker-checker approval trail. The maker (cashier) creates the payment; a
+ * separate checker (finance supervisor) must approve before it is sent to the
+ * bank. Simulated dual-role within one demo account.
+ */
+export interface ReviewInfo {
+  /** Who created the payment (maker). */
+  makerId: string;
+  makerLabel: string;
+  submittedAt: string;
+  /** Who reviewed it (checker) — empty until reviewed. */
+  checkerId: string;
+  checkerLabel: string;
+  /** When it was approved / rejected — empty until reviewed. */
+  reviewedAt: string;
+  /** Reviewer decision. */
+  decision: "pending" | "approved" | "rejected";
+  /** Reason, required on rejection. */
+  note: string;
 }
 
 /** One payout-requirement checklist item for a corridor (module 4). */
@@ -253,6 +276,8 @@ export const RISK_LEVEL_LABEL: Record<RiskLevel, string> = {
 
 export const STATUS_LABEL: Record<PaymentStatus, string> = {
   draft: "Draft",
+  pending_review: "Pending review",
+  rejected: "Rejected",
   initiated: "Initiated",
   settling: "Settling",
   arrived: "Arrived",
