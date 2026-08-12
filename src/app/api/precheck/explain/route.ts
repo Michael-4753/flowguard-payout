@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { requireAuth } from "@/lib/auth";
-import { appAi, AppAIUnavailableError } from "@/lib/eazo-ai-billing";
+import { appAi, AppAIUnavailableError, extractMessageContent } from "@/lib/eazo-ai-billing";
 
 /**
  * LLM-powered recipient-info pre-check explanation (App AI, text capability).
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
           ).slice(0, 4000)}\n\nProduce the compliance briefing JSON.`,
         },
       ],
-      params: { temperature: 0.3, max_tokens: 500 },
+      params: { temperature: 0.3, max_tokens: 800 },
     });
   } catch (error) {
     if (error instanceof AppAIUnavailableError) {
@@ -72,6 +72,6 @@ export async function POST(request: NextRequest) {
     throw error;
   }
 
-  const raw = result?.choices?.[0]?.message?.content ?? "";
+  const raw = extractMessageContent(result);
   return Response.json({ text: raw });
 }
