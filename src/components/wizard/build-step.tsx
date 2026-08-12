@@ -124,6 +124,13 @@ export function BuildStep({
           {liveAmountError}
         </p>
       )}
+      <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground" data-el="settlement-note">
+        You send in <b className="text-foreground">USD</b> — the standard settlement currency for
+        cross-border payouts.
+        {selected && selected.currency !== "USD" && (
+          <> The payee is credited in their local currency (<b className="text-foreground">{selected.currency}</b>) by the payout rail.</>
+        )}
+      </p>
 
       {/* Channel preference */}
       <label className="mt-4 block text-xs text-muted-foreground">Channel preference</label>
