@@ -152,6 +152,20 @@ export function BuildStep({
         ))}
       </div>
 
+      {channel === "stablecoin-direct" && (
+        <p
+          className="mt-2 flex items-start gap-1.5 text-[11px] leading-relaxed text-[color:var(--warning)]"
+          data-el="stablecoin-wallet-hint"
+        >
+          <Wallet className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+          <span>
+            Stablecoin Direct requires the payee to hold a wallet that can receive an accepted
+            stablecoin (e.g. USDC). Confirm this with them first — otherwise the payout cannot be
+            claimed and is returned.
+          </span>
+        </p>
+      )}
+
       {error && <p className="mt-3 text-xs text-[color:var(--danger)]">{error}</p>}
 
       <button
