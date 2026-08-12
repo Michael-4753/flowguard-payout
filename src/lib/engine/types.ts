@@ -7,13 +7,12 @@ export type RiskLevel = "low" | "medium" | "high";
 export type Severity = "info" | "warn" | "critical";
 export type PaymentStatus = "draft" | "initiated" | "settling" | "arrived" | "returned";
 
-/** Settlement channel classes (module 2). */
-export type ChannelClass = "swift-gpi" | "licensed-psp" | "stablecoin-gateway";
+/** Settlement channel classes (module 2): two payout paths. */
+export type ChannelClass = "stablecoin-direct" | "local-fiat";
 
 export const CHANNEL_CLASS_LABEL: Record<ChannelClass, string> = {
-  "swift-gpi": "SWIFT-GPI Bank",
-  "licensed-psp": "Licensed PSP",
-  "stablecoin-gateway": "Stablecoin Gateway",
+  "stablecoin-direct": "Stablecoin Direct",
+  "local-fiat": "Local Fiat Payout",
 };
 
 export type Currency = "USD" | "EUR" | "GBP" | "SGD" | "INR" | "VND" | "AED";
