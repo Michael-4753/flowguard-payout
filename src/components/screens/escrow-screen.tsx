@@ -122,10 +122,10 @@ function CreateEscrowForm({
     const trimmed = raw.trim();
     if (trimmed === "") return null;
     const n = Number(trimmed);
-    if (!Number.isFinite(n)) return "输入有效的数字。";
-    if (n <= 0) return "金额必须大于 0。";
-    if (n > MAX_AMOUNT) return "金额过大。";
-    if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) return "最多保留 2 位小数。";
+    if (!Number.isFinite(n)) return "Enter a valid number.";
+    if (n <= 0) return "Amount must be greater than 0.";
+    if (n > MAX_AMOUNT) return "Amount is too large.";
+    if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) return "Use at most 2 decimal places.";
     return null;
   }
 
