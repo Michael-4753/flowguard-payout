@@ -7,7 +7,7 @@ import { assessAndRoute } from "@/lib/engine/service";
 const schema = z.object({
   supplierId: z.string().min(1),
   amountUsd: z.number().positive(),
-  preferredChannel: z.enum(["swift-gpi", "licensed-psp", "stablecoin-gateway"]).optional(),
+  preferredChannel: z.enum(["stablecoin-direct", "local-fiat"]).optional(),
 });
 
 /** POST /api/payments/assess — server-side return-risk pre-check + routing. */

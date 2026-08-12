@@ -10,7 +10,7 @@ import type { PaymentRecord } from "@/lib/engine/types";
 const createSchema = z.object({
   supplierId: z.string().min(1),
   amountUsd: z.number().positive(),
-  preferredChannel: z.enum(["swift-gpi", "licensed-psp", "stablecoin-gateway"]).optional(),
+  preferredChannel: z.enum(["stablecoin-direct", "local-fiat"]).optional(),
   selectedRouteId: z.string().min(1),
 });
 

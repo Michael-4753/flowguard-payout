@@ -8,7 +8,7 @@ export const FAILURE_CASES: FailureCase[] = [
   {
     id: "fc-01",
     corridor: "US → Vietnam",
-    channelClass: "swift-gpi",
+    channelClass: "local-fiat",
     amountUsd: 24000,
     reason: "Beneficiary name mismatch at beneficiary bank screening",
     failedAt: "Beneficiary bank",
@@ -20,7 +20,7 @@ export const FAILURE_CASES: FailureCase[] = [
   {
     id: "fc-02",
     corridor: "US → UAE",
-    channelClass: "swift-gpi",
+    channelClass: "local-fiat",
     amountUsd: 51000,
     reason: "FX-control hold — missing business-purpose documentation",
     failedAt: "Correspondent (intermediary)",
@@ -32,7 +32,7 @@ export const FAILURE_CASES: FailureCase[] = [
   {
     id: "fc-03",
     corridor: "EU → India",
-    channelClass: "licensed-psp",
+    channelClass: "local-fiat",
     amountUsd: 8600,
     reason: "Invalid IBAN check digits — invalid-account return",
     failedAt: "Local payout bank",
@@ -43,7 +43,7 @@ export const FAILURE_CASES: FailureCase[] = [
   {
     id: "fc-04",
     corridor: "US → Estonia",
-    channelClass: "swift-gpi",
+    channelClass: "local-fiat",
     amountUsd: 33000,
     reason: "Dormant beneficiary account rejected the inbound wire",
     failedAt: "Beneficiary bank",
@@ -54,7 +54,7 @@ export const FAILURE_CASES: FailureCase[] = [
   {
     id: "fc-05",
     corridor: "US → high-risk region",
-    channelClass: "swift-gpi",
+    channelClass: "local-fiat",
     amountUsd: 47000,
     reason: "Sanctions screening hold at correspondent bank",
     failedAt: "Correspondent (intermediary)",
@@ -66,7 +66,7 @@ export const FAILURE_CASES: FailureCase[] = [
   {
     id: "fc-06",
     corridor: "US → Singapore",
-    channelClass: "licensed-psp",
+    channelClass: "local-fiat",
     amountUsd: 15200,
     reason: "Beneficiary bank on internal risk blacklist — interception",
     failedAt: "PSP netting hub",
@@ -77,7 +77,7 @@ export const FAILURE_CASES: FailureCase[] = [
   {
     id: "fc-07",
     corridor: "US → Vietnam",
-    channelClass: "swift-gpi",
+    channelClass: "local-fiat",
     amountUsd: 12800,
     reason: "Malformed SWIFT/BIC — bounced at routing bank",
     failedAt: "Correspondent (intermediary)",
