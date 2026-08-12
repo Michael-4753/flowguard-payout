@@ -1,7 +1,7 @@
 import type { InferSelectModel } from "drizzle-orm";
-import { index, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { index, jsonb, pgTable, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { users } from "./users";
-import type { VerificationStatus } from "@/lib/engine/types";
+import type { CaseEvent, VerificationStatus } from "@/lib/engine/types";
 
 /**
  * Verification case: a data-quality risk close-out request tied to a payee and
@@ -20,13 +20,19 @@ export const verificationCases = pgTable(
     factorId: varchar("factor_id", { length: 64 }).notNull(),
     factorTitle: varchar("factor_title", { length: 128 }).notNull(),
     template: text("template").notNull(),
+    bankRawDescription: text("bank_raw_description").notNull().default(""),
     status: varchar("status", { length: 16 }).notNull().$type<VerificationStatus>(),
+    readToken: varchar("read_token", { length: 64 }).notNull().default(""),
+    writeToken: varchar("write_token", { length: 64 }).notNull().default(""),
+    timeline: jsonb("timeline").$type<CaseEvent[]>(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (table) => ({
     userIdIdx: index("verification_cases_user_id_idx").on(table.userId),
     createdAtIdx: index("verification_cases_created_at_idx").on(table.createdAt),
+    readTokenIdx: index("verification_cases_read_token_idx").on(table.readToken),
+    writeTokenIdx: index("verification_cases_write_token_idx").on(table.writeToken),
   }),
 );
 
