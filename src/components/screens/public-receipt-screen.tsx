@@ -38,7 +38,14 @@ export function PublicReceiptScreen({ token }: { token: string }) {
   }, [token]);
 
   useEffect(() => {
-    void load();
+    let alive = true;
+    void (async () => {
+      await Promise.resolve();
+      if (alive) await load();
+    })();
+    return () => {
+      alive = false;
+    };
   }, [load]);
 
   async function confirm() {
