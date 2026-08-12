@@ -163,6 +163,22 @@ function HistoryBody() {
                 );
               })()}
 
+              {p.status === "settling" && p.receiptToken && !p.receipt && (
+                <ReceiptLinkRow token={p.receiptToken} />
+              )}
+              {p.receipt && (
+                <div
+                  className="mt-3 flex items-start gap-2 rounded-xl border border-[color:var(--success)]/40 bg-[color:var(--success)]/10 p-2.5 text-[11px]"
+                  data-el="history-receipt-confirmed"
+                >
+                  <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--success)]" aria-hidden />
+                  <span>
+                    Payee confirmed receipt on {formatDate(p.receipt.confirmedAt)}
+                    {p.receipt.note ? ` — “${p.receipt.note}”` : ""}.
+                  </span>
+                </div>
+              )}
+
               <button
                 type="button"
                 onClick={() => router.push(`/pay?supplier=${p.supplierId}&amount=${p.amountUsd}`)}
