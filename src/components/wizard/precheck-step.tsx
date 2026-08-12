@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp } from "lucide-react";
-import type { RiskAssessment, Supplier } from "@/lib/engine/types";
+import { useRouter } from "next/navigation";
+import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp, Copy, Check, FileCheck2, Route as RouteIcon } from "lucide-react";
+import type { RiskAssessment, RiskFactor, Supplier } from "@/lib/engine/types";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
 import { AiPrecheckExplainer } from "@/components/wizard/ai-precheck-explainer";
+import { createVerificationCase } from "@/lib/api";
 import { formatPercent, formatUsdCents } from "@/lib/format";
 import { cn } from "@/utils/utils";
 
