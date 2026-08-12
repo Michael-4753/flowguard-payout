@@ -106,3 +106,29 @@ export function buildVerificationCase(input: {
     updatedAt: now,
   };
 }
+
+/** Append a status-change event and return the mutated fields. */
+export function applyStatusChange(
+  prev: VerificationCase,
+  status: VerificationCase["status"],
+  actor: CaseEvent["actor"] = "cashier",
+): { status: VerificationCase["status"]; timeline: CaseEvent[]; updatedAt: string } {
+  const label =
+    status === "verified" ? "Marked verified" : status === "clarified" ? "Marked clarified" : "Reopened";
+  const ev = makeEvent({ actor, kind: "status", message: label });
+  return {
+    status,
+    timeline: [...(prev.timeline ?? []), ev],
+    updatedAt: ev.at,
+  };
+}
+
+/** Append a comment event and return the mutated fields. */
+export function applyComment(
+  prev: VerificationCase,
+  message: string,
+  actor: CaseEvent["actor"],
+): { timeline: CaseEvent[]; updatedAt: string } {
+  const ev = makeEvent({ actor, kind: "comment", message: message.trim() });
+  return { timeline: [...(prev.timeline ?? []), ev], updatedAt: ev.at };
+}
