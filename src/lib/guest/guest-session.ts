@@ -132,23 +132,13 @@ export function addGuestVerificationCase(record: VerificationCase): void {
   }
 }
 
-export function updateGuestVerificationStatus(
-  id: string,
-  status: VerificationStatus,
-): VerificationCase | null {
-  if (typeof window === "undefined") return null;
+export function updateGuestVerificationCase(record: VerificationCase): void {
+  if (typeof window === "undefined") return;
   try {
-    const now = new Date().toISOString();
-    let updated: VerificationCase | null = null;
-    const list = readGuestVerificationCases().map((c) => {
-      if (c.id !== id) return c;
-      updated = { ...c, status, updatedAt: now };
-      return updated;
-    });
+    const list = readGuestVerificationCases().map((c) => (c.id === record.id ? record : c));
     window.localStorage.setItem(GUEST_VCASES_KEY, JSON.stringify(list));
     window.dispatchEvent(new Event(GUEST_EVENT));
-    return updated;
   } catch {
-    return null;
+    /* ignore */
   }
 }
