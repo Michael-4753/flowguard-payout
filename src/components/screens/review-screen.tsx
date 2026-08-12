@@ -73,6 +73,7 @@ export function ReviewScreen() {
               key={p.id}
               record={p}
               clarified={clarifiedFactors(p.supplierId)}
+              currentUserId={currentUserId}
               onDone={refresh}
             />
           ))}
