@@ -118,6 +118,19 @@ export function AddPayeeForm({ onClose, onAdded }: { onClose: () => void; onAdde
               </Select>
             </Field>
           </div>
+
+          <Field
+            label={form.preferredChannel === "stablecoin-direct" ? "Stablecoin wallet address (required for this channel)" : "Stablecoin wallet address (optional)"}
+            error={errors.stablecoinWallet}
+          >
+            <Text
+              value={form.stablecoinWallet}
+              onChange={(v) => set("stablecoinWallet", v)}
+              placeholder="0x… / T… (USDC-compatible)"
+              invalid={!!errors.stablecoinWallet}
+              mono
+            />
+          </Field>
         </div>
 
         <div className="mt-5 flex gap-2">
