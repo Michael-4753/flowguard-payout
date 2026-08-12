@@ -99,12 +99,27 @@ export function BuildStep({
         id="amount"
         type="number"
         inputMode="decimal"
+        min="0"
+        step="0.01"
         value={amount}
-        onChange={(e) => setAmount(e.target.value)}
+        onChange={(e) => {
+          setAmount(e.target.value);
+          if (error) setError(null);
+        }}
         placeholder="e.g. 18400"
-        className="mt-2 w-full rounded-2xl border border-border bg-background/40 px-4 py-3 font-mono text-lg outline-none focus:border-primary"
+        aria-invalid={amountInvalid}
+        aria-describedby={amountInvalid ? "amount-error" : undefined}
+        className={cn(
+          "mt-2 w-full rounded-2xl border bg-background/40 px-4 py-3 font-mono text-lg outline-none focus:border-primary",
+          amountInvalid ? "border-[color:var(--danger)]" : "border-border",
+        )}
         data-el="wizard-amount"
       />
+      {amountInvalid && (
+        <p id="amount-error" className="mt-1.5 text-xs text-[color:var(--danger)]" data-el="wizard-amount-error">
+          {liveAmountError}
+        </p>
+      )}
 
       {/* Channel preference */}
       <label className="mt-4 block text-xs text-muted-foreground">Channel preference</label>
@@ -131,7 +146,8 @@ export function BuildStep({
       <button
         type="button"
         onClick={submit}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.99]"
+        disabled={!canSubmit}
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.99] disabled:pointer-events-none disabled:opacity-50"
         data-el="wizard-run-precheck"
       >
         Run pre-check <ArrowRight className="h-4 w-4" />
