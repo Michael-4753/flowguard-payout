@@ -23,6 +23,7 @@ function toDomain(row: PaymentRow): PaymentRecord {
     status: row.status,
     ...deriveVouchers(`${row.supplierId}-${row.selectedRouteId}`, row.route.channelClass, row.status),
     review: (row.review as ReviewInfo | null) ?? initialReview(row.userId),
+    settlementProof: (row.settlementProof as PaymentRecord["settlementProof"]) ?? undefined,
     createdAt: row.createdAt.toISOString(),
   };
 }
