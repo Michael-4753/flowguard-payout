@@ -28,6 +28,7 @@ const EMPTY = {
   iban: "",
   accountStatus: "active" as AccountStatus,
   preferredChannel: "local-fiat" as ChannelClass,
+  stablecoinWallet: "",
 };
 
 export function AddPayeeForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => void }) {
