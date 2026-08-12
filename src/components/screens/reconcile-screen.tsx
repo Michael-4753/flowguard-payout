@@ -5,6 +5,7 @@ import { Download, CheckCircle2, Circle } from "lucide-react";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
+import { ErrorState } from "@/components/errors/error-state";
 import { StatusPill } from "@/components/shared/badges";
 import { formatUsdCents, formatDate } from "@/lib/format";
 import {
@@ -21,7 +22,7 @@ import { cn } from "@/utils/utils";
 type Filter = "all" | "outstanding" | "pending" | "reconciled";
 
 export function ReconcileScreen() {
-  const { payments, loading } = useFlowGuardData();
+  const { payments, loading, error, refresh } = useFlowGuardData();
   const [filter, setFilter] = useState<Filter>("all");
   const [, bump] = useReducer((n: number) => n + 1, 0);
 
@@ -100,6 +101,10 @@ export function ReconcileScreen() {
       {loading ? (
         <div className="mt-4">
           <LoadingBlock rows={4} />
+        </div>
+      ) : error ? (
+        <div className="mt-4">
+          <ErrorState onRetry={() => void refresh()} />
         </div>
       ) : filtered.length === 0 ? (
         <div className="mt-4">

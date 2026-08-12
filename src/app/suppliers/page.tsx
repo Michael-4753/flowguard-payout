@@ -7,6 +7,7 @@ import { AppShell } from "@/components/shell/app-shell";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
+import { ErrorState } from "@/components/errors/error-state";
 import { RiskBadge } from "@/components/shared/badges";
 import { formatPercent, formatHours, formatUsd } from "@/lib/format";
 import { distinctCurrencies, groupByCountry } from "@/lib/analytics";
@@ -22,7 +23,7 @@ export default function SuppliersPage() {
 }
 
 function SuppliersBody() {
-  const { suppliers, payments, loading } = useFlowGuardData();
+  const { suppliers, payments, loading, error, refresh } = useFlowGuardData();
   const [currency, setCurrency] = useState<Currency | "all">("all");
 
   const currencies = useMemo(() => distinctCurrencies(suppliers), [suppliers]);
@@ -59,6 +60,10 @@ function SuppliersBody() {
       {loading ? (
         <div className="mt-4">
           <LoadingBlock rows={4} />
+        </div>
+      ) : error ? (
+        <div className="mt-4">
+          <ErrorState onRetry={() => void refresh()} />
         </div>
       ) : groups.length === 0 ? (
         <div className="mt-4">

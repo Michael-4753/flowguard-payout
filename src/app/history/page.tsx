@@ -9,6 +9,7 @@ import { FlowProgressTimeline } from "@/components/shared/flow-progress-timeline
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
+import { ErrorState } from "@/components/errors/error-state";
 import { formatUsd, formatDate, formatPercent } from "@/lib/format";
 import {
   CHANNEL_CLASS_LABEL,
@@ -41,7 +42,7 @@ export default function HistoryPage() {
 
 function HistoryBody() {
   const router = useRouter();
-  const { payments, loading, clarifiedFactors } = useFlowGuardData();
+  const { payments, loading, error, refresh, clarifiedFactors } = useFlowGuardData();
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
 
@@ -81,6 +82,10 @@ function HistoryBody() {
       {loading ? (
         <div className="mt-4">
           <LoadingBlock rows={4} />
+        </div>
+      ) : error ? (
+        <div className="mt-4">
+          <ErrorState onRetry={() => void refresh()} />
         </div>
       ) : filtered.length === 0 ? (
         <div className="mt-4">
