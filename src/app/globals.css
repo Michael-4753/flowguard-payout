@@ -167,6 +167,19 @@ body {
   html {
     @apply font-sans;
   }
+  /* Keyboard focus visibility: many custom buttons/links only styled :hover,
+     leaving keyboard users with no visible focus. Give every interactive
+     element a consistent focus-visible ring (pointer clicks stay unaffected). */
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    border-radius: max(var(--radius-sm, 0.5rem), 0.5rem);
+  }
 }
 
 /* ============================================================
