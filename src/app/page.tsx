@@ -160,8 +160,10 @@ function DashboardBody() {
         />
       ) : (
         <div className="space-y-2.5">
-          {recent.map((p) => (
-            <PaymentRow key={p.id} record={p} />
+          {recent.map((p, i) => (
+            <div key={p.id} className="fg-enter" style={{ "--i": i } as React.CSSProperties}>
+              <PaymentRow record={p} />
+            </div>
           ))}
         </div>
       )}
