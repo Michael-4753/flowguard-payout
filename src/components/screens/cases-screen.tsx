@@ -422,7 +422,7 @@ function LibraryTab() {
 
   return (
     <>
-      <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-1" data-el="cases-filters">
+      <div className="mt-4 flex flex-wrap items-center gap-2 pb-1" data-el="cases-filters">
         {FILTERS.map((f) => (
           <button
             key={f}

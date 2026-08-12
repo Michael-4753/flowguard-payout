@@ -82,7 +82,7 @@ export function ReconcileScreen() {
         />
       </div>
 
-      <div className="mt-4 flex items-center gap-2 overflow-x-auto pb-1" data-el="reconcile-filters">
+      <div className="mt-4 flex flex-wrap items-center gap-2 pb-1" data-el="reconcile-filters">
         {(["all", "outstanding", "pending", "reconciled"] as Filter[]).map((f) => (
           <Chip key={f} active={filter === f} onClick={() => setFilter(f)}>
             {f === "all"

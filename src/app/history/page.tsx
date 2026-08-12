@@ -132,9 +132,9 @@ function HistoryBody() {
 
 function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-1">
+    <div className="flex flex-wrap items-center gap-2 pb-1">
       <span className="shrink-0 text-[10px] text-muted-foreground">{label}</span>
-      <div className="flex gap-1.5">{children}</div>
+      <div className="flex flex-wrap gap-1.5">{children}</div>
     </div>
   );
 }

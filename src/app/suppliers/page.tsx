@@ -44,7 +44,7 @@ function SuppliersBody() {
       </p>
 
       {/* Currency / corridor filter */}
-      <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1" data-el="currency-filter">
+      <div className="mt-3 flex flex-wrap items-center gap-2 pb-1" data-el="currency-filter">
         <Chip active={currency === "all"} onClick={() => setCurrency("all")}>
           All currencies
         </Chip>
