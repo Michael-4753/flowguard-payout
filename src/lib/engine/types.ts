@@ -247,6 +247,35 @@ export interface ReviewInfo {
   note: string;
 }
 
+/** Verification-case status: awaiting reply → verified / clarified. */
+export type VerificationStatus = "open" | "verified" | "clarified";
+
+export const VERIFICATION_STATUS_LABEL: Record<VerificationStatus, string> = {
+  open: "Awaiting reply",
+  verified: "Verified",
+  clarified: "Clarified",
+};
+
+/**
+ * A verification request (data-quality risk close-out). Generated for a
+ * data-quality risk factor so the cashier can copy a ready-made message to the
+ * payee/business, then track the reply status. Structural/jurisdiction risks
+ * never produce one — they can only be avoided via routing.
+ */
+export interface VerificationCase {
+  id: string;
+  supplierId: string;
+  supplierName: string;
+  /** Which risk factor triggered this (e.g. "company-name"). */
+  factorId: string;
+  factorTitle: string;
+  /** Ready-to-copy request message shown to the cashier. */
+  template: string;
+  status: VerificationStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 /** One payout-requirement checklist item for a corridor (module 4). */
 export interface CorridorRequirement {
   id: string;
