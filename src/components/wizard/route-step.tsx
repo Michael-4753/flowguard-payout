@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Lock, Info, ShieldAlert } from "lucide-react";
+import { Check, Lock, Info, ShieldAlert, Wallet } from "lucide-react";
 import type { RiskAssessment, RouteOption, RoutingResult } from "@/lib/engine/types";
 import { FlowNarrativeStage } from "@/components/flow/flow-narrative-stage";
 import { formatUsdCents, formatPercent, formatMinutes } from "@/lib/format";
