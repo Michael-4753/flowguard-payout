@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/errors/error-state";
 import { RiskBadge } from "@/components/shared/badges";
 import { reviewPayment } from "@/lib/api";
-import { formatUsd, formatDate, formatPercent } from "@/lib/format";
+import { formatDate, formatPercent } from "@/lib/format";
 import { CHANNEL_CLASS_LABEL, type PaymentRecord } from "@/lib/engine/types";
 import type { EffectiveRisk } from "@/lib/verification";
 import { MAKER_LABEL } from "@/lib/review";
