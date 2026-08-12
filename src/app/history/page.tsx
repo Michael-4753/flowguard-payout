@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RotateCcw, ShieldCheck, Receipt, Send } from "lucide-react";
+import { RotateCcw, ShieldCheck, Receipt, Send, CheckCircle2, Link2, Copy, Check } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
 import { FlowProgressTimeline } from "@/components/shared/flow-progress-timeline";
@@ -250,6 +250,49 @@ function ClarifiedChips({ record, clarified }: { record: PaymentRecord; clarifie
           <ShieldCheck className="h-3 w-3" aria-hidden /> {f.title} · clarified
         </span>
       ))}
+    </div>
+  );
+}
+
+/** Copyable login-free receipt link the payer sends to the beneficiary. */
+function ReceiptLinkRow({ token }: { token: string }) {
+  const [copied, setCopied] = useState(false);
+  const url =
+    typeof window !== "undefined" ? `${window.location.origin}/receipt/${token}` : `/receipt/${token}`;
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {
+      /* clipboard may be unavailable */
+    }
+  }
+  return (
+    <div
+      className="mt-3 rounded-xl border border-border/60 bg-[color:var(--fg-soft)] p-2.5"
+      data-el="history-receipt-link"
+    >
+      <div className="flex items-center gap-1.5 text-[11px] font-semibold">
+        <Link2 className="h-3.5 w-3.5 text-primary" aria-hidden /> Payee receipt link
+      </div>
+      <p className="mt-1 text-[10px] text-muted-foreground">
+        Send this login-free link to the beneficiary so they can confirm the funds arrived.
+      </p>
+      <div className="mt-2 flex items-center gap-2">
+        <code className="min-w-0 flex-1 truncate rounded-lg bg-background/60 px-2 py-1.5 font-mono text-[10px]">
+          {url}
+        </code>
+        <button
+          type="button"
+          onClick={copy}
+          className="flex shrink-0 items-center gap-1 rounded-full border border-border px-2.5 py-1.5 text-[10px] font-semibold hover:bg-background/60"
+          data-el="history-receipt-copy"
+        >
+          {copied ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <Copy className="h-3 w-3" />}
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
     </div>
   );
 }
