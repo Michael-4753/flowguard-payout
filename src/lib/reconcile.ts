@@ -137,6 +137,7 @@ export function toReconcileRows(payments: PaymentRecord[]): ReconcileRow[] {
       settlementRef: proof?.reference ?? "",
       settlementMethod: proof?.method ?? "",
       settlementAttachmentUrl: proof?.attachmentUrl ?? "",
+      payeeConfirmedAt: p.receipt?.confirmedAt ?? "",
       matchStatus,
       reconciled: flags[p.id] === true,
     };
