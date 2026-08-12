@@ -144,3 +144,28 @@ export function updateGuestVerificationCase(record: VerificationCase): void {
     /* ignore */
   }
 }
+
+// ---- local user-added suppliers (overlay on top of the seed ledger) ----
+
+export function readGuestSuppliers(): Supplier[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(GUEST_SUPPLIERS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as Supplier[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+export function addGuestSupplier(record: Supplier): void {
+  if (typeof window === "undefined") return;
+  try {
+    const list = [record, ...readGuestSuppliers()];
+    window.localStorage.setItem(GUEST_SUPPLIERS_KEY, JSON.stringify(list));
+    window.dispatchEvent(new Event(GUEST_EVENT));
+  } catch {
+    /* ignore */
+  }
+}
