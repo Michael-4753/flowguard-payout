@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 import { db } from "../client";
 import { suppliers, type SupplierRow } from "../schema/suppliers";
 import type {
