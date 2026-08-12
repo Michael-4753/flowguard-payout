@@ -13,7 +13,10 @@ export interface ReconcileRow {
   id: string;
   createdAt: string;
   supplierName: string;
+  /** Payee's local (credited) currency. */
   currency: Currency;
+  /** Settlement (source) currency the payer sent in. */
+  settleCurrency: Currency;
   channel: string;
   status: PaymentRecord["status"];
   /** Amount sent (USD). */
@@ -125,6 +128,7 @@ export function toReconcileRows(payments: PaymentRecord[]): ReconcileRow[] {
       createdAt: p.createdAt,
       supplierName: p.supplierName,
       currency: p.currency,
+      settleCurrency: p.settleCurrency,
       channel: p.route.name,
       status: p.status,
       amountUsd: p.amountUsd,
@@ -192,7 +196,8 @@ export function buildCsv(rows: ReconcileRow[]): string {
     "Payment ID",
     "Date",
     "Payee",
-    "Currency",
+    "Settle currency",
+    "Payee currency",
     "Channel",
     "Status",
     "Sent (USD)",
@@ -213,6 +218,7 @@ export function buildCsv(rows: ReconcileRow[]): string {
       r.id,
       new Date(r.createdAt).toISOString(),
       r.supplierName,
+      r.settleCurrency,
       r.currency,
       r.channel,
       r.status,
