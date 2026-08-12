@@ -11,7 +11,7 @@ import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/errors/error-state";
-import { formatUsd, formatDate, formatPercent } from "@/lib/format";
+import { formatDate, formatPercent } from "@/lib/format";
 import {
   CHANNEL_CLASS_LABEL,
   RISK_LEVEL_LABEL,
