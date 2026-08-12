@@ -122,7 +122,7 @@ function HistoryBody() {
               </div>
 
               <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
-                <Cell label="Amount" value={formatUsd(p.amountUsd)} />
+                <Cell label="Amount (USD)" value={formatUsd(p.amountUsd)} />
                 <Cell label="Channel" value={CHANNEL_CLASS_LABEL[p.route.channelClass]} />
                 <Cell label="Return prob." value={formatPercent(p.returnProbability, 0)} />
               </div>

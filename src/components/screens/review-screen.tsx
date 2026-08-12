@@ -136,9 +136,14 @@ function ReviewCard({
             {MAKER_LABEL} · submitted {formatDate(record.review.submittedAt)}
           </p>
         </div>
-        <span className="shrink-0 font-mono text-base font-bold tabular-nums">
-          {formatUsd(record.amountUsd)}
-        </span>
+        <div className="shrink-0 text-right">
+          <span className="block font-mono text-base font-bold tabular-nums">
+            {formatUsd(record.amountUsd)}
+          </span>
+          <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-wide text-muted-foreground">
+            settled in USD
+          </span>
+        </div>
       </div>
 
       <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
