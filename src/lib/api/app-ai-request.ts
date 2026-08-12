@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 
 export const APP_AI_UNAVAILABLE_MESSAGE =
-  "AI is temporarily unavailable. Please contact the app creator to continue using it.";;
+  "AI is temporarily unavailable. Please contact the app creator to continue using it.";
 
 const APP_AI_UNAVAILABLE_TOAST_ID = "app-ai-unavailable";
 

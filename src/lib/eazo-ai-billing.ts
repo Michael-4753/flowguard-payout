@@ -55,7 +55,7 @@ export class AppAIUnavailableError extends Error {
 }
 
 const APP_AI_UNAVAILABLE_MESSAGE =
-  "AI is temporarily unavailable. Please contact the app creator to continue using it.";;
+  "AI is temporarily unavailable. Please contact the app creator to continue using it.";
 
 function appAiApiBase() {
   return (
