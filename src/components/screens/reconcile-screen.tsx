@@ -220,6 +220,17 @@ function Cell({ label, value, danger }: { label: string; value: string; danger?:
   );
 }
 
+function ProofLine({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <dt className="shrink-0 text-muted-foreground">{label}</dt>
+      <dd className={cn("min-w-0 truncate", muted ? "text-muted-foreground" : "text-foreground")}>
+        {value}
+      </dd>
+    </div>
+  );
+}
+
 function Chip({
   active,
   onClick,
