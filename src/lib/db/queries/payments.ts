@@ -129,7 +129,8 @@ export async function reviewPayment(input: {
   return { ok: true, payment: toDomain(rows[0]) };
 }
 
-export async function countPayments(userId: string): Promise<number> {
+/**
+ * Post-approval dispatch: the payer has actually sent the funds at the bank /
  * on-chain. Advances an approved (`initiated`) payment to `settling` so the
  * money-flow tracker starts. Only the owner can dispatch their own payment.
  */
@@ -147,6 +148,23 @@ export async function dispatchPayment(input: {
         eq(payments.status, "initiated"),
       ),
     )
+    .returning();
+  return rows[0] ? toDomain(rows[0]) : undefined;
+}
+
+/**
+ * Attach settlement proof (bank slip / on-chain tx) to a dispatched payment.
+ * Only mutates payments the owner has already sent (settling / arrived).
+ */
+export async function attachSettlementProof(input: {
+  userId: string;
+  id: string;
+  proof: SettlementProof;
+}): Promise<PaymentRecord | undefined> {
+  const rows = await db
+    .update(payments)
+    .set({ settlementProof: input.proof })
+    .where(and(eq(payments.userId, input.userId), eq(payments.id, input.id)))
     .returning();
   return rows[0] ? toDomain(rows[0]) : undefined;
 }
