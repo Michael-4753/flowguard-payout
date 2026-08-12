@@ -79,8 +79,9 @@ export function guestCreatePayment(input: {
     riskFactors: risk.factors,
     selectedRouteId: route.id,
     route,
-    status: "initiated",
-    ...deriveVouchers(`guest-${supplier.id}-${route.id}`, route.channelClass, "initiated"),
+    status: "pending_review",
+    ...deriveVouchers(`guest-${supplier.id}-${route.id}`, route.channelClass, "pending_review"),
+    review: initialReview("guest"),
     createdAt: new Date().toISOString(),
   };
   addGuestPayment(record);
