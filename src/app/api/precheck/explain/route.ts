@@ -51,7 +51,6 @@ export async function POST(request: NextRequest) {
   let result;
   try {
     result = await appAi.chat({
-      capability: "text",
       messages: [
         { role: "system", content: KNOWLEDGE_BASE },
         {
