@@ -48,14 +48,14 @@ type ErrorBody = {
 export class AppAIUnavailableError extends Error {
   code = "app_ai_unavailable";
 
-  constructor(message = "AI 功能暂时不可用。如需继续使用，请联系该应用的创作者。") {
+  constructor(message = "AI is temporarily unavailable. Please contact the app creator to continue using it.") {
     super(message);
     this.name = "AppAIUnavailableError";
   }
 }
 
 const APP_AI_UNAVAILABLE_MESSAGE =
-  "AI 功能暂时不可用。如需继续使用，请联系该应用的创作者。";
+  "AI is temporarily unavailable. Please contact the app creator to continue using it.";;
 
 function appAiApiBase() {
   return (
