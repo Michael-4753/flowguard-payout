@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Workflow, Building2, History, Scale, Lock, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, Workflow, Building2, History, ShieldCheck, FileCheck2 } from "lucide-react";
 import { cn } from "@/utils/utils";
 import { AuthGate } from "@/components/shell/auth-gate";
 import { FlowGuardDataProvider } from "@/components/shell/data-provider";
