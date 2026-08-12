@@ -8,7 +8,7 @@ import { useSyncExternalStore } from "react";
 // seed ledger provides payees, and payment records live in localStorage.
 
 import type { User } from "@eazo/sdk";
-import type { PaymentRecord, VerificationCase, VerificationStatus } from "@/lib/engine/types";
+import type { PaymentRecord, VerificationCase } from "@/lib/engine/types";
 
 const GUEST_FLAG_KEY = "flowguard_guest";
 const GUEST_PAYMENTS_KEY = "flowguard_guest_payments";
