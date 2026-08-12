@@ -5,7 +5,14 @@
 
 export type RiskLevel = "low" | "medium" | "high";
 export type Severity = "info" | "warn" | "critical";
-export type PaymentStatus = "draft" | "initiated" | "settling" | "arrived" | "returned";
+export type PaymentStatus =
+  | "draft"
+  | "pending_review"
+  | "rejected"
+  | "initiated"
+  | "settling"
+  | "arrived"
+  | "returned";
 
 /** Settlement channel classes (module 2): two payout paths. */
 export type ChannelClass = "stablecoin-direct" | "local-fiat";
