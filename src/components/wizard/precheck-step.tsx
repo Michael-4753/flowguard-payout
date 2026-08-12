@@ -53,8 +53,12 @@ export function PrecheckStep({
   const allSynced = hasVerifiable && verifiableHits.every((f) => synced.includes(f.id));
   // When verifiable supplier-info problems exist, require the cashier to either
   // sync them to the payee first, or explicitly override — before acknowledging.
+  // A verifiable supplier-info problem must be synced to the payee (or the
+  // cashier must explicitly override) before continuing — even when it is not a
+  // hard critical blocker (e.g. company-name / account-status are warn-level).
+  // This keeps the Cases verify-first story consistent with the actual flow.
   const verifyGateSatisfied = !hasVerifiable || synced.length > 0 || overrideVerify;
-  const canContinue = !risk.hasBlocker || acknowledged;
+  const canContinue = (!risk.hasBlocker || acknowledged) && verifyGateSatisfied;
 
   async function syncToSupplier() {
     if (syncing || !hasVerifiable) return;
@@ -409,6 +413,11 @@ export function PrecheckStep({
         >
           {risk.hasBlocker ? "Compare routes anyway" : "Compare routes"} <ArrowRight className="h-4 w-4" />
         </button>
+      )}
+      {!scanning && !canContinue && hasVerifiable && !verifyGateSatisfied && (
+        <p className="text-center text-[11px] text-muted-foreground" data-el="wizard-gate-hint">
+          请先将上方供应商信息问题一键同步核查,或选择“无法核查仍要承认风险”,才能继续。
+        </p>
       )}
     </div>
   );
