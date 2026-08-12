@@ -154,3 +154,58 @@ export function clarifiedBySupplier(cases: VerificationCase[]): Record<string, S
   }
   return map;
 }
+
+/** Effective (clarified-adjusted) risk view of a stored payment. */
+export interface EffectiveRisk {
+  riskScore: number;
+  riskLevel: PaymentRecord["riskLevel"];
+  returnProbability: number;
+  hasBlocker: boolean;
+  /** Factors that were actually cleared by a resolved case (hit + verifiable). */
+  cleared: RiskFactor[];
+  /** True when clearing changed the score / level / blocker. */
+  changed: boolean;
+}
+
+/**
+ * Recompute a payment's risk after resolved verification cases cleared some
+ * data-quality factors. Only verifiable, hit factors that appear in `clarified`
+ * are cleared; the score / level / blocker are recalculated via the engine.
+ */
+export function recomputePaymentRisk(
+  record: PaymentRecord,
+  clarified: ReadonlySet<string>,
+): EffectiveRisk {
+  // Only data-quality factors the payee can actually clear.
+  const clearable = new Set<string>();
+  for (const id of clarified) if (isVerifiable(id)) clearable.add(id);
+
+  // Reconstruct a minimal assessment from the stored snapshot.
+  const hadBlocker = record.riskFactors.some((f) => f.hit && f.severity === "critical");
+  const snapshot: RiskAssessment = {
+    score: record.riskScore,
+    level: record.riskLevel,
+    returnProbability: record.returnProbability,
+    chokepointBank: record.chokepointBank,
+    avgHops: 0,
+    factors: record.riskFactors,
+    returnReasons: [],
+    returnCost: { lostDays: 0, sunkFeesUsd: 0 },
+    hasBlocker: hadBlocker,
+  };
+
+  const { risk, cleared } = recomputeWithClarified(snapshot, clearable);
+  const changed =
+    risk.score !== record.riskScore ||
+    risk.level !== record.riskLevel ||
+    risk.hasBlocker !== hadBlocker;
+
+  return {
+    riskScore: risk.score,
+    riskLevel: risk.level,
+    returnProbability: risk.returnProbability,
+    hasBlocker: risk.hasBlocker,
+    cleared,
+    changed,
+  };
+}
