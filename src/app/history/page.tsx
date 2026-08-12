@@ -126,10 +126,15 @@ function HistoryBody() {
               </div>
 
               <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
-                <Cell label="Amount (USD)" value={formatUsd(p.amountUsd)} />
+                <Cell label={`Amount (${p.settleCurrency})`} value={p.amountUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
                 <Cell label="Channel" value={CHANNEL_CLASS_LABEL[p.route.channelClass]} />
                 <Cell label="Return prob." value={formatPercent(eff.returnProbability, 0)} />
               </div>
+              {p.currency !== p.settleCurrency && (
+                <p className="mt-1.5 font-mono text-[10px] text-muted-foreground" data-el="history-currency">
+                  结算 {p.settleCurrency} → 到账 {p.currency}（供应商本地币种）
+                </p>
+              )}
 
               <ClarifiedChips record={p} clarified={clarifiedFactors(p.supplierId)} />
 
