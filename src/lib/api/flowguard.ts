@@ -3,6 +3,7 @@ import {
   guestAssess,
   guestCreatePayment,
   guestCreateVerificationCase,
+  guestAddVerificationComment,
   guestFailureCases,
   guestPayments,
   guestReviewPayment,
@@ -164,6 +165,25 @@ export async function setVerificationStatus(
     body: JSON.stringify({ status }),
   });
   if (!res.ok) throw new Error("failed_to_update_verification_case");
+  const json = (await res.json()) as { case: VerificationCase };
+  return json.case;
+}
+
+export async function addVerificationComment(
+  id: string,
+  message: string,
+): Promise<VerificationCase> {
+  if (isGuest()) {
+    const updated = guestAddVerificationComment({ id, message, actor: "cashier" });
+    if (!updated) throw new Error("not_found");
+    return updated;
+  }
+  const res = await request(`/api/verification-cases/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ comment: message }),
+  });
+  if (!res.ok) throw new Error("failed_to_comment_verification_case");
   const json = (await res.json()) as { case: VerificationCase };
   return json.case;
 }
