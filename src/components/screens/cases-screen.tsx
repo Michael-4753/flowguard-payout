@@ -254,7 +254,112 @@ function VerificationCard({
           </button>
         )}
       </div>
+
+      <ShareLinks record={record} />
+
+      {record.timeline.length > 0 && (
+        <ol className="mt-3 space-y-2 border-t border-border pt-3" data-el="verification-timeline">
+          {record.timeline.map((ev) => (
+            <li key={ev.id} className="flex gap-2 text-[11px]">
+              <span className="shrink-0 font-semibold">{CASE_ACTOR_LABEL[ev.actor]}</span>
+              <span className="min-w-0 flex-1 whitespace-pre-wrap break-words text-foreground">
+                {ev.message}
+              </span>
+              <span className="shrink-0 font-mono text-[9px] text-muted-foreground">
+                {formatDate(ev.at)}
+              </span>
+            </li>
+          ))}
+        </ol>
+      )}
+
+      <CommentBox record={record} onChange={onChange} />
     </article>
+  );
+}
+
+function ShareLinks({ record }: { record: VerificationCase }) {
+  const [copied, setCopied] = useState<"read" | "write" | null>(null);
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+
+  async function copy(kind: "read" | "write", token: string) {
+    try {
+      await navigator.clipboard.writeText(`${origin}/case/${token}`);
+      setCopied(kind);
+      setTimeout(() => setCopied(null), 1500);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3" data-el="verification-share">
+      <span className="text-[10px] text-muted-foreground">Share:</span>
+      <button
+        type="button"
+        onClick={() => copy("read", record.readToken)}
+        className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium transition-colors hover:bg-primary/10"
+        data-el="verification-copy-read"
+      >
+        {copied === "read" ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <LinkIcon className="h-3 w-3" />}
+        {copied === "read" ? "Copied" : "Read-only link"}
+      </button>
+      <button
+        type="button"
+        onClick={() => copy("write", record.writeToken)}
+        className="flex items-center gap-1.5 rounded-full border border-primary/50 px-3 py-1.5 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/10"
+        data-el="verification-copy-write"
+      >
+        {copied === "write" ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <LinkIcon className="h-3 w-3" />}
+        {copied === "write" ? "Copied" : "Write link (business/supplier)"}
+      </button>
+    </div>
+  );
+}
+
+function CommentBox({
+  record,
+  onChange,
+}: {
+  record: VerificationCase;
+  onChange: React.Dispatch<React.SetStateAction<VerificationCase[]>>;
+}) {
+  const [msg, setMsg] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function send() {
+    if (!msg.trim() || busy) return;
+    setBusy(true);
+    try {
+      const updated = await addVerificationComment(record.id, msg.trim());
+      onChange((prev) => prev.map((c) => (c.id === updated.id ? updated : c)));
+      setMsg("");
+    } catch {
+      /* ignore */
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-2 flex items-end gap-2">
+      <textarea
+        value={msg}
+        onChange={(e) => setMsg(e.target.value)}
+        rows={1}
+        placeholder="Add an internal note…"
+        className="min-w-0 flex-1 resize-none rounded-xl border border-border bg-[color:var(--fg-soft)] px-3 py-2 text-[12px]"
+      />
+      <button
+        type="button"
+        disabled={busy || !msg.trim()}
+        onClick={send}
+        className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-[11px] font-bold text-primary-foreground disabled:opacity-60"
+        data-el="verification-add-comment"
+      >
+        <Send className="h-3 w-3" /> Post
+      </button>
+    </div>
   );
 }
 
