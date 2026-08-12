@@ -41,7 +41,14 @@ export function PublicCaseScreen({ token }: { token: string }) {
   }, [token]);
 
   useEffect(() => {
-    void load();
+    let alive = true;
+    void (async () => {
+      await Promise.resolve();
+      if (alive) await load();
+    })();
+    return () => {
+      alive = false;
+    };
   }, [load]);
 
   if (state === "loading") {
