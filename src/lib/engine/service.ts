@@ -15,7 +15,7 @@ export interface AssessResult {
 
 /** Server-side deterministic precheck + routing computation. */
 export function assessAndRoute(supplier: Supplier, input: PaymentInput): AssessResult {
-  const risk = assessRisk(supplier);
+  const risk = assessRisk(supplier, input.amountUsd);
   const routing = routePayment(supplier, input, risk);
   return { supplier, risk, routing };
 }

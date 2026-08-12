@@ -158,7 +158,7 @@ export function guestAssess(input: {
 }): { supplier: Supplier; risk: RiskAssessment; routing: RoutingResult } {
   const supplier = guestSuppliers().find((s) => s.id === input.supplierId);
   if (!supplier) throw new Error("not_found");
-  const risk = assessRisk(supplier);
+  const risk = assessRisk(supplier, input.amountUsd);
   const routing = routePayment(supplier, input, risk);
   return { supplier, risk, routing };
 }
