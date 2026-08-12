@@ -149,6 +149,16 @@ function ReviewCard({
         </div>
       </div>
 
+      {veryLargePayout && (
+        <div
+          className="mt-3 flex items-start gap-2 rounded-xl border border-[color:var(--danger)]/50 bg-[color:var(--danger)]/15 p-2.5 text-[11px] font-semibold text-[color:var(--danger)]"
+          data-el="review-verylarge"
+        >
+          <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+          <span>Very large payout — high-risk lane, second signature required.</span>
+        </div>
+      )}
+
       <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
         <Cell label="Channel" value={CHANNEL_CLASS_LABEL[record.route.channelClass]} />
         <Cell label="Return prob." value={formatPercent(record.returnProbability, 0)} />
