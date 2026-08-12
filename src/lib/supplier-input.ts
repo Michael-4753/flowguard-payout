@@ -67,12 +67,31 @@ export function validateNewSupplier(raw: unknown): ValidationResult {
   if (country.length < 2) errors.country = "Enter a country or region.";
   if (!CURRENCIES.includes(currency)) errors.currency = "Choose a currency.";
   if (bankName.length < 2) errors.bankName = "Enter the beneficiary bank name.";
-  if (!/^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(swift)) errors.swift = "SWIFT/BIC must be 8 or 11 letters/digits.";
-  if (!/^[A-Z0-9]{10,34}$/.test(iban)) errors.iban = "Enter a valid IBAN (10–34 letters/digits).";
   if (!ACCOUNT_STATUSES.includes(accountStatus)) errors.accountStatus = "Choose an account status.";
   if (!CHANNELS.includes(preferredChannel)) errors.preferredChannel = "Choose a preferred channel.";
-  // Wallet is optional here, but if provided it must be a valid address.
-  if (stablecoinWallet !== "") {
+
+  // Stablecoin-direct settles to a wallet address, not a bank account — so the
+  // bank IBAN/SWIFT are optional there (validated only when provided) and the
+  // wallet is required instead. Local-fiat still requires a valid IBAN + SWIFT.
+  const isStablecoin = preferredChannel === "stablecoin-direct";
+  if (swift !== "" || !isStablecoin) {
+    if (!/^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(swift)) {
+      errors.swift = isStablecoin
+        ? "If provided, SWIFT/BIC must be 8 or 11 letters/digits."
+        : "SWIFT/BIC must be 8 or 11 letters/digits.";
+    }
+  }
+  if (iban !== "" || !isStablecoin) {
+    if (!/^[A-Z0-9]{10,34}$/.test(iban)) {
+      errors.iban = isStablecoin
+        ? "If provided, IBAN must be 10–34 letters/digits."
+        : "Enter a valid IBAN (10–34 letters/digits).";
+    }
+  }
+  // Wallet required for stablecoin-direct; optional (but validated) otherwise.
+  if (isStablecoin && stablecoinWallet === "") {
+    errors.stablecoinWallet = "Stablecoin-direct needs a wallet address.";
+  } else if (stablecoinWallet !== "") {
     const walletErr = validateWalletAddress(stablecoinWallet);
     if (walletErr) errors.stablecoinWallet = walletErr;
   }
