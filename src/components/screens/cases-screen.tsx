@@ -1,18 +1,20 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, Clock, Wrench, Copy, Check, FileCheck2, Inbox } from "lucide-react";
+import { AlertTriangle, Clock, Wrench, Copy, Check, FileCheck2, Inbox, Link as LinkIcon, Send } from "lucide-react";
 import { useEazo } from "@eazo/sdk/react";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import {
   fetchFailureCases,
   fetchVerificationCases,
   setVerificationStatus,
+  addVerificationComment,
 } from "@/lib/api";
 import { useIsGuest, subscribeGuest } from "@/lib/guest/guest-session";
 import { formatUsd, formatDate } from "@/lib/format";
 import {
   CHANNEL_CLASS_LABEL,
+  CASE_ACTOR_LABEL,
   VERIFICATION_STATUS_LABEL,
   type ChannelClass,
   type FailureCase,
