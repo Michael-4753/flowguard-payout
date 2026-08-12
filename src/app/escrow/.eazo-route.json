@@ -1,0 +1,8 @@
+{
+  "route": "escrow",
+  "name": "Escrow",
+  "nav_type": "tab",
+  "order_index": 5,
+  "icon": "lock",
+  "summary": "Milestone escrow: fund, split milestones, release on completion"
+}
