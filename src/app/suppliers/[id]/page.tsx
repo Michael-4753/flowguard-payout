@@ -7,6 +7,7 @@ import { useEazo } from "@eazo/sdk/react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PaymentRow } from "@/components/shared/payment-row";
 import { LoadingBlock } from "@/components/shared/loading-block";
+import { EmptyState } from "@/components/shared/empty-state";
 import { RiskBadge } from "@/components/shared/badges";
 import { fetchSupplier } from "@/lib/api";
 import { corridorRequirements } from "@/lib/engine";
@@ -183,9 +184,12 @@ function SupplierDetailBody({ id }: { id: string }) {
 
       <h2 className="mb-3 mt-6 text-sm font-semibold text-muted-foreground">Recent payments</h2>
       {payments.length === 0 ? (
-        <p className="fg-glass rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          No payments to this payee yet.
-        </p>
+        <EmptyState
+          icon={Send}
+          title="No payments to this payee yet"
+          description="Route a payment to this payee and it will appear here with its pre-check snapshot."
+          action={{ label: "New payment", onClick: () => router.push(`/pay?supplier=${id}`) }}
+        />
       ) : (
         <div className="space-y-2.5">
           {payments.map((p) => (
