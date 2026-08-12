@@ -80,13 +80,22 @@ export function guestPayments(): PaymentRecord[] {
 }
 
 /** Checker action: approve (→ initiated) or reject (→ rejected) a pending payment. */
+export type GuestReviewOutcome =
+  | { ok: true; payment: PaymentRecord }
+  | { ok: false; reason: "not_pending" | "self_review" };
+
 export function guestReviewPayment(input: {
   id: string;
   approve: boolean;
   note?: string;
-}): PaymentRecord | null {
+}): GuestReviewOutcome {
   const current = readGuestPayments().find((p) => p.id === input.id);
-  if (!current || current.status !== "pending_review") return null;
+  if (!current || current.status !== "pending_review") return { ok: false, reason: "not_pending" };
+  // Segregation of duties: the maker cannot approve their own payment. In guest
+  // mode the single local identity is always the maker, so approval is blocked.
+  if (input.approve && current.review.makerId && current.review.makerId === "guest") {
+    return { ok: false, reason: "self_review" };
+  }
   const { review, status } = applyDecision(current.review, {
     checkerId: "guest",
     approve: input.approve,
@@ -97,7 +106,7 @@ export function guestReviewPayment(input: {
     : { offchainRef: current.offchainRef, invoiceNo: current.invoiceNo, onchainRef: current.onchainRef };
   const updated: PaymentRecord = { ...current, ...vouchers, status, review };
   updateGuestPayment(updated);
-  return updated;
+  return { ok: true, payment: updated };
 }
 
 export function guestFailureCases(): FailureCase[] {
