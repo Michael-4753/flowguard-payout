@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp, Copy, Check, AlertTriangle, FileCheck2, Route as RouteIcon } from "lucide-react";
+import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp, Copy, Check, AlertTriangle, FileCheck2, Route as RouteIcon, Users, Send } from "lucide-react";
 import type { RiskAssessment, RiskFactor, Supplier } from "@/lib/engine/types";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
 import { AiPrecheckExplainer } from "@/components/wizard/ai-precheck-explainer";
 import { createVerificationCase } from "@/lib/api";
+import { isVerifiable } from "@/lib/verification";
 import { formatPercent, formatUsdCents } from "@/lib/format";
 import { copyText } from "@/utils/copy-text";
 import { cn } from "@/utils/utils";
