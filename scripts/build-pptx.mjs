@@ -33,10 +33,10 @@ const DECK = [
     eyebrow: "THE SOLUTION",
     title: "One console that de-risks the payout before it leaves",
     bullets: [
-      ["AI pre-send precheck", "DeepSeek AI + a deterministic risk engine estimate the return probability before you commit."],
-      ["Dual-route recommendation", "Stablecoin Direct vs Local Fiat Payout, auto-ranked by risk and cost."],
-      ["Maker-checker control", "Cashier drafts, supervisor approves. Duties are split by design."],
-      ["Escrow + shared case board", "Milestone escrow and login-free token links let clients and suppliers confirm data fixes online."],
+      ["AI + amount-tier precheck", "DeepSeek AI and a deterministic engine score return probability; amount tiers escalate scrutiny, and payouts ≥ $1M are forced into the high-risk lane."],
+      ["Verify-first with the supplier", "Data-quality problems (name / IBAN / SWIFT / account) must be synced to the payee as a Case first — approval is gated until verified or explicitly overridden."],
+      ["Maker-checker, enforced", "Submit as Maker, approve as Checker. Self-approval is hard-blocked front-end and server-side — real segregation of duties."],
+      ["Dual-route + dual currency", "Stablecoin Direct vs Local Fiat auto-ranked by risk and cost; each payout shows settlement currency → payee's local currency."],
     ],
   },
   {
@@ -44,10 +44,10 @@ const DECK = [
     eyebrow: "WHAT'S BUILT TODAY",
     title: "A working MVP — live, not slideware",
     bullets: [
-      ["End-to-end flow", "Draft to AI precheck to dual-route to dual review to escrow to reconciliation, fully wired."],
-      ["Real backend", "PostgreSQL with multi-tenant isolation, auth guards, and an audit timeline on every case."],
-      ["Mobile-first, two modes", "Authenticated and guest mode — guests run locally for zero-friction trials."],
-      ["Quality-checked", "Passed UI, engineering, database, and full-flow audits — ready for a live demo."],
+      ["Full control loop", "Precheck → verify-with-supplier → dual approve → execute (MT103 / wallet) → payee arrival receipt → auto-reconcile, fully wired."],
+      ["Verified risk clears itself", "When a supplier confirms a flagged detail, the case resolves and the risk score / blocker recompute automatically — no manual fudging."],
+      ["Real backend", "PostgreSQL with multi-tenant isolation, auth guards, a server-enforced state machine, and an audit trail on every payment and case."],
+      ["Login-free proof of arrival", "The payee confirms receipt via an unguessable token link; it's stored as real settlement evidence and auto-matched in reconciliation."],
     ],
   },
   {
@@ -55,9 +55,9 @@ const DECK = [
     eyebrow: "WHY US",
     title: "Risk control before the send — not after",
     bullets: [
-      ["Pre-send, not post-hoc", "Competitors reconcile after failure. We block the failure first."],
-      ["Two rails, one decision", "Stablecoin and local fiat compared in the same flow."],
-      ["Compliance is native", "Maker-checker and audit trail are core, not a bolt-on."],
+      ["Pre-send, not post-hoc", "Competitors reconcile after failure. We block it first — and clear it by verifying with the supplier."],
+      ["Two rails, one decision", "Stablecoin and local fiat compared in the same flow, with dual settlement / payee currency."],
+      ["Compliance is native", "Amount-tier lanes, enforced maker-checker, and a full audit trail are core — not a bolt-on."],
     ],
   },
   {
