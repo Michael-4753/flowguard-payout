@@ -18,7 +18,7 @@ import { cn } from "@/utils/utils";
  * user, distinguished by role labels and a persisted approval trail.
  */
 export function ReviewScreen() {
-  const { payments, loading, refresh } = useFlowGuardData();
+  const { payments, loading, refresh, clarifiedFactors } = useFlowGuardData();
   const pending = useMemo(
     () => payments.filter((p) => p.status === "pending_review"),
     [payments],
@@ -59,7 +59,12 @@ export function ReviewScreen() {
       ) : (
         <div className="mt-4 space-y-3">
           {pending.map((p) => (
-            <ReviewCard key={p.id} record={p} onDone={refresh} />
+            <ReviewCard
+              key={p.id}
+              record={p}
+              clarified={clarifiedFactors(p.supplierId)}
+              onDone={refresh}
+            />
           ))}
         </div>
       )}
@@ -67,12 +72,23 @@ export function ReviewScreen() {
   );
 }
 
-function ReviewCard({ record, onDone }: { record: PaymentRecord; onDone: () => Promise<void> }) {
+function ReviewCard({
+  record,
+  clarified,
+  onDone,
+}: {
+  record: PaymentRecord;
+  clarified: Set<string>;
+  onDone: () => Promise<void>;
+}) {
   const [mode, setMode] = useState<"idle" | "reject">("idle");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
   const highRisk = record.riskLevel === "high";
+  // Verification feedback: risk factors that hit AND have a resolved case.
+  const clarifiedHits = record.riskFactors.filter((f) => f.hit && clarified.has(f.id));
+  const softened = clarifiedHits.length > 0;
 
   async function decide(approve: boolean) {
     if (busy) return;
@@ -95,7 +111,8 @@ function ReviewCard({ record, onDone }: { record: PaymentRecord; onDone: () => P
     <article
       className={cn(
         "fg-glass rounded-2xl p-4",
-        highRisk && "border border-[color:var(--danger)]/40",
+        highRisk && !softened && "border border-[color:var(--danger)]/40",
+        highRisk && softened && "border border-[color:var(--success)]/40",
       )}
       data-el="review-card"
     >
@@ -120,7 +137,7 @@ function ReviewCard({ record, onDone }: { record: PaymentRecord; onDone: () => P
         <Cell label="Risk score" value={String(record.riskScore)} />
       </div>
 
-      {highRisk && (
+      {highRisk && !softened && (
         <div
           className="mt-3 flex items-start gap-2 rounded-xl border border-[color:var(--danger)]/40 bg-[color:var(--danger)]/10 p-2.5 text-[11px] text-[color:var(--danger)]"
           data-el="review-highrisk"
@@ -129,6 +146,21 @@ function ReviewCard({ record, onDone }: { record: PaymentRecord; onDone: () => P
           <span>
             High-risk payment{record.chokepointBank ? ` — likely held at ${record.chokepointBank}` : ""}.
             Approving sends it to the bank and records your sign-off in the audit trail.
+          </span>
+        </div>
+      )}
+
+      {softened && (
+        <div
+          className="mt-3 flex items-start gap-2 rounded-xl border border-[color:var(--success)]/40 bg-[color:var(--success)]/10 p-2.5 text-[11px] text-foreground"
+          data-el="review-clarified"
+        >
+          <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--success)]" aria-hidden />
+          <span>
+            {clarifiedHits.length === 1
+              ? `${clarifiedHits[0].title} was clarified with the payee via a verification case.`
+              : `${clarifiedHits.length} flagged data-quality items were clarified with the payee.`}{" "}
+            The risk score is kept for the record; review remaining factors before approving.
           </span>
         </div>
       )}
@@ -170,7 +202,7 @@ function ReviewCard({ record, onDone }: { record: PaymentRecord; onDone: () => P
           onClick={() => decide(true)}
           className={cn(
             "flex flex-1 items-center justify-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98]",
-            highRisk ? "bg-[color:var(--danger)]" : "bg-primary",
+            highRisk && !softened ? "bg-[color:var(--danger)]" : "bg-primary",
             busy && "opacity-60",
           )}
           data-el="review-approve"
