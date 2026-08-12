@@ -8,10 +8,11 @@ import { useSyncExternalStore } from "react";
 // seed ledger provides payees, and payment records live in localStorage.
 
 import type { User } from "@eazo/sdk";
-import type { PaymentRecord } from "@/lib/engine/types";
+import type { PaymentRecord, VerificationCase, VerificationStatus } from "@/lib/engine/types";
 
 const GUEST_FLAG_KEY = "flowguard_guest";
 const GUEST_PAYMENTS_KEY = "flowguard_guest_payments";
+const GUEST_VCASES_KEY = "flowguard_guest_vcases";
 
 export const GUEST_USER: User = {
   id: "guest",
@@ -47,6 +48,7 @@ export function exitGuestMode(): void {
   try {
     window.localStorage.removeItem(GUEST_FLAG_KEY);
     window.localStorage.removeItem(GUEST_PAYMENTS_KEY);
+    window.localStorage.removeItem(GUEST_VCASES_KEY);
     window.dispatchEvent(new Event(GUEST_EVENT));
   } catch {
     /* ignore */
