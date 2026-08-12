@@ -186,6 +186,7 @@ export function PrecheckStep({
                       </div>
                       <p className="mt-0.5 text-xs text-foreground">{f.remediation}</p>
                     </div>
+                    {f.hit && <FactorAction factor={f} supplier={supplier} />}
                   </div>
                 )}
               </div>
