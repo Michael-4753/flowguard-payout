@@ -19,6 +19,7 @@ import {
 import { isGuest } from "@/lib/guest/guest-session";
 import type {
   ChannelClass,
+  Currency,
   FailureCase,
   PaymentRecord,
   RiskAssessment,

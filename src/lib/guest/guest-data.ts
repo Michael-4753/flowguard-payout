@@ -219,6 +219,7 @@ export function guestCreatePayment(input: {
   amountUsd: number;
   preferredChannel?: ChannelClass;
   selectedRouteId: string;
+  settleCurrency?: Currency;
 }): PaymentRecord {
   const { supplier, risk, routing } = guestAssess(input);
   const route =
@@ -232,6 +233,7 @@ export function guestCreatePayment(input: {
     supplierCodeName: supplier.codeName,
     amountUsd: input.amountUsd,
     currency: supplier.currency,
+    settleCurrency: input.settleCurrency ?? "USD",
     riskScore: risk.score,
     riskLevel: risk.level,
     returnProbability: risk.returnProbability,
