@@ -106,3 +106,49 @@ export function updateGuestPayment(record: PaymentRecord): void {
     /* ignore */
   }
 }
+
+// ---- local verification cases ----
+
+export function readGuestVerificationCases(): VerificationCase[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(GUEST_VCASES_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as VerificationCase[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+export function addGuestVerificationCase(record: VerificationCase): void {
+  if (typeof window === "undefined") return;
+  try {
+    const list = [record, ...readGuestVerificationCases()];
+    window.localStorage.setItem(GUEST_VCASES_KEY, JSON.stringify(list));
+    window.dispatchEvent(new Event(GUEST_EVENT));
+  } catch {
+    /* ignore */
+  }
+}
+
+export function updateGuestVerificationStatus(
+  id: string,
+  status: VerificationStatus,
+): VerificationCase | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const now = new Date().toISOString();
+    let updated: VerificationCase | null = null;
+    const list = readGuestVerificationCases().map((c) => {
+      if (c.id !== id) return c;
+      updated = { ...c, status, updatedAt: now };
+      return updated;
+    });
+    window.localStorage.setItem(GUEST_VCASES_KEY, JSON.stringify(list));
+    window.dispatchEvent(new Event(GUEST_EVENT));
+    return updated;
+  } catch {
+    return null;
+  }
+}
