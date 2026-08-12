@@ -2,12 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RotateCcw, ShieldCheck } from "lucide-react";
+import { RotateCcw, ShieldCheck, Receipt } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
 import { FlowProgressTimeline } from "@/components/shared/flow-progress-timeline";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
+import { EmptyState } from "@/components/shared/empty-state";
 import { formatUsd, formatDate, formatPercent } from "@/lib/format";
 import {
   CHANNEL_CLASS_LABEL,
@@ -82,11 +83,22 @@ function HistoryBody() {
           <LoadingBlock rows={4} />
         </div>
       ) : filtered.length === 0 ? (
-        <p className="fg-glass mt-4 rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          {payments.length === 0
-            ? "No payments yet. Once you route a payment, it will appear here with its pre-check snapshot."
-            : "No payments match these filters. Try resetting the risk or status filter above."}
-        </p>
+        <div className="mt-4">
+          <EmptyState
+            icon={Receipt}
+            title={payments.length === 0 ? "No payments yet" : "No payments match these filters"}
+            description={
+              payments.length === 0
+                ? "Once you route a payment, it appears here with its pre-check snapshot."
+                : "Try resetting the risk or status filter above."
+            }
+            action={
+              payments.length === 0
+                ? { label: "New payment", onClick: () => router.push("/pay") }
+                : undefined
+            }
+          />
+        </div>
       ) : (
         <div className="mt-4 space-y-2.5">
           {filtered.map((p) => (

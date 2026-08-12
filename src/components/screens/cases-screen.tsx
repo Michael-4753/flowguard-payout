@@ -125,15 +125,17 @@ function VerificationTab() {
 
   if (cases.length === 0) {
     return (
-      <div
-        className="fg-glass mt-4 flex flex-col items-center gap-2 rounded-2xl p-6 text-center"
-        data-el="verification-empty"
-      >
-        <Inbox className="h-6 w-6 text-muted-foreground" aria-hidden />
-        <p className="text-sm text-muted-foreground">
-          No verification requests yet. In a payment pre-check, open a data-quality risk factor and
-          tap <b className="text-foreground">Generate verification request</b>.
-        </p>
+      <div className="mt-4" data-el="verification-empty">
+        <EmptyState
+          icon={Inbox}
+          title="No verification requests yet"
+          description={
+            <>
+              In a payment pre-check, open a data-quality risk factor and tap{" "}
+              <b className="text-foreground">Generate verification request</b>.
+            </>
+          }
+        />
       </div>
     );
   }
