@@ -2,10 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RotateCcw, ShieldCheck, Receipt } from "lucide-react";
+import { RotateCcw, ShieldCheck, Receipt, Send } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
 import { FlowProgressTimeline } from "@/components/shared/flow-progress-timeline";
+import { PayoutExecutionPanel } from "@/components/screens/payout-execution-panel";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -42,9 +43,10 @@ export default function HistoryPage() {
 
 function HistoryBody() {
   const router = useRouter();
-  const { payments, loading, error, refresh, clarifiedFactors } = useFlowGuardData();
+  const { payments, suppliers, loading, error, refresh, clarifiedFactors } = useFlowGuardData();
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
+  const [execId, setExecId] = useState<string | null>(null);
 
   const filtered = useMemo(
     () =>
@@ -132,6 +134,31 @@ function HistoryBody() {
               {p.status !== "draft" &&
                 p.status !== "pending_review" &&
                 p.status !== "rejected" && <FlowProgressTimeline record={p} />}
+
+              {p.status === "initiated" && (
+                <div className="mt-3">
+                  {execId === p.id ? (
+                    <PayoutExecutionPanel
+                      payment={p}
+                      supplier={suppliers.find((s) => s.id === p.supplierId)!}
+                      onSent={async () => {
+                        setExecId(null);
+                        await refresh();
+                      }}
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={!suppliers.some((s) => s.id === p.supplierId)}
+                      onClick={() => setExecId(p.id)}
+                      className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98] disabled:opacity-60"
+                      data-el="history-execute"
+                    >
+                      <Send className="h-3.5 w-3.5" /> Execute payout
+                    </button>
+                  )}
+                </div>
+              )}
 
               <button
                 type="button"
