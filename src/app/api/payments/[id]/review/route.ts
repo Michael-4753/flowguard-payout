@@ -30,14 +30,17 @@ export async function POST(
     return NextResponse.json({ error: "note_required" }, { status: 400 });
   }
 
-  const payment = await reviewPayment({
+  const outcome = await reviewPayment({
     userId: auth.user.id,
     id,
     approve: parsed.data.approve,
     note: parsed.data.note,
   });
-  if (!payment) {
+  if (!outcome.ok) {
+    if (outcome.reason === "self_review") {
+      return NextResponse.json({ error: "self_review" }, { status: 403 });
+    }
     return NextResponse.json({ error: "not_pending" }, { status: 409 });
   }
-  return NextResponse.json({ payment });
+  return NextResponse.json({ payment: outcome.payment });
 }
