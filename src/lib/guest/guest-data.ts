@@ -85,18 +85,12 @@ export function guestCreateVerificationCase(input: {
   const supplier = guestSuppliers().find((s) => s.id === input.supplierId);
   if (!supplier || !isVerifiable(input.factorId)) return null;
   const factor = assessRisk(supplier).factors.find((f) => f.id === input.factorId);
-  const now = new Date().toISOString();
-  const record: VerificationCase = {
+  const record = buildVerificationCase({
     id: `vc-guest-${Date.now().toString(36)}`,
-    supplierId: supplier.id,
-    supplierName: supplier.name,
+    supplier,
     factorId: input.factorId,
-    factorTitle: factor?.title ?? input.factorId,
-    template: buildTemplate(input.factorId, supplier),
-    status: "open",
-    createdAt: now,
-    updatedAt: now,
-  };
+    factor,
+  });
   addGuestVerificationCase(record);
   return record;
 }
@@ -105,7 +99,26 @@ export function guestSetVerificationStatus(
   id: string,
   status: VerificationStatus,
 ): VerificationCase | null {
-  return updateGuestVerificationStatus(id, status);
+  const current = readGuestVerificationCases().find((c) => c.id === id);
+  if (!current) return null;
+  const updated: VerificationCase = { ...current, ...applyStatusChange(current, status, "cashier") };
+  updateGuestVerificationCase(updated);
+  return updated;
+}
+
+export function guestAddVerificationComment(input: {
+  id: string;
+  message: string;
+  actor: CaseActor;
+}): VerificationCase | null {
+  const current = readGuestVerificationCases().find((c) => c.id === input.id);
+  if (!current || !input.message.trim()) return null;
+  const updated: VerificationCase = {
+    ...current,
+    ...applyComment(current, input.message, input.actor),
+  };
+  updateGuestVerificationCase(updated);
+  return updated;
 }
 
 export function guestAssess(input: {
