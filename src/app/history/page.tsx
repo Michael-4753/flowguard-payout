@@ -190,7 +190,8 @@ function HistoryBody() {
                 <RotateCcw className="h-3 w-3" /> Reuse draft
               </button>
             </article>
-          ))}
+            );
+          })}
         </div>
       )}
     </section>
