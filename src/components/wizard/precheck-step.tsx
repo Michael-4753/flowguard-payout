@@ -237,7 +237,7 @@ export function PrecheckStep({
           )}
           data-el="wizard-to-route"
         >
-          {risk.hasBlocker ? "仍要比较路由" : "比较路由"} <ArrowRight className="h-4 w-4" />
+          {risk.hasBlocker ? "Compare routes anyway" : "Compare routes"} <ArrowRight className="h-4 w-4" />
         </button>
       )}
     </div>
