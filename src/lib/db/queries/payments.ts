@@ -78,19 +78,6 @@ export async function insertPayment(userId: string, record: PaymentRecord): Prom
   return toDomain(rows[0]);
 }
 
-export async function updatePaymentStatus(
-  userId: string,
-  id: string,
-  status: PaymentStatus,
-): Promise<PaymentRecord | undefined> {
-  const rows = await db
-    .update(payments)
-    .set({ status })
-    .where(and(eq(payments.userId, userId), eq(payments.id, id)))
-    .returning();
-  return rows[0] ? toDomain(rows[0]) : undefined;
-}
-
 /** Discriminated result so callers can distinguish a self-review block. */
 export type ReviewOutcome =
   | { ok: true; payment: PaymentRecord }
