@@ -225,7 +225,27 @@ export interface PaymentRecord {
   onchainRef: string;
   /** Maker/checker approval trail (segregation of duties). */
   review: ReviewInfo;
+  /** Settlement proof captured at payout execution (bank slip / on-chain tx). */
+  settlementProof?: SettlementProof;
   createdAt: string;
+}
+
+/**
+ * Post-dispatch settlement proof. Captured when finance actually sends the funds:
+ * the bank's MT103 confirmation reference / on-chain tx hash, plus an optional
+ * uploaded remittance slip. Used by the reconciliation center to auto-match.
+ */
+export interface SettlementProof {
+  /** Bank MT103 confirmation number or on-chain tx hash. */
+  reference: string;
+  /** How the funds were sent. */
+  method: "bank-slip" | "onchain-tx";
+  /** Permanent CDN URL of the uploaded slip / receipt (optional). */
+  attachmentUrl?: string;
+  /** S3 object key of the attachment (optional, for later reference/deletion). */
+  attachmentKey?: string;
+  /** ISO timestamp when the proof was recorded. */
+  confirmedAt: string;
 }
 
 /**
