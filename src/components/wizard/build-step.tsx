@@ -24,12 +24,36 @@ export function BuildStep({
   const [channel, setChannel] = useState<ChannelClass | "auto">("auto");
   const [error, setError] = useState<string | null>(null);
 
+  const MAX_AMOUNT = 100_000_000; // $100M ceiling — guards against overflow / typos.
+
+  // Inline amount validation. Returns an error message, or null when valid.
+  // Empty is treated as "not yet filled" (no error shown until submit).
+  function amountError(raw: string): string | null {
+    const trimmed = raw.trim();
+    if (trimmed === "") return null;
+    const n = Number(trimmed);
+    if (!Number.isFinite(n)) return "Enter a valid number.";
+    if (n <= 0) return "Amount must be greater than 0.";
+    if (n > MAX_AMOUNT) return "Amount is too large.";
+    if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) return "Use at most 2 decimal places.";
+    return null;
+  }
+
+  const liveAmountError = amountError(amount);
+  const amountInvalid = amount.trim() !== "" && liveAmountError !== null;
+  const canSubmit = Boolean(supplierId) && amount.trim() !== "" && liveAmountError === null;
+
   function submit() {
     if (!supplierId) return setError("Select a payee to continue.");
-    const amt = Number(amount);
-    if (!amt || amt <= 0) return setError("Enter a valid amount in USD.");
+    if (amount.trim() === "") return setError("Enter an amount in USD.");
+    const amtErr = amountError(amount);
+    if (amtErr) return setError(amtErr);
     setError(null);
-    onSubmit({ supplierId, amountUsd: amt, preferredChannel: channel === "auto" ? undefined : channel });
+    onSubmit({
+      supplierId,
+      amountUsd: Number(amount),
+      preferredChannel: channel === "auto" ? undefined : channel,
+    });
   }
 
   return (
