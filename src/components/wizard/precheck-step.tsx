@@ -341,8 +341,29 @@ export function PrecheckStep({
         </div>
       )}
 
+      {/* Verify-first gate: block "acknowledge risk" until the payee has been
+          contacted (or the cashier explicitly overrides). */}
+      {!scanning && risk.hasBlocker && hasVerifiable && !verifyGateSatisfied && (
+        <div
+          className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-4"
+          data-el="wizard-verify-gate"
+        >
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            建议先向供应商核查上述信息问题再决定。若确认无法核查、必须带风险发出，可选择直接承认风险。
+          </p>
+          <button
+            type="button"
+            onClick={() => setOverrideVerify(true)}
+            className="mt-2 text-[12px] font-semibold text-[color:var(--danger)] underline underline-offset-2"
+            data-el="wizard-verify-override"
+          >
+            无法核查，仍要承认风险
+          </button>
+        </div>
+      )}
+
       {/* Acknowledge / continue */}
-      {!scanning && risk.hasBlocker && !acknowledged && (
+      {!scanning && risk.hasBlocker && !acknowledged && verifyGateSatisfied && (
         <div
           className="rounded-2xl border border-[color:var(--danger)]/50 bg-[color:var(--danger)]/10 p-4"
           data-el="wizard-acknowledge-box"
