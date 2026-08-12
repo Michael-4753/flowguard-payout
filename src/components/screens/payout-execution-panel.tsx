@@ -6,7 +6,6 @@ import { storage } from "@eazo/sdk";
 import { Copy, Check, Printer, Send, Landmark, Wallet, Clock, Paperclip } from "lucide-react";
 import { dispatchPayment, attachSettlementProof } from "@/lib/api";
 import { buildPayoutInstruction, type PayoutInstruction } from "@/lib/payout-instruction";
-import { formatUsd } from "@/lib/format";
 import type { PaymentRecord, Supplier } from "@/lib/engine/types";
 import { cn } from "@/utils/utils";
 
