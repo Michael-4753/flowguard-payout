@@ -88,11 +88,13 @@ export function ReviewScreen() {
 function ReviewCard({
   record,
   clarified,
+  eff,
   currentUserId,
   onDone,
 }: {
   record: PaymentRecord;
   clarified: Set<string>;
+  eff: EffectiveRisk;
   currentUserId: string;
   onDone: () => Promise<void>;
 }) {
@@ -100,15 +102,16 @@ function ReviewCard({
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<null | "generic" | "self_review">(null);
-  const highRisk = record.riskLevel === "high";
+  // High-risk after clarified cases are cleared (score/level recomputed).
+  const highRisk = eff.riskLevel === "high";
   // Very large payouts (≥ $1M) are forced into the high-risk approval lane by
   // the engine — surface the reason explicitly for the reviewer.
   const veryLargePayout = record.amountUsd >= 1_000_000;
   // Segregation of duties: the submitter (maker) cannot approve their own payment.
   const isOwnSubmission = Boolean(currentUserId) && record.review.makerId === currentUserId;
-  // Verification feedback: risk factors that hit AND have a resolved case.
-  const clarifiedHits = record.riskFactors.filter((f) => f.hit && clarified.has(f.id));
-  const softened = clarifiedHits.length > 0;
+  // Verification feedback: factors that hit AND were cleared by a resolved case.
+  const clarifiedHits = eff.cleared;
+  const softened = eff.changed && clarifiedHits.length > 0;
 
   async function decide(approve: boolean) {
     if (busy) return;
