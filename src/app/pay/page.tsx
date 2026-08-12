@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { AppShell } from "@/components/shell/app-shell";
@@ -13,9 +13,6 @@ import { useFlowGuardData } from "@/components/shell/data-provider";
 import { assessPayment, createPayment } from "@/lib/api";
 import type { ChannelClass, RiskAssessment, RoutingResult, Supplier } from "@/lib/engine/types";
 import { formatUsd } from "@/lib/format";
-
-// Preview slice: with no params, run the pre-check on a default draft.
-const PREVIEW_DRAFT = { supplierId: "meridian-freight", amountUsd: 18400 };
 
 interface Assessed {
   supplier: Supplier;
@@ -32,13 +29,13 @@ function PayWizard() {
 
   const querySupplier = params.get("supplier") ?? undefined;
   const queryAmount = params.get("amount") ? Number(params.get("amount")) : undefined;
-  const hasQuery = Boolean(querySupplier);
 
-  const [step, setStep] = useState<0 | 1 | 2>(hasQuery ? 0 : 1);
+  // Always start on the Draft step so the user picks a payee + amount. A
+  // ?supplier=/?amount= query only pre-fills the form; it never skips it.
+  const [step, setStep] = useState<0 | 1 | 2>(0);
   const [assessed, setAssessed] = useState<Assessed | null>(null);
   const [assessing, setAssessing] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
-  const previewTried = useRef(false);
 
   async function runAssess(v: { supplierId: string; amountUsd: number; preferredChannel?: ChannelClass }) {
     setAssessing(true);
@@ -52,22 +49,6 @@ function PayWizard() {
       setAssessing(false);
     }
   }
-
-  useEffect(() => {
-    if (hasQuery || loading || previewTried.current || suppliers.length === 0) return;
-    const draftId = suppliers.some((s) => s.id === PREVIEW_DRAFT.supplierId)
-      ? PREVIEW_DRAFT.supplierId
-      : suppliers[0].id;
-    previewTried.current = true;
-    let alive = true;
-    void (async () => {
-      await Promise.resolve();
-      if (alive) await runAssess({ supplierId: draftId, amountUsd: PREVIEW_DRAFT.amountUsd });
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [hasQuery, loading, suppliers]);
 
   async function handleConfirm(routeId: string) {
     if (!assessed) return;
