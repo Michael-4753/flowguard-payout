@@ -155,6 +155,12 @@ function RouteCard({
           <Metric label="Received (USD)" value={formatUsdCents(option.receiveUsd)} highlight />
         </div>
       )}
+      {option.available && option.channelClass === "stablecoin-direct" && (
+        <p className="mt-2 flex items-start gap-1.5 text-[10px] leading-relaxed text-[color:var(--warning)]" data-el="route-stablecoin-hint">
+          <Wallet className="mt-0.5 h-3 w-3 shrink-0" aria-hidden />
+          <span>Payee must hold a wallet that can receive an accepted stablecoin (e.g. USDC), or the payout is returned.</span>
+        </p>
+      )}
     </button>
   );
 }
