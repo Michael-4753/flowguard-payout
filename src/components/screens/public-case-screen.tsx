@@ -256,7 +256,7 @@ function StatusChip({ status }: { status: VerificationStatus }) {
 function Centered({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid min-h-[100svh] place-items-center bg-background px-6 text-center text-sm text-muted-foreground">
-      {children}
+      <div className="mx-auto max-w-[420px] leading-relaxed">{children}</div>
     </div>
   );
 }
