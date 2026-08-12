@@ -172,13 +172,33 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
               ? "Matched"
               : r.matchStatus === "unmatched"
                 ? "Unmatched"
-                : "N/A (bank rail)"}
+                : "Not sent yet"}
           </span>
         </div>
         <dl className="mt-2 space-y-1 font-mono text-[10px]">
           <ProofLine label="Invoice" value={r.invoiceNo} />
           <ProofLine label="Bank ref" value={r.offchainRef} />
           <ProofLine label="On-chain" value={r.onchainRef || "—"} muted={!r.onchainRef} />
+          <ProofLine
+            label={r.settlementMethod === "onchain-tx" ? "Settlement tx" : "Settlement ref"}
+            value={r.settlementRef || "— pending —"}
+            muted={!r.settlementRef}
+          />
+          {r.settlementAttachmentUrl && (
+            <div className="flex items-center justify-between gap-2">
+              <dt className="text-muted-foreground">Slip</dt>
+              <dd>
+                <a
+                  href={r.settlementAttachmentUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                >
+                  View attachment
+                </a>
+              </dd>
+            </div>
+          )}
         </dl>
       </div>
 
