@@ -8,7 +8,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
-import type { Currency, RiskFactor, RiskLevel, RouteOption, PaymentStatus, ReviewInfo } from "@/lib/engine/types";
+import type { Currency, RiskFactor, RiskLevel, RouteOption, PaymentStatus, ReviewInfo, SettlementProof } from "@/lib/engine/types";
 
 /**
  * Payment record: input + pre-check snapshot (jsonb) + selected route (jsonb) + status.
@@ -35,6 +35,7 @@ export const payments = pgTable(
     route: jsonb("route").notNull().$type<RouteOption>(),
     status: varchar("status", { length: 16 }).notNull().$type<PaymentStatus>(),
     review: jsonb("review").$type<ReviewInfo>(),
+    settlementProof: jsonb("settlement_proof").$type<SettlementProof>(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
