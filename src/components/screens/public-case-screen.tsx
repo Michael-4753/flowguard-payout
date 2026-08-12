@@ -57,7 +57,16 @@ export function PublicCaseScreen({ token }: { token: string }) {
     return <Centered>Loading shared case…</Centered>;
   }
   if (state === "notfound" || !data) {
-    return <Centered>This shared link is invalid or has expired.</Centered>;
+    return (
+      <Centered>
+        <span className="font-medium text-foreground">This shared link can’t be opened.</span>
+        <br />
+        The link may be invalid or expired — or the case was created in guest
+        (offline) mode, which keeps data only on the creator’s device and never
+        publishes it to a shareable link. Ask the sender to sign in and create
+        the case again to share it.
+      </Centered>
+    );
   }
 
   const c = data.case;
