@@ -246,3 +246,114 @@ export function PrecheckStep({
     </div>
   );
 }
+
+/**
+ * Per-factor action inside an expanded risk factor.
+ * - data-quality factors → "Generate verification request" (creates a Case,
+ *   shows a copy-ready template).
+ * - structural factors → a routing-only note (contacting the payee won't help).
+ */
+function FactorAction({ factor, supplier }: { factor: RiskFactor; supplier: Supplier }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [template, setTemplate] = useState<string | null>(null);
+  const [err, setErr] = useState(false);
+
+  if (factor.category === "structural") {
+    return (
+      <div
+        className="mt-2 flex items-start gap-2 rounded-xl border border-border bg-[color:var(--fg-soft)] p-2.5 text-[11px] text-muted-foreground"
+        data-el="factor-structural-note"
+      >
+        <RouteIcon className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+        <span>
+          Jurisdiction-level risk — contacting the payee can&apos;t clear it. Avoid it by choosing a
+          compliant route in the next step.
+        </span>
+      </div>
+    );
+  }
+
+  async function generate() {
+    if (busy) return;
+    setBusy(true);
+    setErr(false);
+    try {
+      const created = await createVerificationCase({ supplierId: supplier.id, factorId: factor.id });
+      setTemplate(created.template);
+    } catch {
+      setErr(true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function copy() {
+    if (!template) return;
+    try {
+      await navigator.clipboard.writeText(template);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  if (template) {
+    return (
+      <div className="mt-2 space-y-2" data-el="factor-verification-result">
+        <textarea
+          readOnly
+          value={template}
+          rows={6}
+          className="w-full resize-none rounded-xl border border-border bg-[color:var(--fg-soft)] p-2.5 font-mono text-[11px] leading-relaxed"
+        />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={copy}
+            className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium transition-colors hover:bg-primary/10"
+            data-el="factor-verification-copy"
+          >
+            {copied ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <Copy className="h-3 w-3" />}
+            {copied ? "Copied" : "Copy message"}
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push("/cases")}
+            className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/10"
+            data-el="factor-verification-track"
+          >
+            <FileCheck2 className="h-3 w-3" /> Track in Cases
+          </button>
+        </div>
+        <p className="text-[10px] text-muted-foreground">
+          Saved to Cases → Verification requests. Update the status there once the payee replies.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-2">
+      <button
+        type="button"
+        onClick={generate}
+        disabled={busy}
+        className={cn(
+          "flex items-center gap-1.5 rounded-full border border-primary/50 px-3 py-1.5 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/10",
+          busy && "opacity-60",
+        )}
+        data-el="factor-verification-generate"
+      >
+        <FileCheck2 className="h-3 w-3" /> {busy ? "Generating…" : "Generate verification request"}
+      </button>
+      {err && (
+        <p className="mt-1 text-[10px] text-[color:var(--danger)]">
+          Could not generate the request. Please try again.
+        </p>
+      )}
+    </div>
+  );
+}
