@@ -20,6 +20,9 @@ type ChatCompletionLike = {
   choices?: Array<{
     message?: {
       content?: string;
+      // Reasoning models (e.g. deepseek-reasoner / *-flash) may leave `content`
+      // empty and put the answer in `reasoning_content`.
+      reasoning_content?: string;
     };
   }>;
 };
