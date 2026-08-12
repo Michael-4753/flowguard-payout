@@ -162,12 +162,48 @@ function DashboardBody() {
   );
 }
 
+function ToolCard({
+  icon,
+  label,
+  hint,
+  onClick,
+  el,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  hint: string;
+  onClick: () => void;
+  el: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="fg-glass flex min-w-0 items-center gap-3 rounded-2xl p-4 text-left transition-transform active:scale-[0.99]"
+      data-el={el}
+    >
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+        {icon}
+      </span>
+      <span className="min-w-0">
+        <span className="block truncate text-[13px] font-semibold">{label}</span>
+        <span className="block truncate text-[10px] text-muted-foreground">{hint}</span>
+      </span>
+    </button>
+  );
+}
+
 function StatCard({
   icon,
   label,
   value,
   danger,
 }: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  danger?: boolean;
+}) {
   return (
     <div className="fg-glass min-w-0 rounded-2xl p-4" data-el="stat-card">
       <div className="flex items-center gap-1.5 text-muted-foreground">
