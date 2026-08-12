@@ -14,6 +14,7 @@ function toDomain(row: PaymentRow): PaymentRecord {
     supplierCodeName: row.supplierCodeName,
     amountUsd: row.amountUsd,
     currency: row.currency as Currency,
+    settleCurrency: (row.settleCurrency as Currency) ?? "USD",
     riskScore: row.riskScore,
     riskLevel: row.riskLevel,
     returnProbability: row.returnProbability,
