@@ -227,6 +227,10 @@ export interface PaymentRecord {
   review: ReviewInfo;
   /** Settlement proof captured at payout execution (bank slip / on-chain tx). */
   settlementProof?: SettlementProof;
+  /** Login-free receipt link token (issued at dispatch). */
+  receiptToken?: string;
+  /** Beneficiary-confirmed arrival receipt (proof of receipt). */
+  receipt?: PayeeReceipt;
   createdAt: string;
 }
 
