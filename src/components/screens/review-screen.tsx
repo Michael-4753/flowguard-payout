@@ -96,6 +96,9 @@ function ReviewCard({
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
   const highRisk = record.riskLevel === "high";
+  // Very large payouts (≥ $1M) are forced into the high-risk approval lane by
+  // the engine — surface the reason explicitly for the reviewer.
+  const veryLargePayout = record.amountUsd >= 1_000_000;
   // Verification feedback: risk factors that hit AND have a resolved case.
   const clarifiedHits = record.riskFactors.filter((f) => f.hit && clarified.has(f.id));
   const softened = clarifiedHits.length > 0;
