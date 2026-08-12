@@ -30,16 +30,31 @@ import {
   updateGuestVerificationCase,
   addGuestSupplier,
   readGuestSuppliers,
+  readGuestWalletOverrides,
+  setGuestWalletOverride,
 } from "./guest-session";
-import { buildSupplier, validateNewSupplier, type NewSupplierInput } from "@/lib/supplier-input";
+import { buildSupplier, validateNewSupplier, validateWalletAddress, type NewSupplierInput } from "@/lib/supplier-input";
 
 /** Stable createdAt for seed payees so guest data is reproducible. */
 const GUEST_SEED_TS = "2026-01-01T00:00:00.000Z";
 
 export function guestSuppliers(): Supplier[] {
-  const seeded = SEED_SUPPLIERS.map((s) => ({ ...s, createdAt: GUEST_SEED_TS }));
+  const overrides = readGuestWalletOverrides();
+  const apply = (s: Supplier): Supplier =>
+    overrides[s.id] ? { ...s, stablecoinWallet: overrides[s.id] } : s;
+  const seeded = SEED_SUPPLIERS.map((s) => apply({ ...s, createdAt: GUEST_SEED_TS }));
   // User-added payees appear first, then the seed ledger.
-  return [...readGuestSuppliers(), ...seeded];
+  return [...readGuestSuppliers().map(apply), ...seeded];
+}
+
+/** Guest wallet backfill: persist a wallet override for any payee (seed or added). */
+export function guestUpdateSupplierWallet(id: string, wallet: string): Supplier {
+  const err = validateWalletAddress(wallet);
+  if (err) throw new Error("invalid_wallet");
+  setGuestWalletOverride(id, wallet.trim());
+  const updated = guestSuppliers().find((s) => s.id === id);
+  if (!updated) throw new Error("not_found");
+  return updated;
 }
 
 /** Guest add-payee: validate + persist a new supplier in localStorage. */
