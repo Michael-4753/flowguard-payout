@@ -339,40 +339,9 @@ interface ChannelSpec {
 
 export const CHANNELS: ChannelSpec[] = [
   {
-    id: "swift-gpi",
-    channelClass: "swift-gpi",
-    name: "SWIFT-GPI Correspondent",
-    baseFeeRate: 0.006,
-    fixedFeeUsd: 28,
-    baseMinutes: 1440,
-    baseSuccessRate: 0.94,
-    baseFxLoss: 0.011,
-    layers: [
-      { label: "Originating bank", role: "origin", bank: "Your originating bank" },
-      { label: "Correspondent (US)", role: "intermediary", bank: "Citibank N.A. (New York)" },
-      { label: "Intermediary (EU)", role: "intermediary", bank: "Deutsche Bank (Frankfurt)" },
-      { label: "Beneficiary bank", role: "beneficiary", bank: "Beneficiary bank" },
-    ],
-  },
-  {
-    id: "licensed-psp",
-    channelClass: "licensed-psp",
-    name: "Licensed Cross-border PSP",
-    baseFeeRate: 0.0042,
-    fixedFeeUsd: 9,
-    baseMinutes: 420,
-    baseSuccessRate: 0.968,
-    baseFxLoss: 0.006,
-    layers: [
-      { label: "PSP collection", role: "origin", bank: "Licensed PSP collection account" },
-      { label: "PSP netting hub", role: "intermediary", bank: "PSP in-network netting hub" },
-      { label: "Local payout bank", role: "beneficiary", bank: "In-country payout partner bank" },
-    ],
-  },
-  {
-    id: "stablecoin-gateway",
-    channelClass: "stablecoin-gateway",
-    name: "Compliant Stablecoin Gateway",
+    id: "stablecoin-direct",
+    channelClass: "stablecoin-direct",
+    name: "Stablecoin Direct",
     baseFeeRate: 0.0026,
     fixedFeeUsd: 5,
     baseMinutes: 150,
@@ -382,6 +351,24 @@ export const CHANNELS: ChannelSpec[] = [
       { label: "On-ramp (USDC)", role: "origin", bank: "Regulated on-ramp (USDC)" },
       { label: "Chain settlement", role: "intermediary", bank: "Public-chain settlement (on-chain)" },
       { label: "Local off-ramp", role: "beneficiary", bank: "Licensed local off-ramp" },
+    ],
+  },
+  {
+    id: "local-fiat",
+    channelClass: "local-fiat",
+    name: "Local Fiat Payout",
+    // Consolidated bank/PSP rail: licensed PSP front with a correspondent-bank
+    // fallback leg, so the money-flow keeps its intermediary chokepoint story.
+    baseFeeRate: 0.0048,
+    fixedFeeUsd: 14,
+    baseMinutes: 600,
+    baseSuccessRate: 0.96,
+    baseFxLoss: 0.008,
+    layers: [
+      { label: "PSP collection", role: "origin", bank: "Licensed PSP collection account" },
+      { label: "Correspondent bank", role: "intermediary", bank: "Citibank N.A. (New York)" },
+      { label: "PSP netting hub", role: "intermediary", bank: "PSP in-network netting hub" },
+      { label: "Local payout bank", role: "beneficiary", bank: "In-country payout partner bank" },
     ],
   },
 ];
@@ -405,7 +392,7 @@ function buildHops(
     // intermediary is opaque; other intermediaries are partial; endpoints clear.
     let blackboxLevel: FlowHop["blackboxLevel"];
     if (layer.role === "intermediary") {
-      if (channel.channelClass === "stablecoin-gateway") blackboxLevel = "clear";
+      if (channel.channelClass === "stablecoin-direct") blackboxLevel = "clear";
       else if (chokepoint) blackboxLevel = "opaque";
       else blackboxLevel = "partial";
     } else {
