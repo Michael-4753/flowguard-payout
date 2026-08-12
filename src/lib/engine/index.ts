@@ -272,6 +272,41 @@ export function assessRisk(supplier: Supplier, amountUsd = 0): RiskAssessment {
 }
 
 /**
+ * Recompute a stored assessment after some risk factors were cleared by a
+ * resolved verification case ("clarified"/"verified"). The listed factorIds
+ * are zeroed out (hit = false, points = 0) and the score / level / blocker /
+ * return probability are recalculated to stay consistent with the live engine.
+ *
+ * Structural risks (jurisdiction, amount tier, bank blacklist) are not passed
+ * here because contacting the payee cannot clear them — only data-quality
+ * factors reach this path.
+ */
+export function recomputeWithClarified(
+  risk: RiskAssessment,
+  clearedFactorIds: ReadonlySet<string>,
+): { risk: RiskAssessment; cleared: RiskFactor[] } {
+  const cleared = risk.factors.filter((f) => f.hit && clearedFactorIds.has(f.id));
+  if (cleared.length === 0) return { risk, cleared: [] };
+
+  const factors = risk.factors.map((f) =>
+    f.hit && clearedFactorIds.has(f.id) ? { ...f, hit: false, points: 0 } : f,
+  );
+  const rawScore = factors.reduce((s, f) => s + f.points, 0);
+  const score = clamp(Math.round(rawScore), 0, 100);
+  const level = scoreToLevel(score);
+  const hasBlocker = factors.some((f) => f.hit && f.severity === "critical");
+  // Scale the stored return probability down in proportion to the score drop,
+  // keeping the seeded component stable rather than re-deriving from scratch.
+  const scale = risk.score > 0 ? score / risk.score : 1;
+  const returnProbability = clamp(risk.returnProbability * scale, 0.01, 0.97);
+
+  return {
+    risk: { ...risk, factors, score, level, hasBlocker, returnProbability },
+    cleared,
+  };
+}
+
+/**
  * "Why it might bounce": rank the hit factors into the top-3 most likely return
  * reasons, each with a probability share and a plain-language source. Explains
  * the otherwise-mysterious return before the money leaves.
