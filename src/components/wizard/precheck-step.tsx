@@ -200,14 +200,16 @@ export function PrecheckStep({
         >
           <div className="flex items-center gap-2 text-[color:var(--danger)]">
             <ShieldAlert className="h-4 w-4 shrink-0" />
-            <span className="text-sm font-bold">继续将放行一笔高风险付款</span>
+            <span className="text-sm font-bold">Continuing releases a high-risk payment</span>
           </div>
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-            该收款方风险评分 <b className="text-[color:var(--danger)]">{risk.score}/100</b>，预计退回概率约{" "}
-            <b className="text-[color:var(--danger)]">{formatPercent(risk.returnProbability, 0)}</b>。若被退回，
-            预计损失约 <b className="text-foreground">{risk.returnCost.lostDays} 天</b> 及{" "}
-            <b className="text-foreground">{formatUsdCents(risk.returnCost.sunkFeesUsd)}</b> 不可退手续费。
-            继续代表你已知晓上述风险，并自行承担合规与资金损失责任——建议先按上方补救建议处理。
+            This payee scores <b className="text-[color:var(--danger)]">{risk.score}/100</b> with an estimated{" "}
+            <b className="text-[color:var(--danger)]">{formatPercent(risk.returnProbability, 0)}</b> return
+            probability. If returned, expect a loss of about{" "}
+            <b className="text-foreground">{risk.returnCost.lostDays} days</b> and{" "}
+            <b className="text-foreground">{formatUsdCents(risk.returnCost.sunkFeesUsd)}</b> in
+            non-refundable fees. High-risk payments can still proceed, but generate an audit trail
+            for compliance review — you accept the compliance and loss responsibility.
           </p>
           <button
             type="button"
@@ -215,7 +217,7 @@ export function PrecheckStep({
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-[color:var(--danger)]/60 bg-[color:var(--danger)]/15 px-4 py-3 text-sm font-semibold text-[color:var(--danger)] transition-transform active:scale-[0.99]"
             data-el="wizard-acknowledge"
           >
-            我已知晓风险，仍要继续
+            I acknowledge the risk — continue
           </button>
         </div>
       )}
