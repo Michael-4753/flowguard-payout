@@ -50,6 +50,50 @@ function scoreToLevel(score: number): RiskLevel {
   return "low";
 }
 
+/**
+ * Amount-tier scrutiny: small payouts add no risk; larger ones add escalating
+ * points, and very large ones (≥ $1M) force the high-risk approval lane.
+ * Thresholds in USD (the settlement currency).
+ */
+function amountTierFor(amountUsd: number): {
+  points: number;
+  severity: Severity;
+  description: string;
+  forceHigh: boolean;
+} {
+  if (amountUsd >= 1_000_000) {
+    return {
+      points: 30,
+      severity: "critical",
+      description:
+        "Very large payout (≥ $1M) — routed through the high-risk approval lane and requires a second-signature review.",
+      forceHigh: true,
+    };
+  }
+  if (amountUsd >= 100_000) {
+    return {
+      points: 18,
+      severity: "warn",
+      description: "Large payout ($100k–$1M) — elevated scrutiny before approval.",
+      forceHigh: false,
+    };
+  }
+  if (amountUsd >= 10_000) {
+    return {
+      points: 8,
+      severity: "warn",
+      description: "Mid-size payout ($10k–$100k) — moderate additional scrutiny.",
+      forceHigh: false,
+    };
+  }
+  return {
+    points: 0,
+    severity: "info",
+    description: "Small payout (< $10k) — no amount-based risk added.",
+    forceHigh: false,
+  };
+}
+
 const CHOKEPOINT_BANKS = [
   "Deutsche Bank Trust (NY)",
   "Citibank N.A. (London)",
