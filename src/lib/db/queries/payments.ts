@@ -86,21 +86,34 @@ export async function updatePaymentStatus(
   return rows[0] ? toDomain(rows[0]) : undefined;
 }
 
-/** Checker action: approve (→ initiated) or reject (→ rejected) a pending payment. */
+/** Discriminated result so callers can distinguish a self-review block. */
+export type ReviewOutcome =
+  | { ok: true; payment: PaymentRecord }
+  | { ok: false; reason: "not_pending" | "self_review" };
+
+/**
+ * Checker action: approve (→ initiated) or reject (→ rejected) a pending payment.
+ * Segregation of duties: a payment cannot be APPROVED by the same person who
+ * submitted it (maker). The maker may still return/reject their own draft.
+ */
 export async function reviewPayment(input: {
   userId: string;
   id: string;
   approve: boolean;
   note?: string;
-}): Promise<PaymentRecord | undefined> {
+}): Promise<ReviewOutcome> {
   const existing = await db
     .select()
     .from(payments)
     .where(and(eq(payments.userId, input.userId), eq(payments.id, input.id)))
     .limit(1);
   const row = existing[0];
-  if (!row || row.status !== "pending_review") return undefined;
+  if (!row || row.status !== "pending_review") return { ok: false, reason: "not_pending" };
   const current = (row.review as ReviewInfo | null) ?? initialReview(input.userId);
+  // Hard block: the maker cannot be their own checker on an approval.
+  if (input.approve && current.makerId && current.makerId === input.userId) {
+    return { ok: false, reason: "self_review" };
+  }
   const { review, status } = applyDecision(current, {
     checkerId: input.userId,
     approve: input.approve,
@@ -111,7 +124,8 @@ export async function reviewPayment(input: {
     .set({ status, review })
     .where(and(eq(payments.userId, input.userId), eq(payments.id, input.id)))
     .returning();
-  return rows[0] ? toDomain(rows[0]) : undefined;
+  if (!rows[0]) return { ok: false, reason: "not_pending" };
+  return { ok: true, payment: toDomain(rows[0]) };
 }
 
 export async function countPayments(userId: string): Promise<number> {
