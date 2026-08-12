@@ -113,7 +113,26 @@ function CreateEscrowForm({
 
   const supplier = suppliers.find((s) => s.id === supplierId);
   const total = rows.reduce((s, r) => s + (Number(r.amount) || 0), 0);
-  const valid = supplier && total > 0 && rows.every((r) => r.title.trim() && Number(r.amount) > 0);
+
+  const MAX_AMOUNT = 100_000_000; // $100M ceiling — guards against overflow / typos.
+
+  // Inline milestone-amount validation, mirroring the payment form. Returns an
+  // error message, or null when valid. Empty is treated as "not yet filled".
+  function amountError(raw: string): string | null {
+    const trimmed = raw.trim();
+    if (trimmed === "") return null;
+    const n = Number(trimmed);
+    if (!Number.isFinite(n)) return "输入有效的数字。";
+    if (n <= 0) return "金额必须大于 0。";
+    if (n > MAX_AMOUNT) return "金额过大。";
+    if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) return "最多保留 2 位小数。";
+    return null;
+  }
+
+  const valid =
+    supplier &&
+    total > 0 &&
+    rows.every((r) => r.title.trim() && r.amount.trim() !== "" && amountError(r.amount) === null);
 
   function submit() {
     if (!supplier || !valid) return;
