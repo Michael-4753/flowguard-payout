@@ -129,6 +129,105 @@ export function PrecheckStep({
         </div>
       )}
 
+      {/* Supplier basic-info problems → verify with the payee FIRST (open Cases),
+          rather than jumping straight to acknowledging the risk. */}
+      {!scanning && hasVerifiable && (
+        <div
+          className="rounded-2xl border border-primary/40 bg-primary/8 p-4"
+          data-el="wizard-verify-card"
+        >
+          <div className="flex items-center gap-2 text-primary">
+            <Users className="h-4 w-4 shrink-0" />
+            <span className="text-sm font-bold">供应商信息需要核查</span>
+          </div>
+          <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+            这笔付款被标为高风险，主要是收款方基本信息存在问题。这类问题应先向供应商核查、开一个
+            case 存证，而不是直接承认风险发起审批。以下 {verifiableHits.length} 项可一键同步给供应商：
+          </p>
+          <ul className="mt-2 space-y-1">
+            {verifiableHits.map((f) => (
+              <li key={f.id} className="flex items-center gap-2 text-[12px]">
+                {synced.includes(f.id) ? (
+                  <Check className="h-3.5 w-3.5 shrink-0 text-[color:var(--success)]" />
+                ) : (
+                  <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-[color:var(--warning)]" />
+                )}
+                <span className={cn("font-medium", synced.includes(f.id) && "text-muted-foreground line-through")}>
+                  {f.title}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          {!allSynced && (
+            <button
+              type="button"
+              onClick={syncToSupplier}
+              disabled={syncing}
+              className={cn(
+                "mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.99]",
+                syncing && "opacity-60",
+              )}
+              data-el="wizard-verify-sync"
+            >
+              <Send className="h-4 w-4" />
+              {syncing
+                ? "正在创建核查 case…"
+                : synced.length > 0
+                  ? "同步其余问题给供应商"
+                  : "一键同步问题给供应商核查"}
+            </button>
+          )}
+          {syncErr && (
+            <p className="mt-2 text-[11px] text-[color:var(--danger)]">
+              创建核查请求失败，请重试。
+            </p>
+          )}
+
+          {syncTemplate && (
+            <div className="mt-3 space-y-2" data-el="wizard-verify-result">
+              <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[color:var(--success)]">
+                <FileCheck2 className="h-3.5 w-3.5" /> 已创建核查 case（Cases → 核查请求）
+              </div>
+              <textarea
+                readOnly
+                value={syncTemplate}
+                rows={6}
+                className="w-full resize-none rounded-xl border border-border bg-[color:var(--fg-soft)] p-2.5 font-mono text-[11px] leading-relaxed"
+              />
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={copySync}
+                  className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium transition-colors hover:bg-primary/10"
+                  data-el="wizard-verify-copy"
+                >
+                  {syncCopied === "ok" ? (
+                    <Check className="h-3 w-3 text-[color:var(--success)]" />
+                  ) : syncCopied === "fail" ? (
+                    <AlertTriangle className="h-3 w-3 text-[color:var(--danger)]" />
+                  ) : (
+                    <Copy className="h-3 w-3" />
+                  )}
+                  {syncCopied === "ok" ? "已复制" : syncCopied === "fail" ? "复制失败，请手动选择" : "复制核查消息"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/cases")}
+                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/10"
+                  data-el="wizard-verify-track"
+                >
+                  <FileCheck2 className="h-3 w-3" /> 到 Cases 跟进
+                </button>
+              </div>
+              <p className="text-[10px] text-muted-foreground">
+                供应商回复后，在 Cases 中更新状态。核查通过即可清除该风险，无需承认风险硬发。
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
       {!scanning && !risk.hasBlocker && hits.length === 0 && (
         <div className="rounded-2xl border border-[color:var(--success)]/40 bg-[color:var(--success)]/12 p-4">
           <div className="flex items-center gap-2 text-[color:var(--success)]">
