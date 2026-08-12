@@ -90,16 +90,18 @@ export function guestReviewPayment(input: {
   id: string;
   approve: boolean;
   note?: string;
+  role?: "maker" | "checker";
 }): GuestReviewOutcome {
   const current = readGuestPayments().find((p) => p.id === input.id);
   if (!current || current.status !== "pending_review") return { ok: false, reason: "not_pending" };
-  // Segregation of duties: the maker cannot approve their own payment. In guest
-  // mode the single local identity is always the maker, so approval is blocked.
-  if (input.approve && current.review.makerId && current.review.makerId === "guest") {
+  // Segregation of duties: an approval must be made from the CHECKER identity,
+  // distinct from the MAKER identity that submitted the payment. Switch to the
+  // reviewer role to approve; rejecting/returning does not require it.
+  if (input.approve && input.role !== "checker") {
     return { ok: false, reason: "self_review" };
   }
   const { review, status } = applyDecision(current.review, {
-    checkerId: "guest",
+    checkerId: input.approve ? "guest:checker" : "guest",
     approve: input.approve,
     note: input.note,
   });
