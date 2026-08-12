@@ -7,7 +7,7 @@
 
 import { assessRisk, deriveVouchers, routePayment } from "@/lib/engine";
 import { initialReview, applyDecision } from "@/lib/review";
-import { buildVerificationCase, applyStatusChange, applyComment, isVerifiable } from "@/lib/verification";
+import { buildVerificationCase, applyStatusChange, applyComment, isVerifiable, makeToken } from "@/lib/verification";
 import { SEED_SUPPLIERS } from "@/lib/db/seed-suppliers";
 import { FAILURE_CASES } from "@/lib/engine/failure-cases";
 import type {
@@ -115,7 +115,24 @@ export function guestReviewPayment(input: {
 export function guestDispatchPayment(input: { id: string }): PaymentRecord | null {
   const current = readGuestPayments().find((p) => p.id === input.id);
   if (!current || current.status !== "initiated") return null;
-  const updated: PaymentRecord = { ...current, status: "settling" };
+  const updated: PaymentRecord = { ...current, status: "settling", receiptToken: makeToken() };
+  updateGuestPayment(updated);
+  return updated;
+}
+
+/** Public lookup by receipt token (guest). */
+export function guestGetPaymentByReceiptToken(token: string): PaymentRecord | null {
+  if (!token) return null;
+  return readGuestPayments().find((p) => p.receiptToken === token) ?? null;
+}
+
+/** Public payee confirmation (guest): settling → arrived + proof of receipt. */
+export function guestConfirmReceipt(token: string, note: string): PaymentRecord | null {
+  if (!token) return null;
+  const current = readGuestPayments().find((p) => p.receiptToken === token);
+  if (!current || current.status !== "settling") return null;
+  const receipt: PayeeReceipt = { confirmedAt: new Date().toISOString(), note: note.trim() };
+  const updated: PaymentRecord = { ...current, status: "arrived", receipt };
   updateGuestPayment(updated);
   return updated;
 }
