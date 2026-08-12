@@ -17,6 +17,7 @@ import type {
   RiskAssessment,
   RoutingResult,
   SettlementProof,
+  PayeeReceipt,
   Supplier,
   CaseActor,
   VerificationCase,
