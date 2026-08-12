@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useReducer, useState } from "react";
-import { Lock, Plus, Trash2, CheckCircle2, Circle, Coins, Unlock } from "lucide-react";
+import { Lock, Plus, Trash2, CheckCircle2, Circle, Unlock } from "lucide-react";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { formatUsdCents, formatDate } from "@/lib/format";
@@ -23,7 +23,7 @@ export function EscrowScreen() {
   const [creating, setCreating] = useState(false);
 
   useEffect(() => subscribeEscrow(bump), []);
-  const escrows = useMemo(() => listEscrows(), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const escrows = useMemo(() => listEscrows(), []);
 
   const totals = useMemo(() => {
     let locked = 0;
