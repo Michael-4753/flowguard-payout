@@ -33,7 +33,7 @@ export async function GET(
   const { token } = await params;
   const found = await getVerificationCaseByToken(token);
   if (!found) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  return NextResponse.json({ case: found.case, canWrite: found.canWrite });
+  return NextResponse.json({ case: stripTokens(found.case), canWrite: found.canWrite });
 }
 
 /** POST /api/public/case/[token] — write action; token MUST be a write token. */
@@ -60,5 +60,5 @@ export async function POST(
       : await publicAddComment(token, parsed.data.message, parsed.data.actor);
 
   if (!updated) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  return NextResponse.json({ case: updated, canWrite: true });
+  return NextResponse.json({ case: stripTokens(updated), canWrite: true });
 }
