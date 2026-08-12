@@ -22,6 +22,7 @@ export function PrecheckStep({
   risk: RiskAssessment;
   onContinue: () => void;
 }) {
+  const router = useRouter();
   const [scanning, setScanning] = useState(true);
   const [acknowledged, setAcknowledged] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
