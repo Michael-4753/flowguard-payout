@@ -11,7 +11,7 @@ import { RouteStep } from "@/components/wizard/route-step";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { assessPayment, createPayment } from "@/lib/api";
-import type { ChannelClass, RiskAssessment, RoutingResult, Supplier } from "@/lib/engine/types";
+import type { ChannelClass, Currency, RiskAssessment, RoutingResult, Supplier } from "@/lib/engine/types";
 import { formatUsd } from "@/lib/format";
 
 interface Assessed {
@@ -19,6 +19,7 @@ interface Assessed {
   risk: RiskAssessment;
   routing: RoutingResult;
   amountUsd: number;
+  settleCurrency: Currency;
   preferredChannel?: ChannelClass;
 }
 
@@ -37,11 +38,11 @@ function PayWizard() {
   const [assessing, setAssessing] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
-  async function runAssess(v: { supplierId: string; amountUsd: number; preferredChannel?: ChannelClass }) {
+  async function runAssess(v: { supplierId: string; amountUsd: number; preferredChannel?: ChannelClass; settleCurrency: Currency }) {
     setAssessing(true);
     try {
       const res = await assessPayment(v);
-      setAssessed({ ...res, amountUsd: v.amountUsd, preferredChannel: v.preferredChannel });
+      setAssessed({ ...res, amountUsd: v.amountUsd, settleCurrency: v.settleCurrency, preferredChannel: v.preferredChannel });
       setStep(1);
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -58,6 +59,7 @@ function PayWizard() {
         amountUsd: assessed.amountUsd,
         preferredChannel: assessed.preferredChannel,
         selectedRouteId: routeId,
+        settleCurrency: assessed.settleCurrency,
       });
       setConfirmed(true);
       toast.success("Submitted for review — awaiting checker approval");
@@ -88,7 +90,12 @@ function PayWizard() {
 
       {step === 1 && assessed && (
         <>
-          <DraftBanner name={assessed.supplier.name} amount={assessed.amountUsd} />
+          <DraftBanner
+            name={assessed.supplier.name}
+            amount={assessed.amountUsd}
+            settleCurrency={assessed.settleCurrency}
+            payeeCurrency={assessed.supplier.currency}
+          />
           <PrecheckStep
             key={assessed.supplier.id + assessed.amountUsd}
             supplier={assessed.supplier}
@@ -111,11 +118,28 @@ function PayWizard() {
   );
 }
 
-function DraftBanner({ name, amount }: { name: string; amount: number }) {
+function DraftBanner({
+  name,
+  amount,
+  settleCurrency,
+  payeeCurrency,
+}: {
+  name: string;
+  amount: number;
+  settleCurrency: Currency;
+  payeeCurrency: Currency;
+}) {
   return (
-    <div className="mb-3 flex items-center justify-between rounded-2xl border border-border px-4 py-2.5">
+    <div className="mb-3 flex items-center justify-between gap-2 rounded-2xl border border-border px-4 py-2.5">
       <span className="truncate text-sm font-semibold">{name}</span>
-      <span className="shrink-0 font-mono text-sm font-bold text-primary">{formatUsd(amount)}</span>
+      <span className="flex shrink-0 items-center gap-1.5 font-mono text-sm font-bold">
+        <span className="text-primary">
+          {amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {settleCurrency}
+        </span>
+        {payeeCurrency !== settleCurrency && (
+          <span className="text-[10px] font-medium text-muted-foreground">→ 到账 {payeeCurrency}</span>
+        )}
+      </span>
     </div>
   );
 }
