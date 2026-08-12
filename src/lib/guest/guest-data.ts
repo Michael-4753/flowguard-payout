@@ -109,6 +109,15 @@ export function guestReviewPayment(input: {
   return { ok: true, payment: updated };
 }
 
+/** Post-approval dispatch (guest): advance an `initiated` payment to `settling`. */
+export function guestDispatchPayment(input: { id: string }): PaymentRecord | null {
+  const current = readGuestPayments().find((p) => p.id === input.id);
+  if (!current || current.status !== "initiated") return null;
+  const updated: PaymentRecord = { ...current, status: "settling" };
+  updateGuestPayment(updated);
+  return updated;
+}
+
 export function guestFailureCases(): FailureCase[] {
   return FAILURE_CASES;
 }
