@@ -11,7 +11,7 @@ import { reviewPayment } from "@/lib/api";
 import { formatUsd, formatDate, formatPercent } from "@/lib/format";
 import { CHANNEL_CLASS_LABEL, type PaymentRecord } from "@/lib/engine/types";
 import type { EffectiveRisk } from "@/lib/verification";
-import { MAKER_LABEL, CHECKER_LABEL } from "@/lib/review";
+import { MAKER_LABEL } from "@/lib/review";
 import { cn } from "@/utils/utils";
 
 /**
@@ -21,7 +21,7 @@ import { cn } from "@/utils/utils";
  * user, distinguished by role labels and a persisted approval trail.
  */
 export function ReviewScreen() {
-  const { payments, loading, error, refresh, effectiveRisk, currentUserId, activeRole, setActiveRole } =
+  const { payments, loading, error, refresh, effectiveRisk, activeRole, setActiveRole } =
     useFlowGuardData();
   const pending = useMemo(
     () => payments.filter((p) => p.status === "pending_review"),
@@ -117,12 +117,12 @@ export function ReviewScreen() {
 function ReviewCard({
   record,
   eff,
-  currentUserId,
+  activeRole,
   onDone,
 }: {
   record: PaymentRecord;
   eff: EffectiveRisk;
-  currentUserId: string;
+  activeRole: "maker" | "checker";
   onDone: () => Promise<void>;
 }) {
   const [mode, setMode] = useState<"idle" | "reject">("idle");
@@ -134,16 +134,16 @@ function ReviewCard({
   // Very large payouts (≥ $1M) are forced into the high-risk approval lane by
   // the engine — surface the reason explicitly for the reviewer.
   const veryLargePayout = record.amountUsd >= 1_000_000;
-  // Segregation of duties: the submitter (maker) cannot approve their own payment.
-  const isOwnSubmission = Boolean(currentUserId) && record.review.makerId === currentUserId;
+  // Segregation of duties: approval is only allowed from the CHECKER identity.
+  const canApprove = activeRole === "checker";
   // Verification feedback: factors that hit AND were cleared by a resolved case.
   const clarifiedHits = eff.cleared;
   const softened = eff.changed && clarifiedHits.length > 0;
 
   async function decide(approve: boolean) {
     if (busy) return;
-    // Block self-approval before hitting the network (backend enforces it too).
-    if (approve && isOwnSubmission) {
+    // Enforce role separation before hitting the network (backend enforces too).
+    if (approve && !canApprove) {
       setErr("self_review");
       return;
     }
@@ -154,7 +154,12 @@ function ReviewCard({
     setBusy(true);
     setErr(null);
     try {
-      await reviewPayment({ id: record.id, approve, note: approve ? undefined : note.trim() });
+      await reviewPayment({
+        id: record.id,
+        approve,
+        note: approve ? undefined : note.trim(),
+        role: activeRole,
+      });
       await onDone();
     } catch (e) {
       setErr(e instanceof Error && e.message === "self_review" ? "self_review" : "generic");
@@ -248,15 +253,15 @@ function ReviewCard({
         />
       )}
 
-      {isOwnSubmission && (
+      {!canApprove && (
         <div
           className="mt-3 flex items-start gap-2 rounded-xl border border-[color:var(--warning)]/40 bg-[color:var(--warning)]/10 p-2.5 text-[11px] text-foreground"
           data-el="review-self"
         >
           <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--warning)]" aria-hidden />
           <span>
-            You submitted this payment. Segregation of duties requires a different
-            person to approve it — you can only return it to yourself.
+            你当前是「经办」身份。职责分离要求由另一人审批——请切换到「审批」身份才能批准,
+            经办身份仅能退回。
           </span>
         </div>
       )}
@@ -264,7 +269,7 @@ function ReviewCard({
       {err && (
         <p className="mt-2 text-[11px] text-[color:var(--danger)]">
           {err === "self_review"
-            ? "Approval blocked: the person who submitted a payment cannot approve it. Another reviewer must sign off."
+            ? "批准被拦截:需切换到「审批」身份才能批准。经办与审批必须是不同身份。"
             : "Could not record the decision. Please try again."}
         </p>
       )}
@@ -285,14 +290,14 @@ function ReviewCard({
         </button>
         <button
           type="button"
-          disabled={busy || isOwnSubmission}
+          disabled={busy || !canApprove}
           onClick={() => decide(true)}
-          title={isOwnSubmission ? "You submitted this payment — another reviewer must approve it" : undefined}
+          title={!canApprove ? "请切换到「审批」身份才能批准" : undefined}
           className={cn(
             "flex flex-1 items-center justify-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98]",
             highRisk && !softened ? "bg-[color:var(--danger)]" : "bg-primary",
-            (busy || isOwnSubmission) && "opacity-60",
-            isOwnSubmission && "cursor-not-allowed",
+            (busy || !canApprove) && "opacity-60",
+            !canApprove && "cursor-not-allowed",
           )}
           data-el="review-approve"
         >
