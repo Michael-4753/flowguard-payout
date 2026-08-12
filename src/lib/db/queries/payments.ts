@@ -4,7 +4,7 @@ import { payments, type PaymentRow } from "../schema/payments";
 import { deriveVouchers } from "@/lib/engine";
 import { initialReview, applyDecision } from "@/lib/review";
 import { makeToken } from "@/lib/verification";
-import type { Currency, PaymentRecord, PaymentStatus, ReviewInfo, SettlementProof, PayeeReceipt } from "@/lib/engine/types";
+import type { Currency, PaymentRecord, ReviewInfo, SettlementProof, PayeeReceipt } from "@/lib/engine/types";
 
 function toDomain(row: PaymentRow): PaymentRecord {
   return {
