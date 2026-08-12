@@ -236,3 +236,14 @@ export function createAppAiClient() {
 
 export const appAi = createAppAiClient();
 export { APP_AI_UNAVAILABLE_MESSAGE };
+
+/**
+ * Pull the assistant text from a completion, falling back to `reasoning_content`
+ * when a reasoning model leaves the primary `content` empty.
+ */
+export function extractMessageContent(result: ChatCompletionLike | undefined | null): string {
+  const message = result?.choices?.[0]?.message;
+  const content = (message?.content ?? "").trim();
+  if (content) return content;
+  return (message?.reasoning_content ?? "").trim();
+}
