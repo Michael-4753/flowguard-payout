@@ -136,7 +136,7 @@ function DraftBanner({
           {amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {settleCurrency}
         </span>
         {payeeCurrency !== settleCurrency && (
-          <span className="text-[10px] font-medium text-muted-foreground">→ 到账 {payeeCurrency}</span>
+          <span className="text-[10px] font-medium text-muted-foreground">→ credited in {payeeCurrency}</span>
         )}
       </span>
     </div>

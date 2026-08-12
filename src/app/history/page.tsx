@@ -132,7 +132,7 @@ function HistoryBody() {
               </div>
               {p.currency !== p.settleCurrency && (
                 <p className="mt-1.5 font-mono text-[10px] text-muted-foreground" data-el="history-currency">
-                  结算 {p.settleCurrency} → 到账 {p.currency}（供应商本地币种）
+                  Settled in {p.settleCurrency} → credited in {p.currency} (payee&apos;s local currency)
                 </p>
               )}
 
