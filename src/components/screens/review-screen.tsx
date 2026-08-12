@@ -20,7 +20,7 @@ import { cn } from "@/utils/utils";
  * user, distinguished by role labels and a persisted approval trail.
  */
 export function ReviewScreen() {
-  const { payments, loading, error, refresh, clarifiedFactors } = useFlowGuardData();
+  const { payments, loading, error, refresh, clarifiedFactors, currentUserId } = useFlowGuardData();
   const pending = useMemo(
     () => payments.filter((p) => p.status === "pending_review"),
     [payments],
