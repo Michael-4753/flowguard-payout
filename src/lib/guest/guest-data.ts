@@ -12,6 +12,7 @@ import { SEED_SUPPLIERS } from "@/lib/db/seed-suppliers";
 import { FAILURE_CASES } from "@/lib/engine/failure-cases";
 import type {
   ChannelClass,
+  Currency,
   FailureCase,
   PaymentRecord,
   RiskAssessment,
