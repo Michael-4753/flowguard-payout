@@ -249,6 +249,18 @@ export interface SettlementProof {
 }
 
 /**
+ * Beneficiary-side arrival receipt. The payee confirms funds received via a
+ * login-free token link — turning `settling → arrived` into real proof of
+ * arrival (rather than a simulated status bump).
+ */
+export interface PayeeReceipt {
+  /** ISO timestamp when the payee confirmed receipt. */
+  confirmedAt: string;
+  /** Optional free-text note from the payee (e.g. amount received, remarks). */
+  note: string;
+}
+
+/**
  * Maker-checker approval trail. The maker (cashier) creates the payment; a
  * separate checker (finance supervisor) must approve before it is sent to the
  * bank. Simulated dual-role within one demo account.
