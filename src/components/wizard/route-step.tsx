@@ -33,8 +33,9 @@ export function RouteStep({
         >
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--danger)]" aria-hidden />
           <p className="text-[11px] leading-relaxed text-[color:var(--danger)]">
-            <b>高风险付款（{risk.score}/100，退回概率约 {formatPercent(risk.returnProbability, 0)}）。</b>
-            你已知晓风险并选择继续。选择路由后发起，代表你自行承担合规与资金损失责任。
+            <b>High-risk payment ({risk.score}/100, ~{formatPercent(risk.returnProbability, 0)} return probability).</b>{" "}
+            You acknowledged the risk and chose to continue. High-risk payments can still proceed, but
+            generate an audit trail for compliance review — you accept the compliance and loss responsibility.
           </p>
         </div>
       )}
@@ -71,7 +72,8 @@ export function RouteStep({
         >
           <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
           <span>
-            游客模式 —— 付款记录仅保存在本设备（浏览器本地存储），退出游客模式后会被清除。登录后可同步到你的账户。
+            Guest mode — payment records are saved on this device only (browser local storage) and are
+            cleared when you leave guest mode. Sign in to sync them to your account.
           </span>
         </div>
       )}
