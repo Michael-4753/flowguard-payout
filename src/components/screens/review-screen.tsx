@@ -193,8 +193,8 @@ function ReviewCard({
           </span>
           <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-wide text-muted-foreground">
             {record.currency !== record.settleCurrency
-              ? `结算 ${record.settleCurrency} → 到账 ${record.currency}`
-              : `结算于 ${record.settleCurrency}`}
+              ? `Settled in ${record.settleCurrency} → credited in ${record.currency}`
+              : `Settled in ${record.settleCurrency}`}
           </span>
         </div>
       </div>
@@ -236,11 +236,11 @@ function ReviewCard({
           <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--success)]" aria-hidden />
           <span>
             {clarifiedHits.length === 1
-              ? `${clarifiedHits[0].title}已通过核查 case 向供应商核实并清除。`
-              : `${clarifiedHits.length} 项信息问题已通过核查向供应商核实并清除。`}{" "}
-            风险分已从 {record.riskScore} 下调至 {eff.riskScore}
-            {record.riskLevel !== eff.riskLevel ? `，等级由 ${record.riskLevel} 降为 ${eff.riskLevel}` : ""}。
-            请复核其余因子后再审批。
+              ? `${clarifiedHits[0].title} was verified with the supplier via a case and cleared.`
+              : `${clarifiedHits.length} info issue(s) were verified with the supplier and cleared.`}{" "}
+            Risk score lowered from {record.riskScore} to {eff.riskScore}
+            {record.riskLevel !== eff.riskLevel ? `, level downgraded from ${record.riskLevel} to ${eff.riskLevel}` : ""}.
+            Review the remaining factors before approving.
           </span>
         </div>
       )}
@@ -263,8 +263,8 @@ function ReviewCard({
         >
           <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--warning)]" aria-hidden />
           <span>
-            你当前是「经办」身份。职责分离要求由另一人审批——请切换到「审批」身份才能批准,
-            经办身份仅能退回。
+            You&apos;re currently acting as the Maker. Segregation of duties requires a different
+            person to approve — switch to the Checker role to approve; the Maker role can only return it.
           </span>
         </div>
       )}
@@ -272,7 +272,7 @@ function ReviewCard({
       {err && (
         <p className="mt-2 text-[11px] text-[color:var(--danger)]">
           {err === "self_review"
-            ? "批准被拦截:需切换到「审批」身份才能批准。经办与审批必须是不同身份。"
+            ? "Approval blocked: switch to the Checker role to approve. Maker and checker must be different roles."
             : "Could not record the decision. Please try again."}
         </p>
       )}
@@ -295,7 +295,7 @@ function ReviewCard({
           type="button"
           disabled={busy || !canApprove}
           onClick={() => decide(true)}
-          title={!canApprove ? "请切换到「审批」身份才能批准" : undefined}
+          title={!canApprove ? "Switch to the Checker role to approve" : undefined}
           className={cn(
             "flex flex-1 items-center justify-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98]",
             highRisk && !softened ? "bg-[color:var(--danger)]" : "bg-primary",
