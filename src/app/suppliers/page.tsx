@@ -88,9 +88,10 @@ function SuppliersBody() {
             title={suppliers.length === 0 ? "No payees yet" : "No payees in this currency"}
             description={
               suppliers.length === 0
-                ? "Payees appear here once they are added to your workspace."
+                ? "Add your first beneficiary to start building the ledger."
                 : "Switch the currency filter above to see other payees."
             }
+            action={suppliers.length === 0 ? { label: "Add payee", onClick: () => setAdding(true) } : undefined}
           />
         </div>
       ) : (
