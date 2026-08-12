@@ -105,6 +105,8 @@ export async function reviewPayment(input: {
   id: string;
   approve: boolean;
   note?: string;
+  /** Identity the user is acting as. An approval requires the checker role. */
+  role?: "maker" | "checker";
 }): Promise<ReviewOutcome> {
   const existing = await db
     .select()
@@ -114,12 +116,14 @@ export async function reviewPayment(input: {
   const row = existing[0];
   if (!row || row.status !== "pending_review") return { ok: false, reason: "not_pending" };
   const current = (row.review as ReviewInfo | null) ?? initialReview(input.userId);
-  // Hard block: the maker cannot be their own checker on an approval.
-  if (input.approve && current.makerId && current.makerId === input.userId) {
+  // Segregation of duties: an approval must be made from the CHECKER identity,
+  // distinct from the MAKER identity that submitted the payment. Rejecting /
+  // returning a submission does not require the checker role.
+  if (input.approve && input.role !== "checker") {
     return { ok: false, reason: "self_review" };
   }
   const { review, status } = applyDecision(current, {
-    checkerId: input.userId,
+    checkerId: input.approve ? `${input.userId}:checker` : input.userId,
     approve: input.approve,
     note: input.note,
   });
