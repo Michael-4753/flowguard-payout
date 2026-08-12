@@ -194,14 +194,30 @@ export function PrecheckStep({
 
       {/* Acknowledge / continue */}
       {!scanning && risk.hasBlocker && !acknowledged && (
-        <button
-          type="button"
-          onClick={() => setAcknowledged(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-[color:var(--danger)]/50 px-4 py-3 text-sm font-medium text-[color:var(--danger)]"
-          data-el="wizard-acknowledge"
+        <div
+          className="rounded-2xl border border-[color:var(--danger)]/50 bg-[color:var(--danger)]/10 p-4"
+          data-el="wizard-acknowledge-box"
         >
-          I acknowledge the risk — continue for review
-        </button>
+          <div className="flex items-center gap-2 text-[color:var(--danger)]">
+            <ShieldAlert className="h-4 w-4 shrink-0" />
+            <span className="text-sm font-bold">继续将放行一笔高风险付款</span>
+          </div>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            该收款方风险评分 <b className="text-[color:var(--danger)]">{risk.score}/100</b>，预计退回概率约{" "}
+            <b className="text-[color:var(--danger)]">{formatPercent(risk.returnProbability, 0)}</b>。若被退回，
+            预计损失约 <b className="text-foreground">{risk.returnCost.lostDays} 天</b> 及{" "}
+            <b className="text-foreground">{formatUsdCents(risk.returnCost.sunkFeesUsd)}</b> 不可退手续费。
+            继续代表你已知晓上述风险，并自行承担合规与资金损失责任——建议先按上方补救建议处理。
+          </p>
+          <button
+            type="button"
+            onClick={() => setAcknowledged(true)}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-[color:var(--danger)]/60 bg-[color:var(--danger)]/15 px-4 py-3 text-sm font-semibold text-[color:var(--danger)] transition-transform active:scale-[0.99]"
+            data-el="wizard-acknowledge"
+          >
+            我已知晓风险，仍要继续
+          </button>
+        </div>
       )}
 
       {!scanning && (
@@ -212,12 +228,14 @@ export function PrecheckStep({
           className={cn(
             "flex w-full items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-bold transition-transform active:scale-[0.99]",
             canContinue
-              ? "bg-primary text-primary-foreground shadow-[var(--fg-shadow-sm)]"
+              ? risk.hasBlocker
+                ? "border border-[color:var(--danger)]/60 bg-[color:var(--danger)]/15 text-[color:var(--danger)]"
+                : "bg-primary text-primary-foreground shadow-[var(--fg-shadow-sm)]"
               : "cursor-not-allowed bg-muted text-muted-foreground",
           )}
           data-el="wizard-to-route"
         >
-          Compare routes <ArrowRight className="h-4 w-4" />
+          {risk.hasBlocker ? "仍要比较路由" : "比较路由"} <ArrowRight className="h-4 w-4" />
         </button>
       )}
     </div>
