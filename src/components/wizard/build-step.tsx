@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Wallet } from "lucide-react";
 import type { ChannelClass, Supplier } from "@/lib/engine/types";
 import { CHANNEL_CLASS_LABEL, RISK_LEVEL_LABEL } from "@/lib/engine/types";
 import { cn } from "@/utils/utils";
