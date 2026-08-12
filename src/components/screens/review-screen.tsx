@@ -188,10 +188,12 @@ function ReviewCard({
         </div>
         <div className="shrink-0 text-right">
           <span className="block font-mono text-base font-bold tabular-nums">
-            {formatUsd(record.amountUsd)}
+            {record.amountUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {record.settleCurrency}
           </span>
           <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-wide text-muted-foreground">
-            settled in USD
+            {record.currency !== record.settleCurrency
+              ? `结算 ${record.settleCurrency} → 到账 ${record.currency}`
+              : `结算于 ${record.settleCurrency}`}
           </span>
         </div>
       </div>
