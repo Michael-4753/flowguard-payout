@@ -87,6 +87,38 @@ export async function insertSuppliers(
     .onConflictDoNothing();
 }
 
+export async function insertSupplier(
+  userId: string,
+  s: Omit<Supplier, "createdAt">,
+): Promise<Supplier> {
+  const rows = await db
+    .insert(suppliers)
+    .values({
+      id: s.id,
+      userId,
+      name: s.name,
+      codeName: s.codeName,
+      country: s.country,
+      countryCode: s.countryCode,
+      currency: s.currency,
+      entityType: s.entityType,
+      bankName: s.bankName,
+      swift: s.swift,
+      iban: s.iban,
+      accountStatus: s.accountStatus,
+      restrictedRegion: s.restrictedRegion,
+      bankBlacklisted: s.bankBlacklisted,
+      preferredChannel: s.preferredChannel,
+      riskTag: s.riskTag,
+      paymentCount: s.paymentCount,
+      historicalReturnRate: s.historicalReturnRate,
+      avgSettlementHours: s.avgSettlementHours,
+      avgAmountUsd: s.avgAmountUsd,
+    })
+    .returning();
+  return toDomain(rows[0]);
+}
+
 export async function countSuppliers(userId: string): Promise<number> {
   const rows = await db
     .select({ value: count() })
