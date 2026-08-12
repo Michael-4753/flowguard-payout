@@ -188,6 +188,18 @@ export function BuildStep({
       >
         Run pre-check <ArrowRight className="h-4 w-4" />
       </button>
+
+      {walletGate && selected && (
+        <WalletBackfillModal
+          supplierId={selected.id}
+          supplierName={selected.name}
+          onClose={() => setWalletGate(false)}
+          onSaved={() => {
+            setWalletGate(false);
+            proceed();
+          }}
+        />
+      )}
     </div>
   );
 }
