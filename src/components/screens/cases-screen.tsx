@@ -295,8 +295,9 @@ function ShareLinks({ record }: { record: VerificationCase }) {
     }
   }
 
-  // 访客（离线）模式下案例只存在本机、不落库，分享链接对外无效，
-  // 因此隐藏分享按钮，改为提示需登录后才能生成可分享的链接。
+  // Guest (offline) cases live only on this device and are never persisted, so a
+  // share link would be invalid for anyone else. Hide the share buttons and
+  // prompt the user to sign in before a shareable link can be generated.
   if (guest) {
     return (
       <div
@@ -304,7 +305,7 @@ function ShareLinks({ record }: { record: VerificationCase }) {
         data-el="verification-share-guest"
       >
         <LinkIcon className="h-3 w-3 shrink-0" />
-        <span>访客模式下的案例仅保存在本机、无法分享。请登录后再创建案例以生成分享链接。</span>
+        <span>Guest cases stay on this device and can’t be shared. Sign in and create the case again to generate a shareable link.</span>
       </div>
     );
   }
