@@ -68,7 +68,7 @@ function seededJitter(seed: string): number {
 }
 
 /** Return-risk pre-check: explainable rules → hit factors + tiered report. */
-export function assessRisk(supplier: Supplier): RiskAssessment {
+export function assessRisk(supplier: Supplier, amountUsd = 0): RiskAssessment {
   const factors: RiskFactor[] = [];
 
   // 1. SWIFT / BIC validation
@@ -178,9 +178,25 @@ export function assessRisk(supplier: Supplier): RiskAssessment {
     category: "structural",
   });
 
+  // 8. Payment amount tier — larger payouts warrant stricter scrutiny.
+  const amountTier = amountTierFor(amountUsd);
+  factors.push({
+    id: "amount-tier",
+    title: "Payment amount tier",
+    severity: amountTier.severity,
+    points: amountTier.points,
+    description: amountTier.description,
+    remediation:
+      "Larger payouts warrant extra scrutiny — verify the invoice, business purpose and beneficiary before approval.",
+    hit: amountTier.points > 0,
+    category: "structural",
+  });
+
   const rawScore = factors.reduce((s, f) => s + f.points, 0);
   const score = clamp(Math.round(rawScore), 0, 100);
-  const level = scoreToLevel(score);
+  // Very large payouts (≥ $1M) always go through the high-risk approval lane,
+  // regardless of the numeric score, to enforce a second-signature review.
+  const level = amountTier.forceHigh ? "high" : scoreToLevel(score);
   const returnProbability = clamp(
     score / 100 + supplier.historicalReturnRate * 0.5 + jitter * 0.03,
     0.01,
