@@ -106,8 +106,8 @@ function HistoryBody() {
         </div>
       ) : (
         <div className="mt-4 space-y-2.5">
-          {filtered.map((p) => (
-            <article key={p.id} className="fg-glass rounded-2xl p-4" data-el="history-item">
+          {filtered.map((p, i) => (
+            <article key={p.id} className="fg-enter fg-glass rounded-2xl p-4" style={{ "--i": i } as React.CSSProperties} data-el="history-item">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="flex min-w-0 items-center gap-2">
