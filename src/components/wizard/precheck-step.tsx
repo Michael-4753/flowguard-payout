@@ -24,6 +24,15 @@ export function PrecheckStep({
   const [scanning, setScanning] = useState(true);
   const [acknowledged, setAcknowledged] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
+  // Supplier data-quality verification: sync the flagged fields to the payee
+  // (open Cases) instead of jumping straight to "acknowledge risk → approval".
+  const [synced, setSynced] = useState<string[]>([]);
+  const [syncing, setSyncing] = useState(false);
+  const [syncTemplate, setSyncTemplate] = useState<string | null>(null);
+  const [syncErr, setSyncErr] = useState(false);
+  const [syncCopied, setSyncCopied] = useState<"idle" | "ok" | "fail">("idle");
+  // The cashier can still override and accept the risk without verifying.
+  const [overrideVerify, setOverrideVerify] = useState(false);
 
   useEffect(() => {
     const id = setTimeout(() => setScanning(false), 1000);
@@ -34,7 +43,42 @@ export function PrecheckStep({
   const shown = risk.factors
     .slice()
     .sort((a, b) => Number(b.hit) - Number(a.hit) || b.points - a.points);
+  // Supplier basic-info problems that the payee can actually clear.
+  const verifiableHits = hits.filter(
+    (f) => f.category === "data-quality" && isVerifiable(f.id),
+  );
+  const hasVerifiable = verifiableHits.length > 0;
+  const allSynced = hasVerifiable && verifiableHits.every((f) => synced.includes(f.id));
+  // When verifiable supplier-info problems exist, require the cashier to either
+  // sync them to the payee first, or explicitly override — before acknowledging.
+  const verifyGateSatisfied = !hasVerifiable || synced.length > 0 || overrideVerify;
   const canContinue = !risk.hasBlocker || acknowledged;
+
+  async function syncToSupplier() {
+    if (syncing || !hasVerifiable) return;
+    setSyncing(true);
+    setSyncErr(false);
+    try {
+      const pending = verifiableHits.filter((f) => !synced.includes(f.id));
+      const created = await Promise.all(
+        pending.map((f) => createVerificationCase({ supplierId: supplier.id, factorId: f.id })),
+      );
+      setSynced((prev) => [...prev, ...pending.map((f) => f.id)]);
+      const merged = created.map((c) => c.template).join("\n\n———\n\n");
+      setSyncTemplate((prev) => (prev ? `${prev}\n\n———\n\n${merged}` : merged));
+    } catch {
+      setSyncErr(true);
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  async function copySync() {
+    if (!syncTemplate) return;
+    const ok = await copyText(syncTemplate);
+    setSyncCopied(ok ? "ok" : "fail");
+    setTimeout(() => setSyncCopied("idle"), 1800);
+  }
 
   return (
     <div className="space-y-4" data-el="wizard-precheck">
