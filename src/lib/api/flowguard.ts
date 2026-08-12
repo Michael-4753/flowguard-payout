@@ -2,6 +2,7 @@ import { request } from "./request";
 import {
   guestAssess,
   guestCreatePayment,
+  guestCreateSupplier,
   guestCreateVerificationCase,
   guestAddVerificationComment,
   guestFailureCases,
@@ -23,6 +24,7 @@ import type {
   VerificationCase,
   VerificationStatus,
 } from "@/lib/engine/types";
+import type { NewSupplierInput } from "@/lib/supplier-input";
 
 export async function fetchSuppliers(): Promise<Supplier[]> {
   if (isGuest()) return guestSuppliers();
@@ -40,6 +42,19 @@ export async function fetchSupplier(
   if (res.status === 404) return null;
   if (!res.ok) throw new Error("failed_to_load_supplier");
   return (await res.json()) as { supplier: Supplier; payments: PaymentRecord[] };
+}
+
+/** Add a new payee to the ledger (authenticated: POST; guest: localStorage). */
+export async function addSupplier(input: NewSupplierInput): Promise<Supplier> {
+  if (isGuest()) return guestCreateSupplier(input);
+  const res = await request("/api/suppliers", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error("failed_to_add_supplier");
+  const json = (await res.json()) as { supplier: Supplier };
+  return json.supplier;
 }
 
 export interface AssessInput {
