@@ -445,7 +445,7 @@ export function routePayment(
 
     // stablecoin gateway only for overseas entities
     const available =
-      channel.channelClass !== "stablecoin-gateway" || supplier.entityType === "overseas";
+      channel.channelClass !== "stablecoin-direct" || supplier.entityType === "overseas";
 
     const feeScore = clamp(1 - feeRate / 0.012, 0, 1);
     const speedScore = clamp(1 - etaMinutes / 1600, 0, 1);
@@ -527,13 +527,9 @@ export function deriveVouchers(
   const hex = seed.toString(16).padStart(6, "0");
   const offchainRef = `MT103-${hex.toUpperCase()}`;
   const invoiceNo = `INV-${seed % 100000}`;
-  // Only arrived/settling PSP or stablecoin transfers expose an on-chain proof.
+  // Only stablecoin-direct transfers expose an on-chain proof once moving.
   const hasOnchain =
-    channelClass !== "swift-gpi" && (status === "arrived" || status === "settling");
-  const onchainRef = hasOnchain
-    ? channelClass === "stablecoin-gateway"
-      ? `0x${seed.toString(16).padStart(8, "0")}`
-      : `PSP-${hex.toUpperCase()}`
-    : "";
+    channelClass === "stablecoin-direct" && (status === "arrived" || status === "settling");
+  const onchainRef = hasOnchain ? `0x${seed.toString(16).padStart(8, "0")}` : "";
   return { offchainRef, invoiceNo, onchainRef };
 }
