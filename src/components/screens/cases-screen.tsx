@@ -181,7 +181,7 @@ function VerificationCard({
     <article className="fg-glass rounded-2xl p-4" data-el="verification-card">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
             <FileCheck2 className="h-4 w-4 shrink-0 text-primary" aria-hidden />
             <span className="truncate text-sm font-semibold">{record.supplierName}</span>
           </div>
