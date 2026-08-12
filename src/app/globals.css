@@ -86,8 +86,8 @@ body {
   --muted-foreground: rgba(237, 235, 229, 0.62);
   --accent: #E0783C;
   --accent-foreground: #1C110B;
-  --destructive: #C85A45;
-  --danger: #C85A45;
+  --destructive: #D06A52;
+  --danger: #D06A52;
   --success: #4F8A61;
   --warning: #E0A83C;
   --border: rgba(237, 235, 229, 0.14);
@@ -135,8 +135,8 @@ body {
   --muted-foreground: rgba(237, 235, 229, 0.62);
   --accent: #E0783C;
   --accent-foreground: #1C110B;
-  --destructive: #C85A45;
-  --danger: #C85A45;
+  --destructive: #D06A52;
+  --danger: #D06A52;
   --success: #4F8A61;
   --warning: #E0A83C;
   --border: rgba(237, 235, 229, 0.14);
