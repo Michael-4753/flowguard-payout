@@ -345,9 +345,10 @@ export function PrecheckStep({
         </div>
       )}
 
-      {/* Verify-first gate: block "acknowledge risk" until the payee has been
-          contacted (or the cashier explicitly overrides). */}
-      {!scanning && risk.hasBlocker && hasVerifiable && !verifyGateSatisfied && (
+      {/* Verify-first gate: block continuing until the payee has been contacted
+          (or the cashier explicitly overrides) — applies to any verifiable
+          supplier-info problem, blocker or warn-level alike. */}
+      {!scanning && hasVerifiable && !verifyGateSatisfied && (
         <div
           className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-4"
           data-el="wizard-verify-gate"
