@@ -128,16 +128,19 @@ export async function reviewPayment(input: {
   note?: string;
 }): Promise<PaymentRecord> {
   if (isGuest()) {
-    const updated = guestReviewPayment(input);
-    if (!updated) throw new Error("not_pending");
-    return updated;
+    const outcome = guestReviewPayment(input);
+    if (!outcome.ok) throw new Error(outcome.reason);
+    return outcome.payment;
   }
   const res = await request(`/api/payments/${encodeURIComponent(input.id)}/review`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ approve: input.approve, note: input.note }),
   });
-  if (!res.ok) throw new Error("failed_to_review_payment");
+  if (!res.ok) {
+    if (res.status === 403) throw new Error("self_review");
+    throw new Error("failed_to_review_payment");
+  }
   const json = (await res.json()) as { payment: PaymentRecord };
   return json.payment;
 }
