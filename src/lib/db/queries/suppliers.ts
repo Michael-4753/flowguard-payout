@@ -88,6 +88,9 @@ export async function insertSuppliers(
 }
 
 export async function countSuppliers(userId: string): Promise<number> {
-  const rows = await db.select({ id: suppliers.id }).from(suppliers).where(eq(suppliers.userId, userId));
-  return rows.length;
+  const rows = await db
+    .select({ value: count() })
+    .from(suppliers)
+    .where(eq(suppliers.userId, userId));
+  return rows[0]?.value ?? 0;
 }

@@ -115,6 +115,9 @@ export async function reviewPayment(input: {
 }
 
 export async function countPayments(userId: string): Promise<number> {
-  const rows = await db.select({ id: payments.id }).from(payments).where(eq(payments.userId, userId));
-  return rows.length;
+  const rows = await db
+    .select({ value: count() })
+    .from(payments)
+    .where(eq(payments.userId, userId));
+  return rows[0]?.value ?? 0;
 }
