@@ -19,11 +19,15 @@ import { cn } from "@/utils/utils";
 
 export function EscrowScreen() {
   const { suppliers, loading } = useFlowGuardData();
-  const [tick, bump] = useReducer((n: number) => n + 1, 0);
+  const [escrows, setEscrows] = useState<EscrowContract[]>([]);
   const [creating, setCreating] = useState(false);
 
-  useEffect(() => subscribeEscrow(bump), []);
-  const escrows = useMemo(() => listEscrows(), [tick]);
+  useEffect(() => {
+    const refresh = () => setEscrows(listEscrows());
+    refresh();
+    return subscribeEscrow(refresh);
+  }, []);
+  const bump = () => setEscrows(listEscrows());
 
   const totals = useMemo(() => {
     let locked = 0;
