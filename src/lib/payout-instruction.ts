@@ -41,23 +41,26 @@ function toCopyText(title: string, fields: InstructionField[]): string {
 }
 
 /**
- * Build the channel-aware payout instruction. `settlementCurrency` is always USD
- * (funds leave in USD; local conversion happens at payout) per the product spec.
+ * Build the channel-aware payout instruction. Funds leave in the payment's
+ * settlement currency; the payee is credited in their local currency (converted
+ * at payout for Local Fiat).
  */
 export function buildPayoutInstruction(
   payment: PaymentRecord,
   supplier: Supplier,
 ): PayoutInstruction {
-  const amountUsd = fmtAmount(payment.amountUsd);
+  const amount = fmtAmount(payment.amountUsd);
+  const settle = payment.settleCurrency;
 
   if (payment.route.channelClass === "stablecoin-direct") {
     const wallet = supplier.stablecoinWallet ?? "";
-    const amountLabel = `${amountUsd} USDC`;
+    const amountLabel = `${amount} ${settle} (in USDC)`;
     const fields: InstructionField[] = [
       { label: "Beneficiary", value: supplier.name },
       { label: "Network", value: "USDC (verify chain with payee)" },
       { label: "Destination wallet", value: wallet || "— missing —", mono: true },
       { label: "Amount", value: amountLabel, mono: true },
+      { label: "Settlement currency", value: settle },
       { label: "Reference", value: payment.onchainRef || payment.invoiceNo, mono: true },
       { label: "Invoice", value: payment.invoiceNo, mono: true },
     ];
@@ -79,7 +82,7 @@ export function buildPayoutInstruction(
     { label: "SWIFT / BIC (57A)", value: supplier.swift, mono: true },
     { label: "Account / IBAN (59)", value: supplier.iban, mono: true },
     { label: "Beneficiary country", value: supplier.country },
-    { label: "Amount & currency (32A)", value: `USD ${amountUsd}`, mono: true },
+    { label: "Amount & currency (32A)", value: `${settle} ${amount}`, mono: true },
     { label: "Payout currency", value: `${supplier.currency} (converted at payout)` },
     { label: "Remittance ref (70)", value: payment.invoiceNo, mono: true },
     { label: "Bank ref / UETR (20)", value: payment.offchainRef, mono: true },
