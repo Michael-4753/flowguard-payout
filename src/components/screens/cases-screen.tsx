@@ -195,7 +195,7 @@ function VerificationCard({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="mt-3 text-[11px] font-medium text-primary"
+        className="mt-2 -mx-1 inline-flex min-h-[36px] items-center px-1 text-[11px] font-medium text-primary"
         data-el="verification-toggle"
       >
         {open ? "Hide message" : "View request message"}
