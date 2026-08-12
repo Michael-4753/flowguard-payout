@@ -136,7 +136,9 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className="truncate text-sm font-semibold">{r.supplierName}</span>
-            <span className="shrink-0 font-mono text-[10px] text-muted-foreground">{r.currency}</span>
+            <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+              {r.currency !== r.settleCurrency ? `${r.settleCurrency} → ${r.currency}` : r.settleCurrency}
+            </span>
           </div>
           <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
             {formatDate(r.createdAt)} · {r.channel}
@@ -146,7 +148,7 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
       </div>
 
       <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
-        <Cell label="Sent" value={formatUsdCents(r.amountUsd)} />
+        <Cell label={`Sent (${r.settleCurrency})`} value={formatUsdCents(r.amountUsd)} />
         <Cell label="Fees" value={formatUsdCents(r.feeUsd)} />
         <Cell label="FX loss" value={formatUsdCents(r.fxLossUsd)} />
         <Cell label="Expected" value={formatUsdCents(r.expectedUsd)} />
