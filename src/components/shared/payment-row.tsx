@@ -18,9 +18,9 @@ export function PaymentRow({ record }: { record: PaymentRecord }) {
       data-el="payment-row"
     >
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
           <span className="truncate text-sm font-semibold">{record.supplierName}</span>
-          <RiskBadge level={record.riskLevel} />
+          <span className="shrink-0"><RiskBadge level={record.riskLevel} /></span>
         </div>
         <div className="mt-1 flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
           <span className="truncate">{CHANNEL_CLASS_LABEL[record.route.channelClass]}</span>
