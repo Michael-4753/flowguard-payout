@@ -102,6 +102,7 @@ function PayWizard() {
         <RouteStep
           routing={assessed.routing}
           risk={assessed.risk}
+          supplier={assessed.supplier}
           onConfirm={handleConfirm}
           confirmed={confirmed}
         />
