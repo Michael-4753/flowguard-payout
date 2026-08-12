@@ -5,7 +5,7 @@
 // Each template is a ready-to-copy message the cashier sends out-of-band
 // (email / IM); no realtime channel is implied.
 
-import type { Supplier } from "@/lib/engine/types";
+import type { CaseEvent, RiskFactor, Supplier, VerificationCase } from "@/lib/engine/types";
 
 /** Data-quality factor ids that can be closed out by a verification request. */
 export const VERIFIABLE_FACTOR_IDS = ["company-name", "account-status", "iban", "swift"] as const;
@@ -52,4 +52,57 @@ export function buildTemplate(factorId: string, supplier: Supplier): string {
     default:
       return `Hi,\n\nPlease confirm your payment details so we can release funds to ${supplier.name}.${sign}`;
   }
+}
+
+// ---- shared-case helpers (public link + timeline) ----
+
+/** URL-safe random token; works in browser and Node (Web Crypto). */
+export function makeToken(): string {
+  const bytes = new Uint8Array(18);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** Bank-side raw risk description shown first-hand on the shared case. */
+export function bankRawDescription(factor: RiskFactor | undefined, supplier: Supplier): string {
+  const head = `Beneficiary: ${supplier.name} (${supplier.country})\nBank SWIFT: ${supplier.swift}\nIBAN/Acct: ${supplier.iban}`;
+  const body = factor
+    ? `Flagged control: ${factor.title}\nSeverity: ${factor.severity}\n\n${factor.description}`
+    : "A data-quality control requires beneficiary confirmation before release.";
+  return `${head}\n\n${body}`;
+}
+
+export function makeEvent(input: {
+  actor: CaseEvent["actor"];
+  kind: CaseEvent["kind"];
+  message: string;
+}): CaseEvent {
+  return { id: makeToken().slice(0, 12), at: new Date().toISOString(), ...input };
+}
+
+/** Build a full shared VerificationCase from a supplier + triggering factor. */
+export function buildVerificationCase(input: {
+  id: string;
+  supplier: Supplier;
+  factorId: string;
+  factor: RiskFactor | undefined;
+}): VerificationCase {
+  const now = new Date().toISOString();
+  return {
+    id: input.id,
+    supplierId: input.supplier.id,
+    supplierName: input.supplier.name,
+    factorId: input.factorId,
+    factorTitle: input.factor?.title ?? input.factorId,
+    template: buildTemplate(input.factorId, input.supplier),
+    bankRawDescription: bankRawDescription(input.factor, input.supplier),
+    status: "open",
+    readToken: makeToken(),
+    writeToken: makeToken(),
+    timeline: [
+      makeEvent({ actor: "cashier", kind: "created", message: "Verification request opened." }),
+    ],
+    createdAt: now,
+    updatedAt: now,
+  };
 }
