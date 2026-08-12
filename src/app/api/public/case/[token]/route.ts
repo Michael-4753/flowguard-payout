@@ -5,6 +5,15 @@ import {
   publicUpdateStatus,
   publicAddComment,
 } from "@/lib/db/queries/verification-cases";
+import type { VerificationCase } from "@/lib/engine/types";
+
+// Never leak the share tokens to public clients. A read-only viewer must not be
+// able to derive the write token (which would let them bypass read_only), and
+// the public page does not need either token value to render.
+function stripTokens(c: VerificationCase): Omit<VerificationCase, "readToken" | "writeToken"> {
+  const { readToken: _r, writeToken: _w, ...safe } = c;
+  return safe;
+}
 
 // Public, token-authorized access to a shared verification case. No login
 // required — access is controlled by the unguessable token in the URL. Only
