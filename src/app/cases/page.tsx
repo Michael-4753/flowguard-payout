@@ -10,7 +10,7 @@ import { formatUsd } from "@/lib/format";
 import { CHANNEL_CLASS_LABEL, type ChannelClass, type FailureCase } from "@/lib/engine/types";
 import { cn } from "@/utils/utils";
 
-const FILTERS: (ChannelClass | "all")[] = ["all", "swift-gpi", "licensed-psp", "stablecoin-gateway"];
+const FILTERS: (ChannelClass | "all")[] = ["all", "stablecoin-direct", "local-fiat"];
 
 export default function CasesPage() {
   return (

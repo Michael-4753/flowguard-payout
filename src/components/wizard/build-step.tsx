@@ -6,12 +6,7 @@ import type { ChannelClass, Supplier } from "@/lib/engine/types";
 import { CHANNEL_CLASS_LABEL, RISK_LEVEL_LABEL } from "@/lib/engine/types";
 import { cn } from "@/utils/utils";
 
-const CHANNELS: (ChannelClass | "auto")[] = [
-  "auto",
-  "swift-gpi",
-  "licensed-psp",
-  "stablecoin-gateway",
-];
+const CHANNELS: (ChannelClass | "auto")[] = ["auto", "stablecoin-direct", "local-fiat"];
 
 export function BuildStep({
   suppliers,
