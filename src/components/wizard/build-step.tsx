@@ -182,8 +182,9 @@ export function BuildStep({
         >
           <Wallet className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
           <span>
-            稳定币直付要求收款方持有可接收指定稳定币（如 USDC）的钱包。请先与对方确认——
-            否则这笔付款无法被领取，会被退回。
+            Stablecoin Direct requires the payee to hold a wallet that can receive the accepted
+            stablecoin (e.g. USDC). Confirm this with them first — otherwise the payout cannot be
+            claimed and will be returned.
           </span>
         </p>
       )}
