@@ -92,3 +92,15 @@ export function addGuestPayment(record: PaymentRecord): void {
     /* ignore */
   }
 }
+
+/** Replace a stored guest payment by id (used by the checker review action). */
+export function updateGuestPayment(record: PaymentRecord): void {
+  if (typeof window === "undefined") return;
+  try {
+    const list = readGuestPayments().map((p) => (p.id === record.id ? record : p));
+    window.localStorage.setItem(GUEST_PAYMENTS_KEY, JSON.stringify(list));
+    window.dispatchEvent(new Event(GUEST_EVENT));
+  } catch {
+    /* ignore */
+  }
+}
