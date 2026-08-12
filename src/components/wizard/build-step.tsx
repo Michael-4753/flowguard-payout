@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { ArrowRight, Check, Wallet } from "lucide-react";
-import type { ChannelClass, Supplier } from "@/lib/engine/types";
+import type { ChannelClass, Currency, Supplier } from "@/lib/engine/types";
 import { CHANNEL_CLASS_LABEL, RISK_LEVEL_LABEL } from "@/lib/engine/types";
 import { WalletBackfillModal } from "./wallet-backfill-modal";
 import { cn } from "@/utils/utils";
 
 const CHANNELS: (ChannelClass | "auto")[] = ["auto", "stablecoin-direct", "local-fiat"];
+const SETTLE_CURRENCIES: Currency[] = ["USD", "EUR", "GBP", "SGD", "INR", "VND", "AED"];
 
 export function BuildStep({
   suppliers,
@@ -18,10 +19,11 @@ export function BuildStep({
   suppliers: Supplier[];
   initialSupplierId?: string;
   initialAmount?: number;
-  onSubmit: (v: { supplierId: string; amountUsd: number; preferredChannel?: ChannelClass }) => void;
+  onSubmit: (v: { supplierId: string; amountUsd: number; preferredChannel?: ChannelClass; settleCurrency: Currency }) => void;
 }) {
   const [supplierId, setSupplierId] = useState(initialSupplierId ?? "");
   const [amount, setAmount] = useState(initialAmount ? String(initialAmount) : "");
+  const [settleCurrency, setSettleCurrency] = useState<Currency>("USD");
   const [channel, setChannel] = useState<ChannelClass | "auto">("auto");
   const [error, setError] = useState<string | null>(null);
   const [walletGate, setWalletGate] = useState(false);
@@ -51,6 +53,7 @@ export function BuildStep({
       supplierId,
       amountUsd: Number(amount),
       preferredChannel: channel === "auto" ? undefined : channel,
+      settleCurrency,
     });
   }
 
@@ -106,39 +109,48 @@ export function BuildStep({
       {/* Amount */}
       <label className="mt-4 flex items-center justify-between text-xs text-muted-foreground" htmlFor="amount">
         <span>Amount</span>
-        <span className="rounded-full border border-border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide">
-          Settlement currency: USD
-        </span>
       </label>
-      <input
-        id="amount"
-        type="number"
-        inputMode="decimal"
-        min="0"
-        step="0.01"
-        value={amount}
-        onChange={(e) => {
-          setAmount(e.target.value);
-          if (error) setError(null);
-        }}
-        placeholder="e.g. 18400"
-        aria-invalid={amountInvalid}
-        aria-describedby={amountInvalid ? "amount-error" : undefined}
-        className={cn(
-          "mt-2 w-full rounded-2xl border bg-background/40 px-4 py-3 font-mono text-lg outline-none focus:border-primary",
-          amountInvalid ? "border-[color:var(--danger)]" : "border-border",
-        )}
-        data-el="wizard-amount"
-      />
+      <div className="mt-2 flex gap-2">
+        <input
+          id="amount"
+          type="number"
+          inputMode="decimal"
+          min="0"
+          step="0.01"
+          value={amount}
+          onChange={(e) => {
+            setAmount(e.target.value);
+            if (error) setError(null);
+          }}
+          placeholder="e.g. 18400"
+          aria-invalid={amountInvalid}
+          aria-describedby={amountInvalid ? "amount-error" : undefined}
+          className={cn(
+            "w-full rounded-2xl border bg-background/40 px-4 py-3 font-mono text-lg outline-none focus:border-primary",
+            amountInvalid ? "border-[color:var(--danger)]" : "border-border",
+          )}
+          data-el="wizard-amount"
+        />
+        <select
+          value={settleCurrency}
+          onChange={(e) => setSettleCurrency(e.target.value as Currency)}
+          aria-label="Settlement currency"
+          className="shrink-0 rounded-2xl border border-border bg-[color:var(--card)] px-3 font-mono text-sm outline-none focus:border-primary"
+          data-el="wizard-settle-currency"
+        >
+          {SETTLE_CURRENCIES.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      </div>
       {amountInvalid && (
         <p id="amount-error" className="mt-1.5 text-xs text-[color:var(--danger)]" data-el="wizard-amount-error">
           {liveAmountError}
         </p>
       )}
       <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground" data-el="settlement-note">
-        You send in <b className="text-foreground">USD</b> — the standard settlement currency for
-        cross-border payouts.
-        {selected && selected.currency !== "USD" && (
+        You send in <b className="text-foreground">{settleCurrency}</b> (settlement currency).
+        {selected && selected.currency !== settleCurrency && (
           <> The payee is credited in their local currency (<b className="text-foreground">{selected.currency}</b>) by the payout rail.</>
         )}
       </p>
