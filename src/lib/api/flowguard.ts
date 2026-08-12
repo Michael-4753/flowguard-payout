@@ -2,6 +2,7 @@ import { request } from "./request";
 import {
   guestAssess,
   guestCreatePayment,
+  guestDispatchPayment,
   guestCreateSupplier,
   guestUpdateSupplierWallet,
   guestCreateVerificationCase,
@@ -141,6 +142,21 @@ export async function reviewPayment(input: {
     if (res.status === 403) throw new Error("self_review");
     throw new Error("failed_to_review_payment");
   }
+  const json = (await res.json()) as { payment: PaymentRecord };
+  return json.payment;
+}
+
+/** Post-approval dispatch: mark funds sent → advance to settling. */
+export async function dispatchPayment(input: { id: string }): Promise<PaymentRecord> {
+  if (isGuest()) {
+    const updated = guestDispatchPayment(input);
+    if (!updated) throw new Error("not_initiated");
+    return updated;
+  }
+  const res = await request(`/api/payments/${encodeURIComponent(input.id)}/dispatch`, {
+    method: "POST",
+  });
+  if (!res.ok) throw new Error("failed_to_dispatch_payment");
   const json = (await res.json()) as { payment: PaymentRecord };
   return json.payment;
 }
