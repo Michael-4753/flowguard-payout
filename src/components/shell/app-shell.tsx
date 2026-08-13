@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       className="relative isolate flex min-h-[100svh] flex-col overflow-x-hidden"
       style={{
         paddingTop: "var(--eazo-safe-area-top)",
-        paddingBottom: "calc(var(--eazo-safe-area-bottom) + 80px)",
+        paddingBottom: "calc(var(--eazo-safe-area-bottom) + 104px)",
       }}
       data-el="app-shell"
     >
