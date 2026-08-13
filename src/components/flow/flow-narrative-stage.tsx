@@ -113,10 +113,11 @@ export function FlowNarrativeStage({
         </span>
       </div>
 
-      {/* Vertical hop rail */}
-      <ol className="relative flex flex-col gap-0" data-el="flow-rail">
+      {/* Vertical hop rail — keyed on the selected route so switching triggers a
+          visible re-layout (each hop re-enters with a staggered fade/rise). */}
+      <ol className="relative flex flex-col gap-0" data-el="flow-rail" key={selected.id}>
         {selected.hops.map((hop, i) => (
-          <HopNode key={hop.id} hop={hop} last={i === selected.hops.length - 1} />
+          <HopNode key={hop.id} hop={hop} index={i} last={i === selected.hops.length - 1} />
         ))}
       </ol>
 
