@@ -6,7 +6,7 @@ import { DECKS, type DeckLang } from "./deck-content";
 import { Slide } from "./slide";
 
 export function PitchDeck() {
-  const [lang, setLang] = useState<DeckLang>("zh");
+  const [lang, setLang] = useState<DeckLang>("en");
   const [i, setI] = useState(0);
   const deck = DECKS[lang];
   const total = deck.length;
@@ -48,7 +48,7 @@ export function PitchDeck() {
         className="absolute right-4 top-4 z-30 inline-flex rounded-full border border-border bg-[color:var(--fg-glass)] p-0.5 backdrop-blur sm:right-6"
         data-el="pitch-lang-switch"
       >
-        {(["zh", "en"] as DeckLang[]).map((l) => (
+        {(["en", "zh"] as DeckLang[]).map((l) => (
           <button
             key={l}
             type="button"
