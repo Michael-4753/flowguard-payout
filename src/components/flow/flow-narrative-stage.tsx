@@ -135,7 +135,7 @@ export function FlowNarrativeStage({
   );
 }
 
-function HopNode({ hop, last }: { hop: FlowHop; last: boolean }) {
+function HopNode({ hop, index, last }: { hop: FlowHop; index: number; last: boolean }) {
   const roleColor =
     hop.role === "origin"
       ? "var(--success)"
@@ -146,14 +146,23 @@ function HopNode({ hop, last }: { hop: FlowHop; last: boolean }) {
           : "var(--muted-foreground)";
 
   return (
-    <li className="relative flex gap-3" data-el="flow-hop">
+    <li
+      className="fg-enter relative flex gap-3"
+      data-el="flow-hop"
+      style={{ "--i": index } as React.CSSProperties}
+    >
       {/* rail + node */}
       <div className="flex flex-col items-center">
         <span
-          className="fg-orb grid h-9 w-9 shrink-0 place-items-center rounded-full text-[10px] font-bold"
+          className={cn(
+            "fg-orb-route grid h-9 w-9 shrink-0 place-items-center rounded-full text-[10px] font-bold",
+            hop.chokepoint && "fg-orb-pulse-danger",
+          )}
+          data-active="true"
           style={{
             filter: `drop-shadow(0 0 12px ${roleColor}55)`,
             color: roleColor,
+            border: `1.5px solid ${roleColor}`,
           }}
           aria-hidden
         >
