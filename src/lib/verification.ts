@@ -142,15 +142,18 @@ export function isResolved(c: VerificationCase): boolean {
 }
 
 /**
- * Map supplierId → set of factorIds that have a resolved verification case.
- * A payment's risk factor that appears here is shown as "Clarified" and its
- * reviewer warning is softened (the deterministic score is left untouched).
+ * Map supplierId → (factorId → resolution mode) for resolved verification
+ * cases. "verified" wins over "clarified" when both exist for the same factor.
  */
-export function clarifiedBySupplier(cases: VerificationCase[]): Record<string, Set<string>> {
-  const map: Record<string, Set<string>> = {};
+export function clarifiedBySupplier(
+  cases: VerificationCase[],
+): Record<string, Map<string, "verified" | "clarified">> {
+  const map: Record<string, Map<string, "verified" | "clarified">> = {};
   for (const c of cases) {
     if (!isResolved(c)) continue;
-    (map[c.supplierId] ??= new Set()).add(c.factorId);
+    const mode: "verified" | "clarified" = c.status === "verified" ? "verified" : "clarified";
+    const inner = (map[c.supplierId] ??= new Map());
+    if (inner.get(c.factorId) !== "verified") inner.set(c.factorId, mode);
   }
   return map;
 }
@@ -174,11 +177,11 @@ export interface EffectiveRisk {
  */
 export function recomputePaymentRisk(
   record: PaymentRecord,
-  clarified: ReadonlySet<string>,
+  clarified: ReadonlyMap<string, "verified" | "clarified">,
 ): EffectiveRisk {
   // Only data-quality factors the payee can actually clear.
-  const clearable = new Set<string>();
-  for (const id of clarified) if (isVerifiable(id)) clearable.add(id);
+  const clearable = new Map<string, "verified" | "clarified">();
+  for (const [id, mode] of clarified) if (isVerifiable(id)) clearable.set(id, mode);
 
   // Reconstruct a minimal assessment from the stored snapshot.
   const hadBlocker = record.riskFactors.some((f) => f.hit && f.severity === "critical");
