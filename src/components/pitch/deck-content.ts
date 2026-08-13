@@ -1,6 +1,8 @@
 // Single source of truth for the FlowGuard pitch deck content.
-// Consumed by both the web deck (/pitch) and the .pptx export script.
-// Chinese for on-stage presentation; the "FlowGuard" brand name stays Latin.
+// Consumed by the web deck (/pitch) — bilingual (zh / en). The .pptx export
+// script keeps its own parallel copy. The "FlowGuard" brand name stays Latin.
+
+export type DeckLang = "zh" | "en";
 
 export interface DeckSlide {
   id: string;
@@ -12,7 +14,7 @@ export interface DeckSlide {
   footnote?: string;
 }
 
-export const DECK: DeckSlide[] = [
+export const DECK_ZH: DeckSlide[] = [
   {
     id: "cover",
     kind: "cover",
@@ -27,22 +29,10 @@ export const DECK: DeckSlide[] = [
     eyebrow: "痛点",
     title: "跨境 B2B 付款都是「盲发」",
     bullets: [
-      {
-        head: "先发后祈祷",
-        body: "钱打出去才知道会被退回 —— 资金冻结数日,等退汇结算,业务停摆。",
-      },
-      {
-        head: "收款人信息脏数据",
-        body: "公司名不符、IBAN 错误、账户休眠。银行静默退汇,对账全靠人工。",
-      },
-      {
-        head: "缺少双人复核",
-        body: "一名出纳就能单独推送大额付款 —— 真实的合规与欺诈敞口。",
-      },
-      {
-        head: "选错通道 = 白花钱",
-        body: "稳定币直付与本地法币凭感觉二选一,费用更高、失败率更高。",
-      },
+      { head: "先发后祈祷", body: "钱打出去才知道会被退回 —— 资金冻结数日,等退汇结算,业务停摆。" },
+      { head: "收款人信息脏数据", body: "公司名不符、IBAN 错误、账户休眠。银行静默退汇,对账全靠人工。" },
+      { head: "缺少双人复核", body: "一名出纳就能单独推送大额付款 —— 真实的合规与欺诈敞口。" },
+      { head: "选错通道 = 白花钱", body: "稳定币直付与本地法币凭感觉二选一,费用更高、失败率更高。" },
     ],
   },
   {
@@ -51,22 +41,10 @@ export const DECK: DeckSlide[] = [
     eyebrow: "解决方案",
     title: "一个控制台,在付款离账前先降风险",
     bullets: [
-      {
-        head: "AI + 金额分档预检",
-        body: "DeepSeek AI 与确定性引擎评估退回概率;金额分档升级审查,≥ 100 万美元强制进入高风险车道。",
-      },
-      {
-        head: "先向供应商核查",
-        body: "数据质量问题(公司名 / IBAN / SWIFT / 账户)必须先作为 Case 同步给收款人 —— 未核实或未显式豁免前,审批被拦截。",
-      },
-      {
-        head: "强制经办—审批分离",
-        body: "以「经办」提交,以「审批」批准,自审在前后端双重硬拦截。当前为单账户演示(切换身份展示机制),生产环境为两个独立账户。",
-      },
-      {
-        head: "双通道 + 双币种",
-        body: "稳定币直付与本地法币按风险和成本自动排序;每笔付款展示 结算币种 → 收款人本地币种。",
-      },
+      { head: "AI + 金额分档预检", body: "DeepSeek AI 与确定性引擎评估退回概率;金额分档升级审查,≥ 100 万美元强制进入高风险车道。" },
+      { head: "先向供应商核查", body: "数据质量问题(公司名 / IBAN / SWIFT / 账户)必须先作为 Case 同步给收款人 —— 未核实或未显式豁免前,审批被拦截。" },
+      { head: "强制经办—审批分离", body: "以「经办」提交,以「审批」批准,自审在前后端双重硬拦截。当前为单账户演示(切换身份展示机制),生产环境为两个独立账户。" },
+      { head: "双通道 + 双币种", body: "稳定币直付与本地法币按风险和成本自动排序;每笔付款展示 结算币种 → 收款人本地币种。" },
     ],
   },
   {
@@ -75,22 +53,10 @@ export const DECK: DeckSlide[] = [
     eyebrow: "已交付",
     title: "可运行的 MVP —— 真跑通,不是幻灯片",
     bullets: [
-      {
-        head: "完整控制闭环",
-        body: "预检 → 供应商核查 → 双人审批 → 执行(MT103 / 钱包)→ 收款方到账回执 → 自动对账,全链路打通。",
-      },
-      {
-        head: "核实即自动清风险",
-        body: "供应商确认被标问题后,Case 关闭,风险分 / 阻断自动复算 —— 无需人工硬改。",
-      },
-      {
-        head: "真后端",
-        body: "PostgreSQL 多租户隔离、鉴权守卫、服务端强制状态机,每笔付款与 Case 均有审计轨迹。",
-      },
-      {
-        head: "免登录到账证明",
-        body: "收款人通过不可猜测的 token 链接确认收款;确认作为真实结算凭据存证,并在对账中自动匹配。",
-      },
+      { head: "完整控制闭环", body: "预检 → 供应商核查 → 双人审批 → 执行(MT103 / 钱包)→ 收款方到账回执 → 自动对账,全链路打通。" },
+      { head: "核实即自动清风险", body: "供应商确认被标问题后,Case 关闭,风险分 / 阻断自动复算 —— 无需人工硬改。" },
+      { head: "真后端", body: "PostgreSQL 多租户隔离、鉴权守卫、服务端强制状态机,每笔付款与 Case 均有审计轨迹。" },
+      { head: "免登录到账证明", body: "收款人通过不可猜测的 token 链接确认收款;确认作为真实结算凭据存证,并在对账中自动匹配。" },
     ],
   },
   {
@@ -136,3 +102,97 @@ export const DECK: DeckSlide[] = [
     footnote: "欢迎联系 —— 现场演示随时可看。",
   },
 ];
+
+export const DECK_EN: DeckSlide[] = [
+  {
+    id: "cover",
+    kind: "cover",
+    eyebrow: "Cross-border payout console",
+    title: "FlowGuard",
+    subtitle: "Dual-route, risk-first cross-border payments — check before you send.",
+    footnote: "Investor pitch · 2026",
+  },
+  {
+    id: "problem",
+    kind: "problem",
+    eyebrow: "The problem",
+    title: "Cross-border B2B payouts are sent blind",
+    bullets: [
+      { head: "Send-and-pray wires", body: "You only learn a payment will bounce after it leaves — funds frozen for days while returns settle." },
+      { head: "Dirty beneficiary data", body: "Wrong company name, bad IBAN, dormant accounts. Banks silently return the wire; reconciliation is manual." },
+      { head: "No dual control", body: "A single cashier can push a large payout alone — real compliance and fraud exposure." },
+      { head: "Wrong rail = wasted money", body: "Stablecoin direct vs local fiat picked by gut feel means higher fees and higher failure rates." },
+    ],
+  },
+  {
+    id: "solution",
+    kind: "solution",
+    eyebrow: "The solution",
+    title: "One console that de-risks the payout before it leaves",
+    bullets: [
+      { head: "AI + amount-tier precheck", body: "DeepSeek AI and a deterministic engine score return probability; amount tiers escalate scrutiny, and payouts ≥ $1M are forced into the high-risk lane." },
+      { head: "Verify-first with the supplier", body: "Data-quality problems (name / IBAN / SWIFT / account) must be synced to the payee as a Case first — approval is gated until verified or explicitly overridden." },
+      { head: "Maker-checker, enforced", body: "Submit as Maker, approve as Checker; self-approval is hard-blocked front-end and server-side. Shown here in single-account demo mode; production uses two separate accounts." },
+      { head: "Dual-route + dual currency", body: "Stablecoin Direct vs Local Fiat auto-ranked by risk and cost; each payout shows settlement currency → payee's local currency." },
+    ],
+  },
+  {
+    id: "mvp",
+    kind: "mvp",
+    eyebrow: "What's built today",
+    title: "A working MVP — live, not slideware",
+    bullets: [
+      { head: "Full control loop", body: "Precheck → verify-with-supplier → dual approve → execute (MT103 / wallet) → payee arrival receipt → auto-reconcile, fully wired." },
+      { head: "Verified risk clears itself", body: "When a supplier confirms a flagged detail, the case resolves and the risk score / blocker recompute automatically — no manual fudging." },
+      { head: "Real backend", body: "PostgreSQL with multi-tenant isolation, auth guards, a server-enforced state machine, and an audit trail on every payment and case." },
+      { head: "Login-free proof of arrival", body: "The payee confirms receipt via an unguessable token link; it's stored as real settlement evidence and auto-matched in reconciliation." },
+    ],
+  },
+  {
+    id: "diff",
+    kind: "diff",
+    eyebrow: "Why us",
+    title: "Risk control before the send — not after",
+    subtitle: "Pre-send risk + verify-first + enforced dual control, in one console.",
+    bullets: [
+      { head: "Pre-send, not post-hoc", body: "Competitors reconcile after failure. We block it first — and clear it by verifying with the supplier." },
+      { head: "Two rails, one decision", body: "Stablecoin and local fiat compared in the same flow, with dual settlement / payee currency." },
+      { head: "Compliance is native", body: "Amount-tier lanes, enforced maker-checker, and a full audit trail are core — not a bolt-on." },
+    ],
+  },
+  {
+    id: "business",
+    kind: "business",
+    eyebrow: "Business model",
+    title: "Three aligned revenue lines",
+    bullets: [
+      { head: "Per-payout fee", body: "A small take rate on each successfully de-risked payout." },
+      { head: "SaaS subscription", body: "Seat + tier pricing for teams needing dual control and audit." },
+      { head: "Rail rebates", body: "Share of savings from routing volume to the optimal rail." },
+    ],
+  },
+  {
+    id: "roadmap",
+    kind: "roadmap",
+    eyebrow: "Roadmap",
+    title: "From simulation to real rails",
+    bullets: [
+      { head: "Live rail integrations", body: "Connect real stablecoin and local-fiat payout providers." },
+      { head: "On-chain escrow", body: "Persist escrow to the backend and settle on real chains." },
+      { head: "Multi-currency", body: "Expand corridor and currency coverage." },
+      { head: "Enterprise RBAC", body: "Granular roles and approval policies for larger teams." },
+    ],
+  },
+  {
+    id: "cta",
+    kind: "cta",
+    title: "Stop sending blind.",
+    subtitle: "FlowGuard checks every cross-border payout before the money moves.",
+    footnote: "Let's talk — live demo available now.",
+  },
+];
+
+export const DECKS: Record<DeckLang, DeckSlide[]> = { zh: DECK_ZH, en: DECK_EN };
+
+/** Backwards-compatible default (Chinese). */
+export const DECK = DECK_ZH;
