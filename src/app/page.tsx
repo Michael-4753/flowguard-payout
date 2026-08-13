@@ -62,6 +62,10 @@ function DashboardBody() {
         <ArrowRight className="h-5 w-5" aria-hidden />
       </button>
 
+      {!loading && !error && (
+        <HeroFlowStrip payments={payments} onOpen={() => router.push("/history")} />
+      )}
+
       <div className="mt-4 grid grid-cols-2 gap-3" data-el="dashboard-stats">
         <StatCard icon={<Coins className="h-4 w-4" />} label="Payments" value={`${stats.count}`} />
         <StatCard icon={<Send className="h-4 w-4" />} label="Volume" value={formatUsd(stats.volume)} />
