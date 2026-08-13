@@ -244,8 +244,14 @@ function Cell({ label, value }: { label: string; value: string }) {
   );
 }
 
-/** Green "Clarified" chips for risk factors resolved via a verification case. */
-function ClarifiedChips({ record, clarified }: { record: PaymentRecord; clarified: Set<string> }) {
+/** Green chips for risk factors resolved via a verification case (verified / clarified). */
+function ClarifiedChips({
+  record,
+  clarified,
+}: {
+  record: PaymentRecord;
+  clarified: Map<string, "verified" | "clarified">;
+}) {
   const hits = record.riskFactors.filter((f) => f.hit && clarified.has(f.id));
   if (hits.length === 0) return null;
   return (
@@ -255,7 +261,8 @@ function ClarifiedChips({ record, clarified }: { record: PaymentRecord; clarifie
           key={f.id}
           className="inline-flex items-center gap-1 rounded-full border border-[color:var(--success)]/40 bg-[color:var(--success)]/12 px-2 py-0.5 text-[10px] font-semibold text-[color:var(--success)]"
         >
-          <ShieldCheck className="h-3 w-3" aria-hidden /> {f.title} · clarified
+          <ShieldCheck className="h-3 w-3" aria-hidden /> {f.title} ·{" "}
+          {clarified.get(f.id) === "verified" ? "verified" : "clarified"}
         </span>
       ))}
     </div>
