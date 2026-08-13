@@ -16,8 +16,8 @@ interface DataState {
   loading: boolean;
   error: boolean;
   refresh: () => Promise<void>;
-  /** Set of risk factorIds already clarified for a payee (verification feedback). */
-  clarifiedFactors: (supplierId: string) => Set<string>;
+  /** Per-payee map of factorId → resolution mode (verified clears, clarified softens). */
+  clarifiedFactors: (supplierId: string) => Map<string, "verified" | "clarified">;
   /** Clarified-adjusted risk (score/level/blocker recomputed after resolved cases). */
   effectiveRisk: (record: PaymentRecord) => EffectiveRisk;
   /** Identity of the signed-in user (or "guest"), matched against a payment's makerId. */
@@ -119,7 +119,7 @@ export function FlowGuardDataProvider({ children }: { children: React.ReactNode 
 
   const value = useMemo(() => {
     const map = clarifiedBySupplier(verificationCases);
-    const empty = new Set<string>();
+    const empty = new Map<string, "verified" | "clarified">();
     return {
       suppliers,
       payments,
