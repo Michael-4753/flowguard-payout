@@ -166,6 +166,11 @@ export function guestCreateVerificationCase(input: {
 }): VerificationCase | null {
   const supplier = guestSuppliers().find((s) => s.id === input.supplierId);
   if (!supplier || !isVerifiable(input.factorId)) return null;
+  // De-duplicate: reuse an existing open case for the same payee + factor.
+  const dup = readGuestVerificationCases().find(
+    (c) => c.supplierId === input.supplierId && c.factorId === input.factorId && c.status === "open",
+  );
+  if (dup) return dup;
   const factor = assessRisk(supplier).factors.find((f) => f.id === input.factorId);
   const record = buildVerificationCase({
     id: `vc-guest-${Date.now().toString(36)}`,
