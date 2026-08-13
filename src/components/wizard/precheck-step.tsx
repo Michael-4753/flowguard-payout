@@ -9,13 +9,15 @@ import { RiskGauge } from "@/components/shared/risk-gauge";
 import { AiPrecheckExplainer } from "@/components/wizard/ai-precheck-explainer";
 import { createVerificationCase } from "@/lib/api";
 import { isVerifiable } from "@/lib/verification";
+import { recomputeWithClarified } from "@/lib/engine";
+import { useFlowGuardData } from "@/components/shell/data-provider";
 import { formatPercent, formatUsdCents } from "@/lib/format";
 import { copyText } from "@/utils/copy-text";
 import { cn } from "@/utils/utils";
 
 export function PrecheckStep({
   supplier,
-  risk,
+  risk: rawRisk,
   onContinue,
 }: {
   supplier: Supplier;
@@ -23,6 +25,7 @@ export function PrecheckStep({
   onContinue: () => void;
 }) {
   const router = useRouter();
+  const { clarifiedFactors } = useFlowGuardData();
   const [scanning, setScanning] = useState(true);
   const [acknowledged, setAcknowledged] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -41,22 +44,25 @@ export function PrecheckStep({
     return () => clearTimeout(id);
   }, []);
 
+  // Feedback loop: pull this payee's resolved verification cases and recompute
+  // the risk so verified factors clear and clarified ones soften — the precheck
+  // now reflects the case outcomes instead of ignoring them.
+  const resolved = clarifiedFactors(supplier.id);
+  const { risk } = recomputeWithClarified(rawRisk, resolved);
+
   const hits = risk.factors.filter((f) => f.hit);
   const shown = risk.factors
     .slice()
     .sort((a, b) => Number(b.hit) - Number(a.hit) || b.points - a.points);
-  // Supplier basic-info problems that the payee can actually clear.
+  // Supplier basic-info problems that the payee can actually clear — and that
+  // are NOT already resolved via a verification case.
   const verifiableHits = hits.filter(
-    (f) => f.category === "data-quality" && isVerifiable(f.id),
+    (f) => f.category === "data-quality" && isVerifiable(f.id) && !resolved.has(f.id),
   );
   const hasVerifiable = verifiableHits.length > 0;
   const allSynced = hasVerifiable && verifiableHits.every((f) => synced.includes(f.id));
-  // When verifiable supplier-info problems exist, require the cashier to either
-  // sync them to the payee first, or explicitly override — before acknowledging.
-  // A verifiable supplier-info problem must be synced to the payee (or the
-  // cashier must explicitly override) before continuing — even when it is not a
-  // hard critical blocker (e.g. company-name / account-status are warn-level).
-  // This keeps the Cases verify-first story consistent with the actual flow.
+  // Gate is satisfied when there is nothing left to verify (already resolved via
+  // cases), or the cashier synced/overrode the remaining items.
   const verifyGateSatisfied = !hasVerifiable || synced.length > 0 || overrideVerify;
   const canContinue = (!risk.hasBlocker || acknowledged) && verifyGateSatisfied;
 
