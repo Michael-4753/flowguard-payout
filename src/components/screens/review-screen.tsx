@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { ShieldCheck, ShieldAlert, Check, X, Clock, Info } from "lucide-react";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
@@ -140,6 +142,7 @@ function ReviewCard({
   onDone: () => Promise<void>;
 }) {
   const [mode, setMode] = useState<"idle" | "reject">("idle");
+  const router = useRouter();
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<null | "generic" | "self_review">(null);
@@ -174,6 +177,12 @@ function ReviewCard({
         note: approve ? undefined : note.trim(),
         role: activeRole,
       });
+      toast.success(
+        approve
+          ? `Approved — ${record.supplierName} is recorded in History`
+          : `Returned to maker — ${record.supplierName} is recorded in History`,
+        { action: { label: "View in History", onClick: () => router.push("/history") } },
+      );
       await onDone();
     } catch (e) {
       setErr(e instanceof Error && e.message === "self_review" ? "self_review" : "generic");
