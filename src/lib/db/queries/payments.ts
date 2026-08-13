@@ -64,6 +64,7 @@ export async function insertPayment(userId: string, record: PaymentRecord): Prom
       supplierCodeName: record.supplierCodeName,
       amountUsd: record.amountUsd,
       currency: record.currency,
+      settleCurrency: record.settleCurrency,
       riskScore: record.riskScore,
       riskLevel: record.riskLevel,
       returnProbability: record.returnProbability,
