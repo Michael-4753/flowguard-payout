@@ -250,19 +250,21 @@ function VerificationCard({
               type="button"
               disabled={busy}
               onClick={() => mark("verified")}
+              title="Details confirmed correct — fully clears this risk factor from the payment."
               className="rounded-full border border-[color:var(--success)]/50 px-3 py-1.5 text-[11px] font-semibold text-[color:var(--success)] transition-colors hover:bg-[color:var(--success)]/10 disabled:opacity-60"
               data-el="verification-verified"
             >
-              Mark verified
+              Mark verified · clears
             </button>
             <button
               type="button"
               disabled={busy}
               onClick={() => mark("clarified")}
+              title="Supplier explained it but the underlying data is unchanged — softens (halves) this factor rather than clearing it."
               className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold text-muted-foreground transition-colors hover:bg-primary/10 disabled:opacity-60"
               data-el="verification-clarified"
             >
-              Mark clarified
+              Mark clarified · softens
             </button>
           </>
         ) : (
