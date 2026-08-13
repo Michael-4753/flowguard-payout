@@ -63,77 +63,79 @@ export function AddPayeeForm({ onClose, onAdded }: { onClose: () => void; onAdde
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" data-el="add-payee">
       <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-      <div className="fg-fade relative z-10 max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-border bg-[color:var(--card)] p-5 sm:rounded-3xl">
-        <div className="mb-4 flex items-center justify-between">
+      <div className="fg-fade relative z-10 flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-border bg-[color:var(--card)] sm:max-h-[88dvh] sm:rounded-3xl">
+        <div className="flex items-center justify-between p-5 pb-3">
           <h2 className="text-lg font-bold tracking-tight">Add payee</h2>
           <button type="button" aria-label="Close" onClick={onClose} className="rounded-full border border-border p-1.5 text-muted-foreground">
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="space-y-3">
-          <Field label="Beneficiary name" error={errors.name}>
-            <Text value={form.name} onChange={(v) => set("name", v)} placeholder="Lumen Viet Trading Co., Ltd" invalid={!!errors.name} />
-          </Field>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Country / region" error={errors.country}>
-              <Text value={form.country} onChange={(v) => set("country", v)} placeholder="Vietnam" invalid={!!errors.country} />
+        <div className="min-h-0 flex-1 overflow-y-auto px-5">
+          <div className="space-y-3">
+            <Field label="Beneficiary name" error={errors.name}>
+              <Text value={form.name} onChange={(v) => set("name", v)} placeholder="Lumen Viet Trading Co., Ltd" invalid={!!errors.name} />
             </Field>
-            <Field label="Currency" error={errors.currency}>
-              <Select value={form.currency} onChange={(v) => set("currency", v as Currency)} invalid={!!errors.currency}>
-                {CURRENCIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </Select>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Country / region" error={errors.country}>
+                <Text value={form.country} onChange={(v) => set("country", v)} placeholder="Vietnam" invalid={!!errors.country} />
+              </Field>
+              <Field label="Currency" error={errors.currency}>
+                <Select value={form.currency} onChange={(v) => set("currency", v as Currency)} invalid={!!errors.currency}>
+                  {CURRENCIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </Select>
+              </Field>
+            </div>
+
+            <Field label="Beneficiary bank" error={errors.bankName}>
+              <Text value={form.bankName} onChange={(v) => set("bankName", v)} placeholder="Vietcombank" invalid={!!errors.bankName} />
+            </Field>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="SWIFT / BIC" error={errors.swift}>
+                <Text value={form.swift} onChange={(v) => set("swift", v.toUpperCase())} placeholder="BFTVVNVX" invalid={!!errors.swift} mono />
+              </Field>
+              <Field label="IBAN" error={errors.iban}>
+                <Text value={form.iban} onChange={(v) => set("iban", v.toUpperCase())} placeholder="VN82BFTV..." invalid={!!errors.iban} mono />
+              </Field>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Account status" error={errors.accountStatus}>
+                <Select value={form.accountStatus} onChange={(v) => set("accountStatus", v as AccountStatus)} invalid={!!errors.accountStatus}>
+                  {ACCOUNT_STATUSES.map((s) => (
+                    <option key={s.value} value={s.value}>{s.label}</option>
+                  ))}
+                </Select>
+              </Field>
+              <Field label="Preferred channel" error={errors.preferredChannel}>
+                <Select value={form.preferredChannel} onChange={(v) => set("preferredChannel", v as ChannelClass)} invalid={!!errors.preferredChannel}>
+                  {CHANNELS.map((c) => (
+                    <option key={c} value={c}>{CHANNEL_CLASS_LABEL[c]}</option>
+                  ))}
+                </Select>
+              </Field>
+            </div>
+
+            <Field
+              label={form.preferredChannel === "stablecoin-direct" ? "Stablecoin wallet address (required for this channel)" : "Stablecoin wallet address (optional)"}
+              error={errors.stablecoinWallet}
+            >
+              <Text
+                value={form.stablecoinWallet}
+                onChange={(v) => set("stablecoinWallet", v)}
+                placeholder="0x… / T… (USDC-compatible)"
+                invalid={!!errors.stablecoinWallet}
+                mono
+              />
             </Field>
           </div>
-
-          <Field label="Beneficiary bank" error={errors.bankName}>
-            <Text value={form.bankName} onChange={(v) => set("bankName", v)} placeholder="Vietcombank" invalid={!!errors.bankName} />
-          </Field>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="SWIFT / BIC" error={errors.swift}>
-              <Text value={form.swift} onChange={(v) => set("swift", v.toUpperCase())} placeholder="BFTVVNVX" invalid={!!errors.swift} mono />
-            </Field>
-            <Field label="IBAN" error={errors.iban}>
-              <Text value={form.iban} onChange={(v) => set("iban", v.toUpperCase())} placeholder="VN82BFTV..." invalid={!!errors.iban} mono />
-            </Field>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Account status" error={errors.accountStatus}>
-              <Select value={form.accountStatus} onChange={(v) => set("accountStatus", v as AccountStatus)} invalid={!!errors.accountStatus}>
-                {ACCOUNT_STATUSES.map((s) => (
-                  <option key={s.value} value={s.value}>{s.label}</option>
-                ))}
-              </Select>
-            </Field>
-            <Field label="Preferred channel" error={errors.preferredChannel}>
-              <Select value={form.preferredChannel} onChange={(v) => set("preferredChannel", v as ChannelClass)} invalid={!!errors.preferredChannel}>
-                {CHANNELS.map((c) => (
-                  <option key={c} value={c}>{CHANNEL_CLASS_LABEL[c]}</option>
-                ))}
-              </Select>
-            </Field>
-          </div>
-
-          <Field
-            label={form.preferredChannel === "stablecoin-direct" ? "Stablecoin wallet address (required for this channel)" : "Stablecoin wallet address (optional)"}
-            error={errors.stablecoinWallet}
-          >
-            <Text
-              value={form.stablecoinWallet}
-              onChange={(v) => set("stablecoinWallet", v)}
-              placeholder="0x… / T… (USDC-compatible)"
-              invalid={!!errors.stablecoinWallet}
-              mono
-            />
-          </Field>
         </div>
 
-        <div className="mt-5 flex gap-2">
+        <div className="flex gap-2 border-t border-border bg-[color:var(--card)] px-5 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
           <button type="button" onClick={onClose} className="flex-1 rounded-xl border border-border py-2.5 text-sm font-semibold text-muted-foreground">
             Cancel
           </button>
