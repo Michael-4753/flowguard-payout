@@ -39,9 +39,9 @@ Output rules:
 `.trim();
 
 export async function POST(request: NextRequest) {
-  const auth = requireAuth(request);
-  if (!auth.ok) return auth.response;
-
+  // Open to guests: this endpoint only turns an already-computed deterministic
+  // snapshot into plain language — no user-private data is read. We still keep
+  // the snapshot validation below as a cheap guard against empty/abuse calls.
   const body = await request.json().catch(() => ({}));
   const snapshot = body?.snapshot;
   if (!snapshot || typeof snapshot !== "object") {
