@@ -194,12 +194,20 @@ export function BuildStep({
       <button
         type="button"
         onClick={submit}
-        disabled={!canSubmit}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.99] disabled:pointer-events-none disabled:opacity-50"
+        aria-disabled={!canSubmit}
+        className={cn(
+          "mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.99]",
+          !canSubmit && "opacity-60",
+        )}
         data-el="wizard-run-precheck"
       >
         Run pre-check <ArrowRight className="h-4 w-4" />
       </button>
+      {!canSubmit && (
+        <p className="mt-2 text-center text-[11px] text-muted-foreground" data-el="wizard-run-hint">
+          {!supplierId ? "Select a payee above to continue." : "Enter an amount to run the pre-check."}
+        </p>
+      )}
 
       {walletGate && selected && (
         <WalletBackfillModal
