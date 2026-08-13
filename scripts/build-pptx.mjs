@@ -1,5 +1,7 @@
-// Generates FlowGuard-pitch.pptx (Chinese) from the same structure as the /pitch web deck.
-// Run: node scripts/build-pptx.mjs  (outputs to ./public/FlowGuard-pitch.pptx)
+// Generates BOTH FlowGuard pitch decks from one structure, matching the /pitch web deck:
+//   ./public/FlowGuard-pitch-zh.pptx  (Chinese, Microsoft YaHei)
+//   ./public/FlowGuard-pitch-en.pptx  (English, Arial)
+// Run: node scripts/build-pptx.mjs
 import PptxGenJS from "pptxgenjs";
 
 const BG = "0B1613";
@@ -8,10 +10,8 @@ const ACCENT = "E0783C";
 const FG = "EDEBE5";
 const MUTED = "9A9E97";
 const LINE = "2A342F";
-// CJK-safe font so Chinese renders without tofu boxes in PowerPoint / Keynote.
-const FONT = "Microsoft YaHei";
 
-const DECK = [
+const DECK_ZH = [
   {
     kind: "cover",
     eyebrow: "跨境付款风控控制台",
@@ -91,67 +91,151 @@ const DECK = [
   },
 ];
 
-const pptx = new PptxGenJS();
-pptx.defineLayout({ name: "WIDE", width: 13.333, height: 7.5 });
-pptx.layout = "WIDE";
-pptx.author = "FlowGuard";
-pptx.title = "FlowGuard — 投资路演";
+const DECK_EN = [
+  {
+    kind: "cover",
+    eyebrow: "Cross-border payout console",
+    title: "FlowGuard",
+    subtitle: "Dual-route, risk-first cross-border payments — check before you send.",
+    footnote: "Investor pitch · 2026",
+  },
+  {
+    kind: "grid",
+    eyebrow: "The problem",
+    title: "Cross-border B2B payouts are sent blind",
+    bullets: [
+      ["Send-and-pray wires", "You only learn a payment will bounce after it leaves — funds frozen for days while returns settle."],
+      ["Dirty beneficiary data", "Wrong company name, bad IBAN, dormant accounts. Banks silently return the wire; reconciliation is manual."],
+      ["No dual control", "A single cashier can push a large payout alone — real compliance and fraud exposure."],
+      ["Wrong rail = wasted money", "Stablecoin direct vs local fiat picked by gut feel means higher fees and higher failure rates."],
+    ],
+  },
+  {
+    kind: "grid",
+    eyebrow: "The solution",
+    title: "One console that de-risks the payout before it leaves",
+    bullets: [
+      ["AI + amount-tier precheck", "DeepSeek AI and a deterministic engine score return probability; amount tiers escalate scrutiny, and payouts ≥ $1M are forced into the high-risk lane."],
+      ["Verify-first with the supplier", "Data-quality problems (name / IBAN / SWIFT / account) must be synced to the payee as a Case first — approval is gated until verified or explicitly overridden."],
+      ["Maker-checker, enforced", "Submit as Maker, approve as Checker; self-approval is hard-blocked front-end and server-side. Shown here in single-account demo mode; production uses two separate accounts."],
+      ["Dual-route + dual currency", "Stablecoin Direct vs Local Fiat auto-ranked by risk and cost; each payout shows settlement currency → payee's local currency."],
+    ],
+  },
+  {
+    kind: "grid",
+    eyebrow: "What's built today",
+    title: "A working MVP — live, not slideware",
+    bullets: [
+      ["Full control loop", "Precheck → verify-with-supplier → dual approve → execute (MT103 / wallet) → payee arrival receipt → auto-reconcile, fully wired."],
+      ["Verified risk clears itself", "When a supplier confirms a flagged detail, the case resolves and the risk score / blocker recompute automatically — no manual fudging."],
+      ["Real backend", "PostgreSQL with multi-tenant isolation, auth guards, a server-enforced state machine, and an audit trail on every payment and case."],
+      ["Login-free proof of arrival", "The payee confirms receipt via an unguessable token link; it's stored as real settlement evidence and auto-matched in reconciliation."],
+    ],
+  },
+  {
+    kind: "grid",
+    eyebrow: "Why us",
+    title: "Risk control before the send — not after",
+    bullets: [
+      ["Pre-send, not post-hoc", "Competitors reconcile after failure. We block it first — and clear it by verifying with the supplier."],
+      ["Two rails, one decision", "Stablecoin and local fiat compared in the same flow, with dual settlement / payee currency."],
+      ["Compliance is native", "Amount-tier lanes, enforced maker-checker, and a full audit trail are core — not a bolt-on."],
+    ],
+  },
+  {
+    kind: "grid",
+    eyebrow: "Business model",
+    title: "Three aligned revenue lines",
+    bullets: [
+      ["Per-payout fee", "A small take rate on each successfully de-risked payout."],
+      ["SaaS subscription", "Seat + tier pricing for teams needing dual control and audit."],
+      ["Rail rebates", "Share of savings from routing volume to the optimal rail."],
+    ],
+  },
+  {
+    kind: "grid",
+    eyebrow: "Roadmap",
+    title: "From simulation to real rails",
+    bullets: [
+      ["Live rail integrations", "Connect real stablecoin and local-fiat payout providers."],
+      ["On-chain escrow", "Persist escrow to the backend and settle on real chains."],
+      ["Multi-currency", "Expand corridor and currency coverage."],
+      ["Enterprise RBAC", "Granular roles and approval policies for larger teams."],
+    ],
+  },
+  {
+    kind: "cover",
+    title: "Stop sending blind.",
+    subtitle: "FlowGuard checks every cross-border payout before the money moves.",
+    footnote: "Let's talk — live demo available now.",
+  },
+];
 
-function bg(slide) {
-  slide.background = { color: BG };
-  slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.333, h: 0.08, fill: { color: ACCENT } });
-}
+async function buildDeck({ deck, font, out, title }) {
+  const pptx = new PptxGenJS();
+  pptx.defineLayout({ name: "WIDE", width: 13.333, height: 7.5 });
+  pptx.layout = "WIDE";
+  pptx.author = "FlowGuard";
+  pptx.title = title;
 
-function eyebrow(slide, text, x = 0.7, y = 0.55) {
-  if (!text) return;
-  slide.addText(text, { x, y, w: 12, h: 0.3, fontFace: FONT, fontSize: 12, color: ACCENT, bold: true, charSpacing: 2 });
-}
+  const bg = (slide) => {
+    slide.background = { color: BG };
+    slide.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: 13.333, h: 0.08, fill: { color: ACCENT } });
+  };
+  const eyebrow = (slide, text, x = 0.7, y = 0.55) => {
+    if (!text) return;
+    slide.addText(text, { x, y, w: 12, h: 0.3, fontFace: font, fontSize: 12, color: ACCENT, bold: true, charSpacing: 2 });
+  };
 
-for (const s of DECK) {
-  const slide = pptx.addSlide();
-  bg(slide);
+  for (const s of deck) {
+    const slide = pptx.addSlide();
+    bg(slide);
 
-  if (s.kind === "cover") {
-    eyebrow(slide, s.eyebrow, 0.7, 2.2);
-    slide.addText(
-      s.title === "FlowGuard"
-        ? [{ text: "Flow", options: { color: FG } }, { text: "Guard", options: { color: ACCENT } }]
-        : [{ text: s.title, options: { color: FG } }],
-      { x: 0.7, y: 2.5, w: 12, h: 1.6, fontFace: FONT, fontSize: 54, bold: true, align: "center" },
-    );
-    if (s.subtitle)
-      slide.addText(s.subtitle, { x: 1.5, y: 4.2, w: 10.33, h: 1, fontFace: FONT, fontSize: 20, color: MUTED, align: "center" });
-    if (s.footnote)
-      slide.addText(s.footnote, { x: 0.7, y: 6.4, w: 12, h: 0.4, fontFace: FONT, fontSize: 12, color: MUTED, bold: true, align: "center", charSpacing: 2 });
-    continue;
+    if (s.kind === "cover") {
+      eyebrow(slide, s.eyebrow, 0.7, 2.2);
+      slide.addText(
+        s.title === "FlowGuard"
+          ? [{ text: "Flow", options: { color: FG } }, { text: "Guard", options: { color: ACCENT } }]
+          : [{ text: s.title, options: { color: FG } }],
+        { x: 0.7, y: 2.5, w: 12, h: 1.6, fontFace: font, fontSize: 54, bold: true, align: "center" },
+      );
+      if (s.subtitle)
+        slide.addText(s.subtitle, { x: 1.5, y: 4.2, w: 10.33, h: 1, fontFace: font, fontSize: 20, color: MUTED, align: "center" });
+      if (s.footnote)
+        slide.addText(s.footnote, { x: 0.7, y: 6.4, w: 12, h: 0.4, fontFace: font, fontSize: 12, color: MUTED, bold: true, align: "center", charSpacing: 2 });
+      continue;
+    }
+
+    // grid slide
+    eyebrow(slide, s.eyebrow);
+    slide.addText(s.title, { x: 0.7, y: 0.95, w: 12, h: 0.9, fontFace: font, fontSize: 30, color: FG, bold: true });
+
+    const n = s.bullets.length;
+    const cols = n <= 3 ? n : 2;
+    const rows = Math.ceil(n / cols);
+    const gx = 0.4, gy = 0.35;
+    const startY = 2.1;
+    const totalW = 13.333 - 0.7 * 2;
+    const cardW = (totalW - gx * (cols - 1)) / cols;
+    const areaH = 7.5 - startY - 0.6;
+    const cardH = (areaH - gy * (rows - 1)) / rows;
+
+    s.bullets.forEach(([head, body], i) => {
+      const c = i % cols;
+      const r = Math.floor(i / cols);
+      const x = 0.7 + c * (cardW + gx);
+      const y = startY + r * (cardH + gy);
+      slide.addShape(pptx.ShapeType.roundRect, { x, y, w: cardW, h: cardH, rectRadius: 0.12, fill: { color: CARD }, line: { color: LINE, width: 1 } });
+      slide.addText(String(i + 1).padStart(2, "0"), { x: x + 0.25, y: y + 0.2, w: 0.8, h: 0.35, fontFace: font, fontSize: 13, color: ACCENT, bold: true });
+      slide.addText(head, { x: x + 0.9, y: y + 0.2, w: cardW - 1.1, h: 0.5, fontFace: font, fontSize: 16, color: FG, bold: true, valign: "top" });
+      slide.addText(body, { x: x + 0.25, y: y + 0.75, w: cardW - 0.5, h: cardH - 0.9, fontFace: font, fontSize: 13, color: MUTED, valign: "top" });
+    });
   }
 
-  // grid slide
-  eyebrow(slide, s.eyebrow);
-  slide.addText(s.title, { x: 0.7, y: 0.95, w: 12, h: 0.9, fontFace: FONT, fontSize: 30, color: FG, bold: true });
-
-  const n = s.bullets.length;
-  const cols = n <= 3 ? n : 2;
-  const rows = Math.ceil(n / cols);
-  const gx = 0.4, gy = 0.35;
-  const startY = 2.1;
-  const totalW = 13.333 - 0.7 * 2;
-  const cardW = (totalW - gx * (cols - 1)) / cols;
-  const areaH = 7.5 - startY - 0.6;
-  const cardH = (areaH - gy * (rows - 1)) / rows;
-
-  s.bullets.forEach(([head, body], i) => {
-    const c = i % cols;
-    const r = Math.floor(i / cols);
-    const x = 0.7 + c * (cardW + gx);
-    const y = startY + r * (cardH + gy);
-    slide.addShape(pptx.ShapeType.roundRect, { x, y, w: cardW, h: cardH, rectRadius: 0.12, fill: { color: CARD }, line: { color: LINE, width: 1 } });
-    slide.addText(String(i + 1).padStart(2, "0"), { x: x + 0.25, y: y + 0.2, w: 0.8, h: 0.35, fontFace: FONT, fontSize: 13, color: ACCENT, bold: true });
-    slide.addText(head, { x: x + 0.9, y: y + 0.2, w: cardW - 1.1, h: 0.5, fontFace: FONT, fontSize: 16, color: FG, bold: true, valign: "top" });
-    slide.addText(body, { x: x + 0.25, y: y + 0.75, w: cardW - 0.5, h: cardH - 0.9, fontFace: FONT, fontSize: 13, color: MUTED, valign: "top" });
-  });
+  await pptx.writeFile({ fileName: out });
+  console.log("WROTE", out);
 }
 
-const out = "public/FlowGuard-pitch.pptx";
-await pptx.writeFile({ fileName: out });
-console.log("WROTE", out);
+// CJK-safe font (YaHei) for Chinese; Arial for English.
+await buildDeck({ deck: DECK_ZH, font: "Microsoft YaHei", out: "public/FlowGuard-pitch-zh.pptx", title: "FlowGuard — 投资路演" });
+await buildDeck({ deck: DECK_EN, font: "Arial", out: "public/FlowGuard-pitch-en.pptx", title: "FlowGuard — Investor Pitch" });
