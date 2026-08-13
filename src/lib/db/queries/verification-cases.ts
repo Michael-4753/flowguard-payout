@@ -35,6 +35,23 @@ export async function insertVerificationCase(
   userId: string,
   record: VerificationCase,
 ): Promise<VerificationCase> {
+  // De-duplicate: if this payee already has a case for the same risk factor
+  // that is still active (open / not yet resolved), reuse it instead of
+  // creating a second identical request.
+  const existing = await db
+    .select()
+    .from(verificationCases)
+    .where(
+      and(
+        eq(verificationCases.userId, userId),
+        eq(verificationCases.supplierId, record.supplierId),
+        eq(verificationCases.factorId, record.factorId),
+        eq(verificationCases.status, "open"),
+      ),
+    )
+    .limit(1);
+  if (existing[0]) return toDomain(existing[0]);
+
   const rows = await db
     .insert(verificationCases)
     .values({
