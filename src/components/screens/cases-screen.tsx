@@ -169,6 +169,21 @@ function VerificationCard({
 
   async function mark(status: VerificationStatus) {
     if (busy) return;
+    // Guard against premature resolution: if the payee hasn't actually replied
+    // on this case yet, confirm before verifying / clarifying (avoids the
+    // "resolve with no reply" mistake).
+    if (status === "verified" || status === "clarified") {
+      const hasReply = (record.timeline ?? []).some(
+        (e) => e.actor === "supplier" && e.kind === "comment",
+      );
+      if (!hasReply) {
+        const verb = status === "verified" ? "verified (fully clears this factor)" : "clarified (softens this factor)";
+        const ok = window.confirm(
+          `The supplier hasn't replied on this case yet.\n\nMark it ${verb} anyway?`,
+        );
+        if (!ok) return;
+      }
+    }
     setBusy(true);
     try {
       const updated = await setVerificationStatus(record.id, status);
