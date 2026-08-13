@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ShieldCheck, ShieldAlert, Check, X, Clock } from "lucide-react";
+import { ShieldCheck, ShieldAlert, Check, X, Clock, Info } from "lucide-react";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -43,6 +43,18 @@ export function ReviewScreen() {
         className="fg-glass mt-4 rounded-2xl p-4"
         data-el="review-summary"
       >
+        <div
+          className="mb-3 flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2"
+          data-el="review-demo-mode-notice"
+        >
+          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
+          <p className="text-[11px] leading-relaxed text-amber-700 dark:text-amber-300">
+            <span className="font-semibold">Single-account demo mode.</span> Maker and Checker are
+            simulated by switching identity on this one login so you can see the full control in a
+            demo. In production, Maker and Checker are two separate user accounts — self-approval is
+            already hard-blocked on the server.
+          </p>
+        </div>
         <div className="flex items-center justify-between">
           <div>
             <div className="text-[11px] text-muted-foreground">Awaiting approval</div>
@@ -77,8 +89,9 @@ export function ReviewScreen() {
           </div>
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground">
-          Maker and checker act as a mutual control: a payment submitted as the Maker must be
-          approved from the Checker role (you can&apos;t approve your own submission).
+          Maker and Checker act as a mutual control: a payment submitted as the Maker must be
+          approved from the Checker role (you can&apos;t approve your own submission). Here both
+          roles run on the same demo login; production uses two distinct accounts.
         </p>
       </div>
 
