@@ -283,14 +283,21 @@ export function assessRisk(supplier: Supplier, amountUsd = 0): RiskAssessment {
  */
 export function recomputeWithClarified(
   risk: RiskAssessment,
-  clearedFactorIds: ReadonlySet<string>,
+  resolved: ReadonlyMap<string, "verified" | "clarified">,
 ): { risk: RiskAssessment; cleared: RiskFactor[] } {
-  const cleared = risk.factors.filter((f) => f.hit && clearedFactorIds.has(f.id));
+  // "verified" fully clears a factor (hit=false, points=0); "clarified" softens
+  // it (keep the hit, halve the points) — the supplier explained it but the
+  // underlying data did not change.
+  const CLARIFIED_SCALE = 0.5;
+  const cleared = risk.factors.filter((f) => f.hit && resolved.has(f.id));
   if (cleared.length === 0) return { risk, cleared: [] };
 
-  const factors = risk.factors.map((f) =>
-    f.hit && clearedFactorIds.has(f.id) ? { ...f, hit: false, points: 0 } : f,
-  );
+  const factors = risk.factors.map((f) => {
+    const mode = f.hit ? resolved.get(f.id) : undefined;
+    if (mode === "verified") return { ...f, hit: false, points: 0 };
+    if (mode === "clarified") return { ...f, points: Math.round(f.points * CLARIFIED_SCALE) };
+    return f;
+  });
   const rawScore = factors.reduce((s, f) => s + f.points, 0);
   const score = clamp(Math.round(rawScore), 0, 100);
   const level = scoreToLevel(score);
