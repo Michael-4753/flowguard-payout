@@ -2,12 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RotateCcw, ShieldCheck, Receipt, Send, CheckCircle2, Link2, Copy, Check } from "lucide-react";
+import { RotateCcw, ShieldCheck, Receipt, Send, CheckCircle2, Link2, Copy, Check, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
 import { FlowProgressTimeline } from "@/components/shared/flow-progress-timeline";
 import { PayoutExecutionPanel } from "@/components/screens/payout-execution-panel";
 import { useFlowGuardData } from "@/components/shell/data-provider";
+import { useIsGuest, resetGuestData } from "@/lib/guest/guest-session";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/errors/error-state";
@@ -44,6 +45,7 @@ export default function HistoryPage() {
 function HistoryBody() {
   const router = useRouter();
   const { payments, suppliers, loading, error, refresh, clarifiedFactors, effectiveRisk } = useFlowGuardData();
+  const guest = useIsGuest();
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
   const [execId, setExecId] = useState<string | null>(null);
@@ -58,10 +60,28 @@ function HistoryBody() {
 
   return (
     <section className="pt-1" data-el="history">
-      <h1 className="text-2xl font-bold tracking-tight">Payment history</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold tracking-tight">Payment history</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
         Every routed payment with its pre-check snapshot and chosen channel.
       </p>
+        </div>
+        {guest && payments.length > 0 && (
+          <button
+            type="button"
+            onClick={async () => {
+              if (!window.confirm("Reset demo data? This clears your guest payments, verification cases and added payees on this device. The seed payees return automatically.")) return;
+              resetGuestData();
+              await refresh();
+            }}
+            className="mt-1 flex shrink-0 items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:border-[color:var(--danger)]/50 hover:text-[color:var(--danger)]"
+            data-el="history-reset-demo"
+          >
+            <Trash2 className="h-3.5 w-3.5" /> Reset demo data
+          </button>
+        )}
+      </div>
 
       {/* Filters */}
       <div className="mt-4 space-y-2" data-el="history-filters">
