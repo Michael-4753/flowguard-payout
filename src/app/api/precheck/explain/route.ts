@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { requireAuth } from "@/lib/auth";
 import { appAi, AppAIUnavailableError, extractMessageContent } from "@/lib/eazo-ai-billing";
 
 /**
