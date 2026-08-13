@@ -59,6 +59,21 @@ export function exitGuestMode(): void {
   }
 }
 
+/** Reset guest demo data (payments / cases / added payees / wallets) WITHOUT
+ * leaving guest mode. The seed payee ledger returns automatically. */
+export function resetGuestData(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(GUEST_PAYMENTS_KEY);
+    window.localStorage.removeItem(GUEST_VCASES_KEY);
+    window.localStorage.removeItem(GUEST_SUPPLIERS_KEY);
+    window.localStorage.removeItem(GUEST_WALLETS_KEY);
+    window.dispatchEvent(new Event(GUEST_EVENT));
+  } catch {
+    /* ignore */
+  }
+}
+
 export function subscribeGuest(listener: () => void): () => void {
   if (typeof window === "undefined") return () => {};
   window.addEventListener(GUEST_EVENT, listener);
