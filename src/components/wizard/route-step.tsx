@@ -12,7 +12,6 @@ import { cn } from "@/utils/utils";
 export function RouteStep({
   routing,
   risk,
-  supplier,
   onConfirm,
   confirmed,
 }: {
