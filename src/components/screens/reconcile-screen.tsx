@@ -18,6 +18,7 @@ import {
   type ReconcileRow,
 } from "@/lib/reconcile";
 import { cn } from "@/utils/utils";
+import { AiInsightCard } from "@/components/ai/ai-insight-card";
 
 type Filter = "all" | "outstanding" | "pending" | "reconciled";
 
@@ -208,6 +209,39 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
           />
         </dl>
       </div>
+
+      {/* Pain point ④: AI explains why the figures / proofs don't line up. */}
+      {(r.varianceUsd < 0 || r.matchStatus === "unmatched") && (
+        <div className="mt-3">
+          <AiInsightCard
+            kind="reconcile"
+            title="AI: why don't these match?"
+            cta="Explain the variance with AI"
+            hint="Let DeepSeek pinpoint the most likely reason the amount or proofs don't reconcile, and the next step."
+            loadingLabel="Analyzing the variance…"
+            actionsLabel="Next step"
+            buildSnapshot={() => ({
+              currency: r.currency,
+              settleCurrency: r.settleCurrency,
+              channel: r.channel,
+              status: r.status,
+              sentUsd: r.amountUsd / 100,
+              feeUsd: r.feeUsd / 100,
+              fxLossUsd: r.fxLossUsd / 100,
+              expectedUsd: r.expectedUsd / 100,
+              receivedUsd: r.receivedUsd / 100,
+              varianceUsd: r.varianceUsd / 100,
+              matchStatus: r.matchStatus,
+              hasInvoice: Boolean(r.invoiceNo),
+              hasBankRef: Boolean(r.offchainRef),
+              hasOnchainRef: Boolean(r.onchainRef),
+              hasSettlementRef: Boolean(r.settlementRef),
+              payeeConfirmed: Boolean(r.payeeConfirmedAt),
+              settlementMethod: r.settlementMethod,
+            })}
+          />
+        </div>
+      )}
 
       <button
         type="button"
