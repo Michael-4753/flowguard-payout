@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation, Trans } from "react-i18next";
 import { AlertTriangle, Clock, Wrench, Copy, Check, FileCheck2, Inbox, Link as LinkIcon, Send } from "lucide-react";
 import { useEazo } from "@eazo/sdk/react";
 import { LoadingBlock } from "@/components/shared/loading-block";
@@ -30,20 +31,21 @@ type Tab = "verification" | "library";
 
 export function CasesScreen() {
   const [tab, setTab] = useState<Tab>("verification");
+  const { t } = useTranslation();
 
   return (
     <section className="pt-1" data-el="cases">
-      <h1 className="text-2xl font-bold tracking-tight">Cases</h1>
+      <h1 className="text-2xl font-bold tracking-tight">{t("cases.title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Track payee verification requests and study real return scenarios.
+        {t("cases.subtitle")}
       </p>
 
       <div className="mt-4 grid grid-cols-2 gap-1 rounded-full bg-[color:var(--fg-soft)] p-1" data-el="cases-tabs">
         <TabButton active={tab === "verification"} onClick={() => setTab("verification")}>
-          Verification requests
+          {t("cases.tabVerification")}
         </TabButton>
         <TabButton active={tab === "library"} onClick={() => setTab("library")}>
-          Failure library
+          {t("cases.tabLibrary")}
         </TabButton>
       </div>
 
@@ -80,6 +82,7 @@ function TabButton({
 function VerificationTab() {
   const user = useEazo((s) => s.auth.user);
   const guest = useIsGuest();
+  const { t } = useTranslation();
   const hasIdentity = Boolean(user) || guest;
   const [cases, setCases] = useState<VerificationCase[]>([]);
   const [loading, setLoading] = useState(true);
@@ -130,12 +133,9 @@ function VerificationTab() {
       <div className="mt-4" data-el="verification-empty">
         <EmptyState
           icon={Inbox}
-          title="No verification requests yet"
+          title={t("cases.emptyTitle")}
           description={
-            <>
-              In a payment pre-check, open a data-quality risk factor and tap{" "}
-              <b className="text-foreground">Generate verification request</b>.
-            </>
+            <Trans i18nKey="cases.emptyDesc" components={[<b key="0" className="text-foreground" />]} />
           }
         />
       </div>
@@ -161,6 +161,7 @@ function VerificationCard({
   const [copied, setCopied] = useState<"idle" | "ok" | "fail">("idle");
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   async function copy() {
     const ok = await copyText(record.template);
@@ -178,9 +179,9 @@ function VerificationCard({
         (e) => e.actor === "supplier" && e.kind === "comment",
       );
       if (!hasReply) {
-        const verb = status === "verified" ? "verified (fully clears this factor)" : "clarified (softens this factor)";
+        const verb = status === "verified" ? t("cases.confirmVerified") : t("cases.confirmClarified");
         const ok = window.confirm(
-          `The supplier hasn't replied on this case yet.\n\nMark it ${verb} anyway?`,
+          t("cases.confirmNoReply", { verb }),
         );
         if (!ok) return;
       }
@@ -205,7 +206,7 @@ function VerificationCard({
             <span className="truncate text-sm font-semibold">{record.supplierName}</span>
           </div>
           <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-            {record.factorTitle} · opened {formatDate(record.createdAt)}
+            {t("cases.openedOn", { factor: record.factorTitle, date: formatDate(record.createdAt) })}
           </p>
         </div>
         <StatusChip status={record.status} />
@@ -217,7 +218,7 @@ function VerificationCard({
         className="mt-2 -mx-1 inline-flex min-h-[36px] items-center px-1 text-[11px] font-medium text-primary"
         data-el="verification-toggle"
       >
-        {open ? "Hide message" : "View request message"}
+        {open ? t("cases.hideMessage") : t("cases.viewMessage")}
       </button>
 
       {open && (
@@ -243,7 +244,7 @@ function VerificationCard({
           ) : (
             <Copy className="h-3 w-3" />
           )}
-          {copied === "ok" ? "Copied" : copied === "fail" ? "Copy failed — select manually" : "Copy"}
+          {copied === "ok" ? t("cases.copied") : copied === "fail" ? t("cases.copyFailed") : t("cases.copy")}
         </button>
         {record.status === "open" ? (
           <>
@@ -251,21 +252,21 @@ function VerificationCard({
               type="button"
               disabled={busy}
               onClick={() => mark("verified")}
-              title="Details confirmed correct — fully clears this risk factor from the payment."
+              title={t("cases.markVerifiedTitle")}
               className="rounded-full border border-[color:var(--success)]/50 px-3 py-1.5 text-[11px] font-semibold text-[color:var(--success)] transition-colors hover:bg-[color:var(--success)]/10 disabled:opacity-60"
               data-el="verification-verified"
             >
-              Mark verified · clears
+              {t("cases.markVerified")}
             </button>
             <button
               type="button"
               disabled={busy}
               onClick={() => mark("clarified")}
-              title="Supplier explained it but the underlying data is unchanged — softens (halves) this factor rather than clearing it."
+              title={t("cases.markClarifiedTitle")}
               className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold text-muted-foreground transition-colors hover:bg-primary/10 disabled:opacity-60"
               data-el="verification-clarified"
             >
-              Mark clarified · softens
+              {t("cases.markClarified")}
             </button>
           </>
         ) : (
@@ -276,7 +277,7 @@ function VerificationCard({
             className="rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-primary/10 disabled:opacity-60"
             data-el="verification-reopen"
           >
-            Reopen
+            {t("cases.reopen")}
           </button>
         )}
       </div>
@@ -286,11 +287,11 @@ function VerificationCard({
         <div className="mt-3">
           <AiInsightCard
             kind="return"
-            title="AI: draft the follow-up"
-            cta="Draft verification message with AI"
-            hint="DeepSeek drafts a short, specific note to the supplier requesting the exact detail needed to clear this factor."
-            loadingLabel="Drafting the follow-up…"
-            actionsLabel="Message draft"
+            title={t("cases.aiTitle")}
+            cta={t("cases.aiCta")}
+            hint={t("cases.aiHint")}
+            loadingLabel={t("cases.aiLoading")}
+            actionsLabel={t("cases.aiActions")}
             buildSnapshot={() => ({
               supplierName: record.supplierName,
               factorTitle: record.factorTitle,
