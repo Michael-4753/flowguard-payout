@@ -416,6 +416,21 @@
     "confirming": "Confirming…",
     "confirmReceived": "Confirm funds received",
     "secured": "Secured by an unguessable link · no login required"
+  },
+  "publicCase": {
+    "loading": "Loading shared case…",
+    "notFoundTitle": "This shared link can't be opened.",
+    "notFoundDesc": "The link may be invalid or expired — or the case was created in guest (offline) mode, which keeps data only on the creator's device and never publishes it to a shareable link. Ask the sender to sign in and create the case again to share it.",
+    "header": "FlowGuard · Verification case",
+    "canPost": "Shared securely — you can post updates",
+    "readOnly": "Shared securely — read-only view",
+    "bankDescription": "Bank-side risk description",
+    "readOnlyNotice": "Read-only link. Ask the sender for the write link to post an update.",
+    "activity": "Activity",
+    "postingAs": "Posting as",
+    "replyPlaceholder": "Reply with the confirmed detail (e.g. correct legal name / IBAN)…",
+    "postReply": "Post reply",
+    "confirmCorrect": "Confirm details correct"
   }
 }
 
