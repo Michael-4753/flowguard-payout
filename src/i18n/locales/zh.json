@@ -292,6 +292,33 @@
     "return": "退回率 {{rate}}",
     "returnRate": "退回率",
     "avgEta": "平均到账"
+  },
+  "payeeDetail": {
+    "back": "返回",
+    "notFound": "未找到收款人。",
+    "restricted": "受限地区",
+    "beneficiaryBank": "收款银行",
+    "accountStatus": "账户状态",
+    "accountActive": "正常",
+    "accountDormant": "休眠",
+    "accountUnverified": "未核实",
+    "swift": "SWIFT / BIC",
+    "iban": "IBAN",
+    "currency": "币种",
+    "preferredChannel": "首选通道",
+    "returnRate": "退回率",
+    "avgEta": "平均到账",
+    "payThisPayee": "向该收款人付款",
+    "payoutRequirements": "付款要求",
+    "payoutRequirementsDesc": "该通道可复用的清单——这家银行/国家每次需要的材料。",
+    "required": "必需",
+    "recommended": "建议",
+    "failureHistory": "失败 / 高风险历史（{{count}}）",
+    "failureHistoryDesc": "该收款人过去被退回或标记为高风险的付款。",
+    "recentPayments": "最近付款",
+    "emptyTitle": "还没有对该收款人的付款",
+    "emptyDesc": "向该收款人选路一笔付款后，它会连同预检快照显示在这里。",
+    "newPayment": "新建付款"
   }
 }
 
