@@ -7,6 +7,8 @@ import type { RiskAssessment, RiskFactor, Supplier } from "@/lib/engine/types";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
 import { AiPrecheckExplainer } from "@/components/wizard/ai-precheck-explainer";
+import { AiRiskSignals } from "@/components/ai/ai-risk-signals";
+import { FAILURE_CASES } from "@/lib/engine/failure-cases";
 import { createVerificationCase } from "@/lib/api";
 import { isVerifiable } from "@/lib/verification";
 import { recomputeWithClarified } from "@/lib/engine";
