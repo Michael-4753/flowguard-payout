@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Lock, Info, ShieldAlert, Wallet } from "lucide-react";
+import { Check, Lock, Info, ShieldAlert, Globe2 } from "lucide-react";
 import type { RiskAssessment, RouteOption, RoutingResult, Supplier } from "@/lib/engine/types";
 import { FlowNarrativeStage } from "@/components/flow/flow-narrative-stage";
-import { WalletBackfillModal } from "./wallet-backfill-modal";
 import { AiInsightCard } from "@/components/ai/ai-insight-card";
 import { formatUsdCents, formatPercent, formatMinutes } from "@/lib/format";
 import { useIsGuest } from "@/lib/guest/guest-session";
@@ -24,23 +23,12 @@ export function RouteStep({
   confirmed: boolean;
 }) {
   const [selectedId, setSelectedId] = useState(routing.recommendedId);
-  const [walletGate, setWalletGate] = useState(false);
   const guest = useIsGuest();
   const highRisk = risk.level === "high";
 
-  const selectedOption = routing.options.find((o) => o.id === selectedId);
-
   function handleConfirm() {
-    // Hard-stop (no dead angle): whether the cashier picked Stablecoin Direct
-    // explicitly or the router auto-recommended it, a payee with no wallet on
-    // file cannot receive it — capture the address first.
-    if (
-      selectedOption?.channelClass === "stablecoin-direct" &&
-      !supplier.stablecoinWallet
-    ) {
-      setWalletGate(true);
-      return;
-    }
+    // Settlement is performed by a licensed institution; this platform collects no
+    // wallet and moves no funds. The channel is a routing recommendation only.
     onConfirm(selectedId);
   }
 
@@ -155,18 +143,6 @@ export function RouteStep({
           </>
         )}
       </button>
-
-      {walletGate && (
-        <WalletBackfillModal
-          supplierId={supplier.id}
-          supplierName={supplier.name}
-          onClose={() => setWalletGate(false)}
-          onSaved={() => {
-            setWalletGate(false);
-            onConfirm(selectedId);
-          }}
-        />
-      )}
     </div>
   );
 }
@@ -216,8 +192,8 @@ function RouteCard({
       )}
       {option.available && option.channelClass === "stablecoin-direct" && (
         <p className="mt-2 flex items-start gap-1.5 text-[10px] leading-relaxed text-[color:var(--warning)]" data-el="route-stablecoin-hint">
-          <Wallet className="mt-0.5 h-3 w-3 shrink-0" aria-hidden />
-          <span>Payee must hold a wallet that can receive an accepted stablecoin (e.g. USDC), or the payout is returned.</span>
+          <Globe2 className="mt-0.5 h-3 w-3 shrink-0" aria-hidden />
+          <span>Digital-asset settlement is completed by an overseas licensed institution. This platform only compares and routes; it holds no funds and performs no crypto transfer.</span>
         </p>
       )}
     </button>
