@@ -111,6 +111,25 @@
     "generating": "Generating…",
     "generateVerification": "Generate verification request",
     "generateFailed": "Could not generate the request. Please try again."
+  },
+  "route": {
+    "highRiskBanner": "<0>High-risk payment ({{score}}/100, ~{{prob}} return probability).</0> You acknowledged the risk and chose to continue. High-risk payments can still proceed, but generate an audit trail for compliance review — you accept the compliance and loss responsibility.",
+    "compareHint": "Tap a channel to compare its money-flow, fees and return risk. All amounts settle in <0>USD</0>; the payee is credited in their local currency by the rail.",
+    "aiTitle": "AI: why this route?",
+    "aiCta": "Explain the recommendation with AI",
+    "aiHint": "Routing is decided by the rule engine. Let DeepSeek explain in plain language why the recommended route wins over the alternatives.",
+    "aiLoading": "Comparing the routes…",
+    "aiActions": "Key reasons",
+    "guestNotice": "Guest mode — payment records are saved on this device only (browser local storage) and are cleared when you leave guest mode. Sign in to sync them to your account.",
+    "submittedForReview": "Submitted for review",
+    "submitHighRisk": "Submit high-risk payment for review",
+    "submitForReview": "Submit for review",
+    "best": "Best",
+    "stablecoinHint": "Digital-asset settlement is completed by an overseas licensed institution. This platform only compares and routes; it holds no funds and performs no crypto transfer.",
+    "fee": "Fee",
+    "eta": "ETA",
+    "returnRisk": "Return risk",
+    "receivedUsd": "Received (USD)"
   }
 }
 
