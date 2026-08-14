@@ -88,8 +88,8 @@ export const DECK_ZH: DeckSlide[] = [
     eyebrow: "路线图",
     title: "从模拟走向真实通道",
     bullets: [
-      { head: "真实通道接入", body: "接入真实的稳定币与本地法币付款服务商。" },
-      { head: "链上托管", body: "把托管持久化到后端,并在真实链上结算。" },
+      { head: "真实通道接入", body: "对接持牌机构(银行 / PSP;数字资产结算由境外持牌机构完成)。纯软件定位:不持牌、不经手资金、不做加密货币转账。" },
+      { head: "更深对账", body: "只读接入 ERP/财务系统,打通付款 → 对账 → 入账闭环。资金结算始终由持牌机构完成。" },
       { head: "多币种", body: "扩展走廊与币种覆盖。" },
       { head: "企业级 RBAC", body: "为大型团队提供细粒度角色与审批策略。" },
     ],
@@ -142,7 +142,7 @@ export const DECK_EN: DeckSlide[] = [
     eyebrow: "What's built today",
     title: "A working MVP — live, not slideware",
     bullets: [
-      { head: "Full control loop", body: "Precheck → verify-with-supplier → dual approve → execute (MT103 / wallet) → payee arrival receipt → auto-reconcile, fully wired." },
+      { head: "Full control loop", body: "Precheck → verify-with-supplier → dual approve → generate settlement instruction for the licensed institution → payee arrival receipt → auto-reconcile, fully wired." },
       { head: "Verified risk clears itself", body: "When a supplier confirms a flagged detail, the case resolves and the risk score / blocker recompute automatically — no manual fudging." },
       { head: "Real backend", body: "PostgreSQL with multi-tenant isolation, auth guards, a server-enforced state machine, and an audit trail on every payment and case." },
       { head: "Login-free proof of arrival", body: "The payee confirms receipt via an unguessable token link; it's stored as real settlement evidence and auto-matched in reconciliation." },
@@ -177,8 +177,8 @@ export const DECK_EN: DeckSlide[] = [
     eyebrow: "Roadmap",
     title: "From simulation to real rails",
     bullets: [
-      { head: "Live rail integrations", body: "Connect real stablecoin and local-fiat payout providers." },
-      { head: "On-chain escrow", body: "Persist escrow to the backend and settle on real chains." },
+      { head: "Live rail integrations", body: "Route to licensed institutions (banks / PSPs; digital-asset settlement via an overseas licensed institution). Software-only: no payment licence, no fund custody, no crypto transfer." },
+      { head: "Deeper reconciliation", body: "Read-only ERP/finance integrations to close the payment → reconciliation → bookkeeping loop. Settlement stays with licensed institutions." },
       { head: "Multi-currency", body: "Expand corridor and currency coverage." },
       { head: "Enterprise RBAC", body: "Granular roles and approval policies for larger teams." },
     ],
