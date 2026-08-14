@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { RotateCcw, ShieldCheck, Receipt, Send, CheckCircle2, Link2, Copy, Check, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
@@ -45,6 +46,7 @@ export default function HistoryPage() {
 function HistoryBody() {
   const router = useRouter();
   const { payments, suppliers, loading, error, refresh, clarifiedFactors, effectiveRisk } = useFlowGuardData();
+  const { t } = useTranslation();
   const guest = useIsGuest();
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
@@ -80,40 +82,40 @@ function HistoryBody() {
     <section className="pt-1" data-el="history">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight">Payment history</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t("history.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-        Every routed payment with its pre-check snapshot and chosen channel.
+        {t("history.subtitle")}
       </p>
         </div>
         {guest && payments.length > 0 && (
           <button
             type="button"
             onClick={async () => {
-              if (!window.confirm("Reset demo data? This clears your guest payments, verification cases and added payees on this device. The seed payees return automatically.")) return;
+              if (!window.confirm(t("history.resetConfirm"))) return;
               resetGuestData();
               await refresh();
             }}
             className="mt-1 flex shrink-0 items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:border-[color:var(--danger)]/50 hover:text-[color:var(--danger)]"
             data-el="history-reset-demo"
           >
-            <Trash2 className="h-3.5 w-3.5" /> Reset demo data
+            <Trash2 className="h-3.5 w-3.5" /> {t("history.resetDemo")}
           </button>
         )}
       </div>
 
       {/* Filters */}
       <div className="mt-4 space-y-2" data-el="history-filters">
-        <FilterRow label="Risk">
+        <FilterRow label={t("history.filterRisk")}>
           {LEVELS.map((l) => (
             <Chip key={l} active={level === l} onClick={() => setLevel(l)}>
-              {l === "all" ? "All" : RISK_LEVEL_LABEL[l]}
+              {l === "all" ? t("history.all") : RISK_LEVEL_LABEL[l]}
             </Chip>
           ))}
         </FilterRow>
-        <FilterRow label="Status">
+        <FilterRow label={t("history.filterStatus")}>
           {STATUSES.map((s) => (
             <Chip key={s} active={status === s} onClick={() => setStatus(s)}>
-              {s === "all" ? "All" : STATUS_LABEL[s]}
+              {s === "all" ? t("history.all") : STATUS_LABEL[s]}
             </Chip>
           ))}
         </FilterRow>
@@ -131,15 +133,15 @@ function HistoryBody() {
         <div className="mt-4">
           <EmptyState
             icon={Receipt}
-            title={payments.length === 0 ? "No payments yet" : "No payments match these filters"}
+            title={payments.length === 0 ? t("history.emptyNoneTitle") : t("history.emptyNoMatchTitle")}
             description={
               payments.length === 0
-                ? "Once you route a payment, it appears here with its pre-check snapshot."
-                : "Try resetting the risk or status filter above."
+                ? t("history.emptyNoneDesc")
+                : t("history.emptyNoMatchDesc")
             }
             action={
               payments.length === 0
-                ? { label: "New payment", onClick: () => router.push("/pay") }
+                ? { label: t("history.newPayment"), onClick: () => router.push("/pay") }
                 : undefined
             }
           />
@@ -176,13 +178,13 @@ function HistoryBody() {
               </div>
 
               <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
-                <Cell label={`Amount (${p.settleCurrency})`} value={p.amountUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
-                <Cell label="Channel" value={CHANNEL_CLASS_LABEL[p.route.channelClass]} />
-                <Cell label="Return prob." value={formatPercent(eff.returnProbability, 0)} />
+                <Cell label={t("history.amount", { currency: p.settleCurrency })} value={p.amountUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+                <Cell label={t("history.channel")} value={CHANNEL_CLASS_LABEL[p.route.channelClass]} />
+                <Cell label={t("history.returnProb")} value={formatPercent(eff.returnProbability, 0)} />
               </div>
               {p.currency !== p.settleCurrency && (
                 <p className="mt-1.5 font-mono text-[10px] text-muted-foreground" data-el="history-currency">
-                  Settled in {p.settleCurrency} → credited in {p.currency} (payee&apos;s local currency)
+                  {t("history.settledCredited", { settle: p.settleCurrency, local: p.currency })}
                 </p>
               )}
 
@@ -213,7 +215,7 @@ function HistoryBody() {
                         className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98]"
                         data-el="history-execute"
                       >
-                        <Send className="h-3.5 w-3.5" /> Generate payout instruction
+                        <Send className="h-3.5 w-3.5" /> {t("history.generateInstruction")}
                       </button>
                     )}
                   </div>
@@ -230,8 +232,7 @@ function HistoryBody() {
                 >
                   <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--success)]" aria-hidden />
                   <span>
-                    Payee confirmed receipt on {formatDate(p.receipt.confirmedAt)}
-                    {p.receipt.note ? ` — “${p.receipt.note}”` : ""}.
+                    {t("history.receiptConfirmed", { date: formatDate(p.receipt.confirmedAt), note: p.receipt.note ? ` — “${p.receipt.note}”` : "" })}
                   </span>
                 </div>
               )}
@@ -242,7 +243,7 @@ function HistoryBody() {
                 className="mt-3 flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-primary transition-colors hover:bg-primary/10"
                 data-el="history-reuse"
               >
-                <RotateCcw className="h-3 w-3" /> Reuse draft
+                <RotateCcw className="h-3 w-3" /> {t("history.reuseDraft")}
               </button>
             </article>
             );
