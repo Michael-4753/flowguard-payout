@@ -5,7 +5,6 @@ import {
   guestDispatchPayment,
   guestAttachSettlementProof,
   guestCreateSupplier,
-  guestUpdateSupplierWallet,
   guestCreateVerificationCase,
   guestAddVerificationComment,
   guestFailureCases,
@@ -58,19 +57,6 @@ export async function addSupplier(input: NewSupplierInput): Promise<Supplier> {
     body: JSON.stringify(input),
   });
   if (!res.ok) throw new Error("failed_to_add_supplier");
-  const json = (await res.json()) as { supplier: Supplier };
-  return json.supplier;
-}
-
-/** Backfill a payee's stablecoin wallet (authenticated: PATCH; guest: localStorage). */
-export async function setSupplierWallet(id: string, stablecoinWallet: string): Promise<Supplier> {
-  if (isGuest()) return guestUpdateSupplierWallet(id, stablecoinWallet);
-  const res = await request(`/api/suppliers/${encodeURIComponent(id)}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ stablecoinWallet }),
-  });
-  if (!res.ok) throw new Error("failed_to_set_wallet");
   const json = (await res.json()) as { supplier: Supplier };
   return json.supplier;
 }
