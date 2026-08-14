@@ -14,5 +14,30 @@
   "compliance": {
     "label": "Compliance notice:",
     "body": "This platform is a software decision-support tool focused on pre-payment compliance risk screening, smart comparison and routing across licensed channels, and transparent tracking of the settlement chain. It holds no payment licence, does not touch or hold funds, and provides no crypto/stablecoin exchange, custody or transfer of any kind; all settlement is performed by licensed financial institutions. The information and recommendations it generates are for reference only — the licensed institution's execution result is authoritative."
+  },
+  "common": {
+    "viewAll": "View all",
+    "newPayment": "New payment",
+    "retry": "Retry"
+  },
+  "home": {
+    "title": "Payout console",
+    "subtitle": "Pre-check return risk and route every cross-border payment before it leaves.",
+    "newPayment": "New payment",
+    "stats": {
+      "payments": "Payments",
+      "volume": "Volume",
+      "avgEta": "Avg. ETA",
+      "highRisk": "High risk"
+    },
+    "reconcile": "Reconcile",
+    "reconcileHint": "Match payouts & proofs",
+    "countryExposure": "Country exposure",
+    "payeeCount": "{{count}} payee(s)",
+    "ret": "ret {{value}}",
+    "recentPayments": "Recent payments",
+    "emptyTitle": "No payments yet",
+    "emptyDesc": "Run a return-risk pre-check and route your first payment — it will show up here."
   }
 }
+

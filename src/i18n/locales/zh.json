@@ -14,5 +14,30 @@
   "compliance": {
     "label": "合规说明：",
     "body": "本平台为纯软件决策辅助工具，专注于付款前合规风险筛查、多持牌通道智能比价选路与结算链路透明化追踪。本平台不持有任何支付牌照、不经手或托管资金，不提供任何形式的加密货币/稳定币兑换、托管或转账服务；所有资金结算环节均由持牌金融机构完成。平台生成的信息与建议仅供参考，最终以持牌机构的执行结果为准。"
+  },
+  "common": {
+    "viewAll": "查看全部",
+    "newPayment": "新建付款",
+    "retry": "重试"
+  },
+  "home": {
+    "title": "付款控制台",
+    "subtitle": "每一笔跨境付款发起前，先预检退回风险并选好结算路径。",
+    "newPayment": "新建付款",
+    "stats": {
+      "payments": "付款笔数",
+      "volume": "总额",
+      "avgEta": "平均时效",
+      "highRisk": "高风险"
+    },
+    "reconcile": "对账",
+    "reconcileHint": "匹配付款与凭证",
+    "countryExposure": "国家敞口",
+    "payeeCount": "{{count}} 个收款人",
+    "ret": "退回 {{value}}",
+    "recentPayments": "最近付款",
+    "emptyTitle": "还没有付款",
+    "emptyDesc": "运行一次退回风险预检并为你的第一笔付款选路——之后会显示在这里。"
   }
 }
+
