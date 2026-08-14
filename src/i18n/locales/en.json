@@ -319,6 +319,27 @@
     "emptyTitle": "No payments to this payee yet",
     "emptyDesc": "Route a payment to this payee and it will appear here with its pre-check snapshot.",
     "newPayment": "New payment"
+  },
+  "addPayee": {
+    "title": "Add payee",
+    "close": "Close",
+    "toastAdded": "Payee added to the ledger",
+    "toastError": "Couldn't add the payee. Please try again.",
+    "beneficiaryName": "Beneficiary name",
+    "countryRegion": "Country / region",
+    "currency": "Currency",
+    "beneficiaryBank": "Beneficiary bank",
+    "swift": "SWIFT / BIC",
+    "iban": "IBAN",
+    "accountStatus": "Account status",
+    "preferredChannel": "Preferred channel",
+    "aiTitle": "AI: what this corridor requires",
+    "aiCta": "Get settlement checklist with AI",
+    "aiHint": "Skip re-learning this bank's rules — DeepSeek drafts the naming/SWIFT/IBAN/doc checklist for this country & currency.",
+    "aiLoading": "Checking corridor requirements…",
+    "aiActions": "Checklist",
+    "cancel": "Cancel",
+    "submit": "Add payee"
   }
 }
 
