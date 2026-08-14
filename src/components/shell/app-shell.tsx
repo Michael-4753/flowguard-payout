@@ -7,6 +7,7 @@ import { cn } from "@/utils/utils";
 import { AuthGate } from "@/components/shell/auth-gate";
 import { FlowGuardDataProvider } from "@/components/shell/data-provider";
 import { GuestBadge } from "@/components/shell/guest-badge";
+import { ComplianceNotice } from "@/components/shell/compliance-notice";
 import { usePendingVerificationCount } from "@/lib/use-pending-verification";
 
 const NAV = [
