@@ -352,6 +352,26 @@
     "aiHint": "根据上方各跳，问 DeepSeek 资金现在在哪、为何可能被卡住、下一步该怎么做。",
     "aiLoading": "正在追踪通道…",
     "aiActions": "你可以做什么"
+  },
+  "payout": {
+    "summary": "已批准 · 以 {{amount}} {{settle}} 结算{{creditNote}}。将此指令提交给{{institution}}，然后在下方记录其结算凭证号。持牌机构完成结算——本平台不经手资金。",
+    "creditNote": " → 以 {{currency}} 入账",
+    "institutionOverseas": "境外持牌机构",
+    "institutionBank": "银行 / 支付机构",
+    "refLabelStable": "机构结算凭证号",
+    "refLabelBank": "银行确认 / MT103 凭证号",
+    "refPlaceholderStable": "来自持牌机构的结算凭证号",
+    "refPlaceholderBank": "如 FT24… / UETR",
+    "uploading": "上传中…",
+    "replaceSlip": "替换回单",
+    "attachSlip": "附上回单",
+    "errRefStable": "记录前请输入机构结算凭证号。",
+    "errRefBank": "记录前请输入银行确认凭证号。",
+    "errGeneric": "出错了，请重试。",
+    "copied": "已复制",
+    "copy": "复制",
+    "working": "处理中…",
+    "markSubmitted": "标记为已提交"
   }
 }
 

@@ -352,6 +352,26 @@
     "aiHint": "Ask DeepSeek where the funds are, why they may be held, and what to do next — based on the hops above.",
     "aiLoading": "Tracing the corridor…",
     "aiActions": "What you can do"
+  },
+  "payout": {
+    "summary": "Approved · {{amount}} {{settle}} settled{{creditNote}}. Submit this instruction to the {{institution}}, then record its settlement reference below. The licensed institution completes the settlement — this platform does not move funds.",
+    "creditNote": " → credited in {{currency}}",
+    "institutionOverseas": "overseas licensed institution",
+    "institutionBank": "bank / PSP",
+    "refLabelStable": "Institution settlement reference",
+    "refLabelBank": "Bank confirmation / MT103 ref",
+    "refPlaceholderStable": "Settlement ref from the licensed institution",
+    "refPlaceholderBank": "e.g. FT24… / UETR",
+    "uploading": "Uploading…",
+    "replaceSlip": "Replace slip",
+    "attachSlip": "Attach slip",
+    "errRefStable": "Enter the institution settlement reference before recording it.",
+    "errRefBank": "Enter the bank confirmation reference before recording it.",
+    "errGeneric": "Something went wrong. Please try again.",
+    "copied": "Copied",
+    "copy": "Copy",
+    "working": "Working…",
+    "markSubmitted": "Mark as submitted"
   }
 }
 
