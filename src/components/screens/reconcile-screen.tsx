@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useReducer, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Download, CheckCircle2, Circle } from "lucide-react";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
@@ -24,6 +25,7 @@ type Filter = "all" | "outstanding" | "pending" | "reconciled";
 
 export function ReconcileScreen() {
   const { payments, loading, error, refresh } = useFlowGuardData();
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>("all");
   const [, bump] = useReducer((n: number) => n + 1, 0);
 
@@ -52,9 +54,9 @@ export function ReconcileScreen() {
     <section className="pt-1" data-el="reconcile">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight">Reconciliation</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t("reconcile.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Expected vs received, fees and FX loss — with an exportable statement.
+            {t("reconcile.subtitle")}
           </p>
         </div>
         <button
@@ -74,13 +76,13 @@ export function ReconcileScreen() {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3" data-el="reconcile-summary">
-        <SummaryCard label="Total sent" value={formatUsdCents(summary.totalSent)} />
-        <SummaryCard label="Expected received" value={formatUsdCents(summary.totalExpected)} highlight />
-        <SummaryCard label="Fees" value={formatUsdCents(summary.totalFees)} />
-        <SummaryCard label="FX loss" value={formatUsdCents(summary.totalFxLoss)} />
-        <SummaryCard label="Outstanding" value={formatUsdCents(summary.outstanding)} />
+        <SummaryCard label={t("reconcile.totalSent")} value={formatUsdCents(summary.totalSent)} />
+        <SummaryCard label={t("reconcile.expectedReceived")} value={formatUsdCents(summary.totalExpected)} highlight />
+        <SummaryCard label={t("reconcile.fees")} value={formatUsdCents(summary.totalFees)} />
+        <SummaryCard label={t("reconcile.fxLoss")} value={formatUsdCents(summary.totalFxLoss)} />
+        <SummaryCard label={t("reconcile.outstanding")} value={formatUsdCents(summary.outstanding)} />
         <SummaryCard
-          label="Reconciled"
+          label={t("reconcile.reconciled")}
           value={`${summary.reconciledCount}/${summary.reconciledCount + summary.pendingCount}`}
         />
       </div>
@@ -89,12 +91,12 @@ export function ReconcileScreen() {
         {(["all", "outstanding", "pending", "reconciled"] as Filter[]).map((f) => (
           <Chip key={f} active={filter === f} onClick={() => setFilter(f)}>
             {f === "all"
-              ? "All"
+              ? t("reconcile.filterAll")
               : f === "outstanding"
-                ? "Outstanding"
+                ? t("reconcile.filterOutstanding")
                 : f === "pending"
-                  ? "To reconcile"
-                  : "Reconciled"}
+                  ? t("reconcile.filterToReconcile")
+                  : t("reconcile.filterReconciled")}
           </Chip>
         ))}
       </div>
@@ -111,11 +113,11 @@ export function ReconcileScreen() {
         <div className="mt-4">
           <EmptyState
             icon={CheckCircle2}
-            title={rows.length === 0 ? "Nothing to reconcile yet" : "No matches for this filter"}
+            title={rows.length === 0 ? t("reconcile.emptyNoneTitle") : t("reconcile.emptyNoMatchTitle")}
             description={
               rows.length === 0
-                ? "Once payments are routed, they show up here to match against arrival proofs."
-                : "Try switching the filter above to see other payments."
+                ? t("reconcile.emptyNoneDesc")
+                : t("reconcile.emptyNoMatchDesc")
             }
           />
         </div>
@@ -131,6 +133,7 @@ export function ReconcileScreen() {
 }
 
 function ReconcileCard({ row: r }: { row: ReconcileRow }) {
+  const { t } = useTranslation();
   return (
     <article className="fg-glass rounded-2xl p-4" data-el="reconcile-row">
       <div className="flex items-start justify-between gap-2">
@@ -149,18 +152,18 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
       </div>
 
       <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
-        <Cell label={`Sent (${r.settleCurrency})`} value={formatUsdCents(r.amountUsd)} />
-        <Cell label="Fees" value={formatUsdCents(r.feeUsd)} />
-        <Cell label="FX loss" value={formatUsdCents(r.fxLossUsd)} />
-        <Cell label="Expected" value={formatUsdCents(r.expectedUsd)} />
-        <Cell label="Received" value={r.receivedUsd > 0 ? formatUsdCents(r.receivedUsd) : "—"} />
-        <Cell label="Variance" value={formatUsdCents(r.varianceUsd)} danger={r.varianceUsd < 0} />
+        <Cell label={t("reconcile.sent", { currency: r.settleCurrency })} value={formatUsdCents(r.amountUsd)} />
+        <Cell label={t("reconcile.fees")} value={formatUsdCents(r.feeUsd)} />
+        <Cell label={t("reconcile.fxLoss")} value={formatUsdCents(r.fxLossUsd)} />
+        <Cell label={t("reconcile.expected")} value={formatUsdCents(r.expectedUsd)} />
+        <Cell label={t("reconcile.received")} value={r.receivedUsd > 0 ? formatUsdCents(r.receivedUsd) : "—"} />
+        <Cell label={t("reconcile.variance")} value={formatUsdCents(r.varianceUsd)} danger={r.varianceUsd < 0} />
       </div>
 
       {/* On-chain / off-chain proof matching (pain point 4) */}
       <div className="mt-3 rounded-xl border border-border bg-[color:var(--fg-soft)] p-2.5" data-el="reconcile-proofs">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Proof match</span>
+          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("reconcile.proofMatch")}</span>
           <span
             className={cn(
               "rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
@@ -172,24 +175,24 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
             )}
           >
             {r.matchStatus === "matched"
-              ? "Matched"
+              ? t("reconcile.matched")
               : r.matchStatus === "unmatched"
-                ? "Unmatched"
-                : "Not sent yet"}
+                ? t("reconcile.unmatched")
+                : t("reconcile.notSentYet")}
           </span>
         </div>
         <dl className="mt-2 space-y-1 font-mono text-[10px]">
-          <ProofLine label="Invoice" value={r.invoiceNo} />
-          <ProofLine label="Bank ref" value={r.offchainRef} />
-          <ProofLine label="On-chain" value={r.onchainRef || "—"} muted={!r.onchainRef} />
+          <ProofLine label={t("reconcile.invoice")} value={r.invoiceNo} />
+          <ProofLine label={t("reconcile.bankRef")} value={r.offchainRef} />
+          <ProofLine label={t("reconcile.onchain")} value={r.onchainRef || "—"} muted={!r.onchainRef} />
           <ProofLine
-            label={r.settlementMethod === "onchain-tx" ? "Settlement tx" : "Settlement ref"}
-            value={r.settlementRef || "— pending —"}
+            label={r.settlementMethod === "onchain-tx" ? t("reconcile.settlementTx") : t("reconcile.settlementRef")}
+            value={r.settlementRef || t("reconcile.settlementPending")}
             muted={!r.settlementRef}
           />
           {r.settlementAttachmentUrl && (
             <div className="flex items-center justify-between gap-2">
-              <dt className="text-muted-foreground">Slip</dt>
+              <dt className="text-muted-foreground">{t("reconcile.slip")}</dt>
               <dd>
                 <a
                   href={r.settlementAttachmentUrl}
@@ -197,14 +200,14 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
                   rel="noopener noreferrer"
                   className="text-primary underline"
                 >
-                  View attachment
+                  {t("reconcile.viewAttachment")}
                 </a>
               </dd>
             </div>
           )}
           <ProofLine
-            label="Payee receipt"
-            value={r.payeeConfirmedAt ? `Confirmed ${new Date(r.payeeConfirmedAt).toLocaleDateString()}` : "— awaiting —"}
+            label={t("reconcile.payeeReceipt")}
+            value={r.payeeConfirmedAt ? t("reconcile.confirmedOn", { date: new Date(r.payeeConfirmedAt).toLocaleDateString() }) : t("reconcile.awaiting")}
             muted={!r.payeeConfirmedAt}
           />
         </dl>
@@ -215,11 +218,11 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
         <div className="mt-3">
           <AiInsightCard
             kind="reconcile"
-            title="AI: why don't these match?"
-            cta="Explain the variance with AI"
-            hint="Let DeepSeek pinpoint the most likely reason the amount or proofs don't reconcile, and the next step."
-            loadingLabel="Analyzing the variance…"
-            actionsLabel="Next step"
+            title={t("reconcile.aiTitle")}
+            cta={t("reconcile.aiCta")}
+            hint={t("reconcile.aiHint")}
+            loadingLabel={t("reconcile.aiLoading")}
+            actionsLabel={t("reconcile.aiActions")}
             buildSnapshot={() => ({
               currency: r.currency,
               settleCurrency: r.settleCurrency,
@@ -256,11 +259,11 @@ function ReconcileCard({ row: r }: { row: ReconcileRow }) {
       >
         {r.reconciled ? (
           <>
-            <CheckCircle2 className="h-3.5 w-3.5" aria-hidden /> Reconciled
+            <CheckCircle2 className="h-3.5 w-3.5" aria-hidden /> {t("reconcile.reconciled")}
           </>
         ) : (
           <>
-            <Circle className="h-3.5 w-3.5" aria-hidden /> Mark reconciled
+            <Circle className="h-3.5 w-3.5" aria-hidden /> {t("reconcile.markReconciled")}
           </>
         )}
       </button>
