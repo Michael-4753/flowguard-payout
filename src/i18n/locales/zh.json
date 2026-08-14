@@ -9,7 +9,8 @@
     "payees": "收款人",
     "review": "审批",
     "cases": "工单",
-    "history": "历史"
+    "history": "历史",
+    "awaitingReply": "{{count}} 条待回复"
   },
   "compliance": {
     "label": "合规说明：",

@@ -9,7 +9,8 @@
     "payees": "Payees",
     "review": "Review",
     "cases": "Cases",
-    "history": "History"
+    "history": "History",
+    "awaitingReply": "{{count}} awaiting reply"
   },
   "compliance": {
     "label": "Compliance notice:",
