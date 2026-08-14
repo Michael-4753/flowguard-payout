@@ -5,6 +5,7 @@ import { Check, Lock, Info, ShieldAlert, Wallet } from "lucide-react";
 import type { RiskAssessment, RouteOption, RoutingResult, Supplier } from "@/lib/engine/types";
 import { FlowNarrativeStage } from "@/components/flow/flow-narrative-stage";
 import { WalletBackfillModal } from "./wallet-backfill-modal";
+import { AiInsightCard } from "@/components/ai/ai-insight-card";
 import { formatUsdCents, formatPercent, formatMinutes } from "@/lib/format";
 import { useIsGuest } from "@/lib/guest/guest-session";
 import { cn } from "@/utils/utils";
@@ -84,6 +85,32 @@ export function RouteStep({
           />
         ))}
       </div>
+
+      {/* AI explains WHY the rule-engine recommended this route (engine still decides). */}
+      <AiInsightCard
+        kind="route"
+        title="AI: why this route?"
+        cta="Explain the recommendation with AI"
+        hint="Routing is decided by the rule engine. Let DeepSeek explain in plain language why the recommended route wins over the alternatives."
+        loadingLabel="Comparing the routes…"
+        actionsLabel="Key reasons"
+        buildSnapshot={() => ({
+          recommendedId: routing.recommendedId,
+          options: routing.options.map((o) => ({
+            id: o.id,
+            name: o.name,
+            channelClass: o.channelClass,
+            recommended: o.recommended,
+            available: o.available,
+            score: o.available ? o.score : null,
+            totalFeeUsd: o.totalFeeUsd / 100,
+            etaMinutes: o.etaMinutes,
+            returnRisk: Number(o.returnRisk.toFixed(2)),
+            receiveUsd: o.receiveUsd / 100,
+            reason: o.reason,
+          })),
+        })}
+      />
 
       {/* Guest notice */}
       {guest && !confirmed && (
