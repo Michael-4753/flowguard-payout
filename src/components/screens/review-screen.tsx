@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ShieldCheck, ShieldAlert, Check, X, Clock, Info } from "lucide-react";
@@ -25,6 +26,7 @@ import { cn } from "@/utils/utils";
 export function ReviewScreen() {
   const { payments, loading, error, refresh, effectiveRisk, activeRole, setActiveRole } =
     useFlowGuardData();
+  const { t } = useTranslation();
   const pending = useMemo(
     () => payments.filter((p) => p.status === "pending_review"),
     [payments],
@@ -34,11 +36,10 @@ export function ReviewScreen() {
     <section className="pt-1" data-el="review">
       <div className="flex items-center gap-2">
         <ShieldCheck className="h-5 w-5 text-primary" aria-hidden />
-        <h1 className="text-2xl font-bold tracking-tight">Reviewer queue</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("review.title")}</h1>
       </div>
       <p className="mt-1 text-sm text-muted-foreground">
-        Maker-checker control: every payment a cashier submits waits here for a
-        second-signature approval before it is sent to the bank.
+        {t("review.subtitle")}
       </p>
 
       <div
@@ -51,19 +52,16 @@ export function ReviewScreen() {
         >
           <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
           <p className="text-[11px] leading-relaxed text-amber-700 dark:text-amber-300">
-            <span className="font-semibold">Single-account demo mode.</span> Maker and Checker are
-            simulated by switching identity on this one login so you can see the full control in a
-            demo. In production, Maker and Checker are two separate user accounts — self-approval is
-            already hard-blocked on the server.
+            <span className="font-semibold">{t("review.demoTitle")}</span> {t("review.demoBody")}
           </p>
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-[11px] text-muted-foreground">Awaiting approval</div>
+            <div className="text-[11px] text-muted-foreground">{t("review.awaitingApproval")}</div>
             <div className="mt-1 font-mono text-2xl font-bold tabular-nums">{pending.length}</div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Acting role</div>
+            <div className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("review.actingRole")}</div>
             <div className="mt-1 inline-flex rounded-full border border-border bg-[color:var(--fg-soft)] p-0.5" data-el="review-role-switch">
               <button
                 type="button"
@@ -74,7 +72,7 @@ export function ReviewScreen() {
                 )}
                 data-el="review-role-maker"
               >
-                Maker
+                {t("review.maker")}
               </button>
               <button
                 type="button"
@@ -85,15 +83,13 @@ export function ReviewScreen() {
                 )}
                 data-el="review-role-checker"
               >
-                Checker
+                {t("review.checker")}
               </button>
             </div>
           </div>
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground">
-          Maker and Checker act as a mutual control: a payment submitted as the Maker must be
-          approved from the Checker role (you can&apos;t approve your own submission). Here both
-          roles run on the same demo login; production uses two distinct accounts.
+          {t("review.mutualControl")}
         </p>
       </div>
 
@@ -109,8 +105,8 @@ export function ReviewScreen() {
         <div className="mt-4">
           <EmptyState
             icon={ShieldCheck}
-            title="Nothing awaiting review"
-            description="Payments a cashier submits for approval will appear here."
+            title={t("review.emptyTitle")}
+            description={t("review.emptyDesc")}
           />
         </div>
       ) : (
