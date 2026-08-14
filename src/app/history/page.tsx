@@ -213,7 +213,7 @@ function HistoryBody() {
                         className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98]"
                         data-el="history-execute"
                       >
-                        <Send className="h-3.5 w-3.5" /> Execute payout
+                        <Send className="h-3.5 w-3.5" /> Generate payout instruction
                       </button>
                     )}
                   </div>

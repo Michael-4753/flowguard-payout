@@ -337,7 +337,7 @@ function ReviewCard({
             </>
           ) : (
             <>
-              <Check className="h-3.5 w-3.5" /> Approve &amp; send to bank
+              <Check className="h-3.5 w-3.5" /> Approve &amp; generate instruction
             </>
           )}
         </button>
