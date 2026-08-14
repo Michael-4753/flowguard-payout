@@ -24,6 +24,7 @@ import {
   type VerificationStatus,
 } from "@/lib/engine/types";
 import { cn } from "@/utils/utils";
+import { AiInsightCard } from "@/components/ai/ai-insight-card";
 
 type Tab = "verification" | "library";
 
@@ -279,6 +280,27 @@ function VerificationCard({
           </button>
         )}
       </div>
+
+      {/* Pain point ②: AI drafts a verification follow-up (closes the loop with the AI briefing above). */}
+      {record.status === "open" && (
+        <div className="mt-3">
+          <AiInsightCard
+            kind="return"
+            title="AI: draft the follow-up"
+            cta="Draft verification message with AI"
+            hint="DeepSeek drafts a short, specific note to the supplier requesting the exact detail needed to clear this factor."
+            loadingLabel="Drafting the follow-up…"
+            actionsLabel="Message draft"
+            buildSnapshot={() => ({
+              supplierName: record.supplierName,
+              factorTitle: record.factorTitle,
+              status: record.status,
+              hasReplied: (record.timeline ?? []).some((e) => e.actor === "supplier" && e.kind === "comment"),
+              existingTemplate: record.template.slice(0, 600),
+            })}
+          />
+        </div>
+      )}
 
       <ShareLinks record={record} />
 
