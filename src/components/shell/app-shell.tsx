@@ -2,21 +2,23 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { LayoutDashboard, Workflow, Building2, History, ShieldCheck, FileCheck2 } from "lucide-react";
 import { cn } from "@/utils/utils";
 import { AuthGate } from "@/components/shell/auth-gate";
 import { FlowGuardDataProvider } from "@/components/shell/data-provider";
 import { GuestBadge } from "@/components/shell/guest-badge";
 import { ComplianceNotice } from "@/components/shell/compliance-notice";
+import { LanguageSwitcher } from "@/components/shell/language-switcher";
 import { usePendingVerificationCount } from "@/lib/use-pending-verification";
 
 const NAV = [
-  { href: "/", label: "Home", icon: LayoutDashboard, el: "nav-dashboard" },
-  { href: "/pay", label: "Pay", icon: Workflow, el: "nav-pay" },
-  { href: "/suppliers", label: "Payees", icon: Building2, el: "nav-suppliers" },
-  { href: "/review", label: "Review", icon: ShieldCheck, el: "nav-review" },
-  { href: "/cases", label: "Cases", icon: FileCheck2, el: "nav-cases" },
-  { href: "/history", label: "History", icon: History, el: "nav-history" },
+  { href: "/", key: "home", icon: LayoutDashboard, el: "nav-dashboard" },
+  { href: "/pay", key: "pay", icon: Workflow, el: "nav-pay" },
+  { href: "/suppliers", key: "payees", icon: Building2, el: "nav-suppliers" },
+  { href: "/review", key: "review", icon: ShieldCheck, el: "nav-review" },
+  { href: "/cases", key: "cases", icon: FileCheck2, el: "nav-cases" },
+  { href: "/history", key: "history", icon: History, el: "nav-history" },
 ] as const;
 
 export function AppShell({ children }: { children: React.ReactNode }) {
