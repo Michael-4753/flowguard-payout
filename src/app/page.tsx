@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Coins, Timer, ShieldAlert, Send, Globe, AlertTriangle, Lock, Scale } from "lucide-react";
+import { ArrowRight, Coins, Timer, ShieldAlert, Send, Globe, AlertTriangle, Scale } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PaymentRow } from "@/components/shared/payment-row";
 import { HeroFlowStrip } from "@/components/shared/hero-flow-strip";
