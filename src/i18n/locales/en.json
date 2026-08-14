@@ -292,6 +292,33 @@
     "return": "return {{rate}}",
     "returnRate": "Return rate",
     "avgEta": "Avg. ETA"
+  },
+  "payeeDetail": {
+    "back": "Back",
+    "notFound": "Payee not found.",
+    "restricted": "Restricted",
+    "beneficiaryBank": "Beneficiary bank",
+    "accountStatus": "Account status",
+    "accountActive": "Active",
+    "accountDormant": "Dormant",
+    "accountUnverified": "Unverified",
+    "swift": "SWIFT / BIC",
+    "iban": "IBAN",
+    "currency": "Currency",
+    "preferredChannel": "Preferred channel",
+    "returnRate": "Return rate",
+    "avgEta": "Avg. ETA",
+    "payThisPayee": "Pay this payee",
+    "payoutRequirements": "Payout requirements",
+    "payoutRequirementsDesc": "Reusable checklist for this corridor — what this bank / country needs every time.",
+    "required": "Required",
+    "recommended": "Recommended",
+    "failureHistory": "Failure / high-risk history ({{count}})",
+    "failureHistoryDesc": "Past payments that were returned or flagged high risk for this payee.",
+    "recentPayments": "Recent payments",
+    "emptyTitle": "No payments to this payee yet",
+    "emptyDesc": "Route a payment to this payee and it will appear here with its pre-check snapshot.",
+    "newPayment": "New payment"
   }
 }
 
