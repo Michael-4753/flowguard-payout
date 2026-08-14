@@ -126,7 +126,7 @@ const DECK_EN = [
     eyebrow: "What's built today",
     title: "A working MVP — live, not slideware",
     bullets: [
-      ["Full control loop", "Precheck → verify-with-supplier → dual approve → execute (MT103 / wallet) → payee arrival receipt → auto-reconcile, fully wired."],
+      ["Full control loop", "Precheck → verify-with-supplier → dual approve → generate settlement instruction for the licensed institution → payee arrival receipt → auto-reconcile, fully wired."],
       ["Verified risk clears itself", "When a supplier confirms a flagged detail, the case resolves and the risk score / blocker recompute automatically — no manual fudging."],
       ["Real backend", "PostgreSQL with multi-tenant isolation, auth guards, a server-enforced state machine, and an audit trail on every payment and case."],
       ["Login-free proof of arrival", "The payee confirms receipt via an unguessable token link; it's stored as real settlement evidence and auto-matched in reconciliation."],
