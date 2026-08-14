@@ -6,6 +6,7 @@ import { cn } from "@/utils/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { UserSyncEffect } from "@/components/user-profile/user-sync-effect";
 import { PreviewInspector } from "@/components/eazo/preview-inspector";
+import { I18nProvider } from "@/i18n/i18n-provider";
 
 const notoSans = Inter({
   subsets: ["latin"],
@@ -88,10 +89,12 @@ export default function RootLayout({
         data-eazo-preview-inspector-runtime=""
       >
         <EazoProvider>
-          <UserSyncEffect />
-          {children}
-          <Toaster />
-          {INSPECTOR_ENABLED && <PreviewInspector />}
+          <I18nProvider>
+            <UserSyncEffect />
+            {children}
+            <Toaster />
+            {INSPECTOR_ENABLED && <PreviewInspector />}
+          </I18nProvider>
         </EazoProvider>
       </body>
     </html>
