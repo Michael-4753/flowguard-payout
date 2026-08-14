@@ -340,6 +340,18 @@
     "aiActions": "清单",
     "cancel": "取消",
     "submit": "添加收款人"
+  },
+  "errorState": {
+    "title": "无法加载",
+    "description": "请求失败。请检查网络连接后重试。",
+    "tryAgain": "重试"
+  },
+  "flow": {
+    "aiTitle": "AI：我的钱在哪里？",
+    "aiCta": "让 AI 解释这条资金流",
+    "aiHint": "根据上方各跳，问 DeepSeek 资金现在在哪、为何可能被卡住、下一步该怎么做。",
+    "aiLoading": "正在追踪通道…",
+    "aiActions": "你可以做什么"
   }
 }
 

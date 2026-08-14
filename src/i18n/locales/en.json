@@ -340,6 +340,18 @@
     "aiActions": "Checklist",
     "cancel": "Cancel",
     "submit": "Add payee"
+  },
+  "errorState": {
+    "title": "Couldn't load this",
+    "description": "The request failed. Check your connection and try again.",
+    "tryAgain": "Try again"
+  },
+  "flow": {
+    "aiTitle": "AI: where is my money?",
+    "aiCta": "Explain this flow with AI",
+    "aiHint": "Ask DeepSeek where the funds are, why they may be held, and what to do next — based on the hops above.",
+    "aiLoading": "Tracing the corridor…",
+    "aiActions": "What you can do"
   }
 }
 

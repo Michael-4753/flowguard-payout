@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import { AlertTriangle } from "lucide-react";
 import { cn } from "@/utils/utils";
 
@@ -9,8 +12,8 @@ import { cn } from "@/utils/utils";
  * Mirrors EmptyState's card language but uses the danger accent.
  */
 export function ErrorState({
-  title = "Couldn’t load this",
-  description = "The request failed. Check your connection and try again.",
+  title,
+  description,
   onRetry,
   className,
 }: {
@@ -19,6 +22,9 @@ export function ErrorState({
   onRetry?: () => void;
   className?: string;
 }) {
+  const { t } = useTranslation();
+  const resolvedTitle = title ?? t("errorState.title");
+  const resolvedDescription = description ?? t("errorState.description");
   return (
     <div
       className={cn(
@@ -35,9 +41,9 @@ export function ErrorState({
         <AlertTriangle className="h-5 w-5" />
       </span>
       <div className="space-y-1">
-        <p className="text-sm font-semibold text-foreground">{title}</p>
+        <p className="text-sm font-semibold text-foreground">{resolvedTitle}</p>
         <p className="mx-auto max-w-[34ch] text-xs leading-relaxed text-muted-foreground">
-          {description}
+          {resolvedDescription}
         </p>
       </div>
       {onRetry && (
@@ -47,7 +53,7 @@ export function ErrorState({
           className="mt-1 inline-flex min-h-[40px] items-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98]"
           data-el="error-state-retry"
         >
-          Try again
+          {t("errorState.tryAgain")}
         </button>
       )}
     </div>

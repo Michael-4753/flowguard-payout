@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, CheckCircle2, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { deriveFlowProgress } from "@/lib/analytics";
 import type { FlowHop, PaymentRecord } from "@/lib/engine/types";
 import { formatMinutes, formatUsd } from "@/lib/format";
@@ -17,6 +18,7 @@ import { AiInsightCard } from "@/components/ai/ai-insight-card";
 export function FlowProgressTimeline({ record }: { record: PaymentRecord }) {
   const progress = deriveFlowProgress(record);
   const { hops, currentIndex, done, returned, caption } = progress;
+  const { t } = useTranslation();
   if (hops.length === 0) return null;
 
   return (
@@ -71,11 +73,11 @@ export function FlowProgressTimeline({ record }: { record: PaymentRecord }) {
         <div className="mt-3">
           <AiInsightCard
             kind="flow"
-            title="AI: where is my money?"
-            cta="Explain this flow with AI"
-            hint="Ask DeepSeek where the funds are, why they may be held, and what to do next — based on the hops above."
-            loadingLabel="Tracing the corridor…"
-            actionsLabel="What you can do"
+            title={t("flow.aiTitle")}
+            cta={t("flow.aiCta")}
+            hint={t("flow.aiHint")}
+            loadingLabel={t("flow.aiLoading")}
+            actionsLabel={t("flow.aiActions")}
             buildSnapshot={() => ({
               status: record.status,
               returned,
