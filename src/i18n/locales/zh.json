@@ -378,6 +378,19 @@
     "recommendedActions": "建议操作",
     "error": "无法生成。点击“重新生成”重试——上方数据不受影响。",
     "generatedBy": "由 DeepSeek 生成 · 操作前请核实"
+  },
+  "aiSignals": {
+    "title": "AI 补充风险信号",
+    "regenerate": "重新生成",
+    "hint": "在上方格式/清单规则之外：让 DeepSeek 捕捉语义矛盾、相似历史失败案例和可能缺失的单据。它只能提高警示——绝不降低评分。",
+    "scan": "让 AI 扫描隐藏风险",
+    "loading": "正在扫描语义与情境风险…",
+    "error": "无法运行 AI 扫描。点击“重新生成”重试——上方确定性报告不受影响。",
+    "nothing": "AI 未发现额外的语义矛盾或可能缺失的单据。",
+    "contradictions": "可能的矛盾",
+    "missingDocs": "可能缺失的单据",
+    "similarFailures": "相似历史失败",
+    "footer": "AI 信号仅供参考且为附加项——绝不降低引擎评分。发送前请核实。"
   }
 }
 
