@@ -139,6 +139,7 @@ function ReviewCard({
 }) {
   const [mode, setMode] = useState<"idle" | "reject">("idle");
   const router = useRouter();
+  const { t } = useTranslation();
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<null | "generic" | "self_review">(null);
@@ -175,11 +176,11 @@ function ReviewCard({
       });
       toast.success(
         approve
-          ? `已批准 · ${record.supplierName} 已记录在 History`
-          : `已返回给发起人 · ${record.supplierName} 已记录在 History`,
+          ? t("review.toastApproved", { name: record.supplierName })
+          : t("review.toastReturned", { name: record.supplierName }),
         {
           action: {
-            label: "在 History 中查看",
+            label: t("review.toastViewInHistory"),
             onClick: () => router.push(`/history?focus=${record.id}`),
           },
         },
@@ -207,7 +208,7 @@ function ReviewCard({
             <span className="shrink-0"><RiskBadge level={eff.riskLevel} /></span>
           </div>
           <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-            {MAKER_LABEL} · submitted {formatDate(record.review.submittedAt)}
+            {t("review.submittedBy", { role: MAKER_LABEL, date: formatDate(record.review.submittedAt) })}
           </p>
         </div>
         <div className="shrink-0 text-right">
@@ -216,8 +217,8 @@ function ReviewCard({
           </span>
           <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-wide text-muted-foreground">
             {record.currency !== record.settleCurrency
-              ? `Settled in ${record.settleCurrency} → credited in ${record.currency}`
-              : `Settled in ${record.settleCurrency}`}
+              ? t("review.settledCredited", { settle: record.settleCurrency, local: record.currency })
+              : t("review.settledIn", { settle: record.settleCurrency })}
           </span>
         </div>
       </div>
@@ -228,14 +229,14 @@ function ReviewCard({
           data-el="review-verylarge"
         >
           <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
-          <span>Very large payout — high-risk lane, second signature required.</span>
+          <span>{t("review.veryLarge")}</span>
         </div>
       )}
 
       <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
-        <Cell label="Channel" value={CHANNEL_CLASS_LABEL[record.route.channelClass]} />
-        <Cell label="Return prob." value={formatPercent(eff.returnProbability, 0)} />
-        <Cell label="Risk score" value={eff.changed ? `${eff.riskScore} (was ${record.riskScore})` : String(eff.riskScore)} />
+        <Cell label={t("review.channel")} value={CHANNEL_CLASS_LABEL[record.route.channelClass]} />
+        <Cell label={t("review.returnProb")} value={formatPercent(eff.returnProbability, 0)} />
+        <Cell label={t("review.riskScore")} value={eff.changed ? t("review.riskScoreWas", { score: eff.riskScore, was: record.riskScore }) : String(eff.riskScore)} />
       </div>
 
       {highRisk && !softened && (
@@ -245,8 +246,9 @@ function ReviewCard({
         >
           <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
           <span>
-            High-risk payment{record.chokepointBank ? ` — likely held at ${record.chokepointBank}` : ""}.
-            Approving sends it to the bank and records your sign-off in the audit trail.
+            {record.chokepointBank
+              ? t("review.highRiskHeld", { bank: record.chokepointBank })
+              : t("review.highRisk")}
           </span>
         </div>
       )}
@@ -259,11 +261,18 @@ function ReviewCard({
           <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--success)]" aria-hidden />
           <span>
             {clarifiedHits.length === 1
-              ? `${clarifiedHits[0].title} was verified with the supplier via a case and cleared.`
-              : `${clarifiedHits.length} info issue(s) were verified with the supplier and cleared.`}{" "}
-            Risk score lowered from {record.riskScore} to {eff.riskScore}
-            {record.riskLevel !== eff.riskLevel ? `, level downgraded from ${record.riskLevel} to ${eff.riskLevel}` : ""}.
-            Review the remaining factors before approving.
+              ? t("review.softenedOne", {
+                  title: clarifiedHits[0].title,
+                  from: record.riskScore,
+                  to: eff.riskScore,
+                  levelNote: record.riskLevel !== eff.riskLevel ? t("review.levelDowngraded", { from: record.riskLevel, to: eff.riskLevel }) : "",
+                })
+              : t("review.softenedMany", {
+                  count: clarifiedHits.length,
+                  from: record.riskScore,
+                  to: eff.riskScore,
+                  levelNote: record.riskLevel !== eff.riskLevel ? t("review.levelDowngraded", { from: record.riskLevel, to: eff.riskLevel }) : "",
+                })}
           </span>
         </div>
       )}
@@ -272,7 +281,7 @@ function ReviewCard({
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Reason for returning to the cashier (required)"
+          placeholder={t("review.rejectPlaceholder")}
           rows={2}
           className="mt-3 w-full rounded-xl border border-border bg-[color:var(--fg-soft)] px-3 py-2 text-sm"
           data-el="review-note"
@@ -286,8 +295,7 @@ function ReviewCard({
         >
           <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--warning)]" aria-hidden />
           <span>
-            You&apos;re currently acting as the Maker. Segregation of duties requires a different
-            person to approve — switch to the Checker role to approve; the Maker role can only return it.
+            {t("review.actingMakerNote")}
           </span>
         </div>
       )}
@@ -295,8 +303,8 @@ function ReviewCard({
       {err && (
         <p className="mt-2 text-[11px] text-[color:var(--danger)]">
           {err === "self_review"
-            ? "Approval blocked: switch to the Checker role to approve. Maker and checker must be different roles."
-            : "Could not record the decision. Please try again."}
+            ? t("review.errSelfReview")
+            : t("review.errGeneric")}
         </p>
       )}
 
@@ -312,13 +320,13 @@ function ReviewCard({
           )}
           data-el="review-reject"
         >
-          <X className="h-3.5 w-3.5" /> {mode === "reject" ? "Confirm return" : "Return"}
+          <X className="h-3.5 w-3.5" /> {mode === "reject" ? t("review.confirmReturn") : t("review.return")}
         </button>
         <button
           type="button"
           disabled={busy || !canApprove}
           onClick={() => decide(true)}
-          title={!canApprove ? "Switch to the Checker role to approve" : undefined}
+          title={!canApprove ? t("review.switchToApprove") : undefined}
           className={cn(
             "flex flex-1 items-center justify-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.98]",
             highRisk && !softened ? "bg-[color:var(--danger)]" : "bg-primary",
@@ -329,11 +337,11 @@ function ReviewCard({
         >
           {busy ? (
             <>
-              <Clock className="h-3.5 w-3.5 animate-spin" /> Working…
+              <Clock className="h-3.5 w-3.5 animate-spin" /> {t("review.working")}
             </>
           ) : (
             <>
-              <Check className="h-3.5 w-3.5" /> Approve &amp; generate instruction
+              <Check className="h-3.5 w-3.5" /> {t("review.approveGenerate")}
             </>
           )}
         </button>
