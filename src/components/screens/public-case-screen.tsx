@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ShieldAlert, Clock, MessageSquare, Send, Lock, CheckCircle2 } from "lucide-react";
 import {
   CASE_ACTOR_LABEL,
@@ -27,6 +28,7 @@ interface Payload {
 export function PublicCaseScreen({ token }: { token: string }) {
   const [data, setData] = useState<Payload | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "notfound">("loading");
+  const { t } = useTranslation();
 
   const load = useCallback(async () => {
     try {
@@ -54,17 +56,14 @@ export function PublicCaseScreen({ token }: { token: string }) {
   }, [load]);
 
   if (state === "loading") {
-    return <Centered>Loading shared case…</Centered>;
+    return <Centered>{t("publicCase.loading")}</Centered>;
   }
   if (state === "notfound" || !data) {
     return (
       <Centered>
-        <span className="font-medium text-foreground">This shared link can’t be opened.</span>
+        <span className="font-medium text-foreground">{t("publicCase.notFoundTitle")}</span>
         <br />
-        The link may be invalid or expired — or the case was created in guest
-        (offline) mode, which keeps data only on the creator’s device and never
-        publishes it to a shareable link. Ask the sender to sign in and create
-        the case again to share it.
+        {t("publicCase.notFoundDesc")}
       </Centered>
     );
   }
@@ -79,9 +78,9 @@ export function PublicCaseScreen({ token }: { token: string }) {
             F
           </span>
           <div>
-            <div className="text-sm font-bold tracking-tight">FlowGuard · Verification case</div>
+            <div className="text-sm font-bold tracking-tight">{t("publicCase.header")}</div>
             <div className="text-[11px] text-muted-foreground">
-              Shared securely — {data.canWrite ? "you can post updates" : "read-only view"}
+              {data.canWrite ? t("publicCase.canPost") : t("publicCase.readOnly")}
             </div>
           </div>
         </header>
@@ -101,7 +100,7 @@ export function PublicCaseScreen({ token }: { token: string }) {
         <section className="rounded-2xl border border-[color:var(--warning)]/40 bg-[color:var(--warning)]/10 p-4">
           <div className="flex items-center gap-2 text-[color:var(--warning)]">
             <ShieldAlert className="h-4 w-4" aria-hidden />
-            <h2 className="text-sm font-bold">Bank-side risk description</h2>
+            <h2 className="text-sm font-bold">{t("publicCase.bankDescription")}</h2>
           </div>
           <pre className="mt-2 whitespace-pre-wrap break-words font-mono text-[11px] leading-relaxed text-foreground">
             {c.bankRawDescription}
@@ -114,7 +113,7 @@ export function PublicCaseScreen({ token }: { token: string }) {
         ) : (
           <div className="flex items-center gap-2 rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3 text-[11px] text-muted-foreground">
             <Lock className="h-3.5 w-3.5 shrink-0" aria-hidden />
-            Read-only link. Ask the sender for the write link to post an update.
+            {t("publicCase.readOnlyNotice")}
           </div>
         )}
 
@@ -122,7 +121,7 @@ export function PublicCaseScreen({ token }: { token: string }) {
         <section className="fg-glass rounded-2xl p-4">
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-primary" aria-hidden />
-            <h2 className="text-sm font-bold">Activity</h2>
+            <h2 className="text-sm font-bold">{t("publicCase.activity")}</h2>
           </div>
           <ol className="mt-3 space-y-3">
             {c.timeline.map((ev) => (
@@ -168,6 +167,7 @@ function WritePanel({
   const [actor, setActor] = useState<CaseActor>("supplier");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const { t } = useTranslation();
 
   async function post(body: Record<string, unknown>) {
     setBusy(true);
@@ -187,7 +187,7 @@ function WritePanel({
   return (
     <section className="fg-glass rounded-2xl p-4" data-el="public-write">
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-muted-foreground">Posting as</span>
+        <span className="text-[11px] text-muted-foreground">{t("publicCase.postingAs")}</span>
         {(["business", "supplier"] as CaseActor[]).map((a) => (
           <button
             key={a}
@@ -207,7 +207,7 @@ function WritePanel({
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         rows={3}
-        placeholder="Reply with the confirmed detail (e.g. correct legal name / IBAN)…"
+        placeholder={t("publicCase.replyPlaceholder")}
         className="mt-3 w-full resize-none rounded-xl border border-border bg-[color:var(--fg-soft)] p-2.5 text-sm"
       />
       <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -218,7 +218,7 @@ function WritePanel({
           className="flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground disabled:opacity-60"
           data-el="public-comment"
         >
-          <Send className="h-3.5 w-3.5" /> Post reply
+          <Send className="h-3.5 w-3.5" /> {t("publicCase.postReply")}
         </button>
         {status !== "verified" && (
           <button
@@ -228,7 +228,7 @@ function WritePanel({
             className="rounded-full border border-[color:var(--success)]/50 px-3 py-2 text-[11px] font-semibold text-[color:var(--success)] disabled:opacity-60"
             data-el="public-verified"
           >
-            Confirm details correct
+            {t("publicCase.confirmCorrect")}
           </button>
         )}
       </div>
