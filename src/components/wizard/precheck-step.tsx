@@ -109,7 +109,7 @@ export function PrecheckStep({
           <div className="mt-4 grid w-full grid-cols-2 gap-2">
             <div className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3 text-center">
               <div className="text-[9px] uppercase tracking-wide text-muted-foreground">
-                Return probability
+                {t("precheck.returnProbability")}
               </div>
               <div className="mt-0.5 font-mono text-lg font-bold">
                 {formatPercent(risk.returnProbability, 0)}
@@ -117,7 +117,7 @@ export function PrecheckStep({
             </div>
             <div className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3 text-center">
               <div className="text-[9px] uppercase tracking-wide text-muted-foreground">
-                Likely chokepoint
+                {t("precheck.likelyChokepoint")}
               </div>
               <div className="mt-0.5 truncate text-[11px] font-semibold">{risk.chokepointBank}</div>
             </div>
@@ -133,10 +133,10 @@ export function PrecheckStep({
         >
           <div className="flex items-center gap-2 text-[color:var(--danger)]">
             <ShieldAlert className="h-4 w-4" />
-            <span className="text-sm font-bold">Do not send yet</span>
+            <span className="text-sm font-bold">{t("precheck.doNotSend")}</span>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
-            A critical blocker was detected. Resolve it, or acknowledge the risk to continue for review.
+            {t("precheck.doNotSendDesc")}
           </p>
         </div>
       )}
@@ -150,13 +150,10 @@ export function PrecheckStep({
         >
           <div className="flex items-center gap-2 text-primary">
             <Users className="h-4 w-4 shrink-0" />
-            <span className="text-sm font-bold">Supplier details need verification</span>
+            <span className="text-sm font-bold">{t("precheck.detailsNeedVerification")}</span>
           </div>
           <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-            This payment is flagged high-risk mainly because of issues in the payee&apos;s basic
-            details. These should first be verified with the supplier and logged as a case — rather
-            than acknowledging the risk and going straight to approval. The {verifiableHits.length}{" "}
-            item(s) below can be synced to the supplier in one click:
+            {t("precheck.detailsNeedVerificationDesc", { count: verifiableHits.length })}
           </p>
           <ul className="mt-2 space-y-1">
             {verifiableHits.map((f) => (
@@ -186,22 +183,22 @@ export function PrecheckStep({
             >
               <Send className="h-4 w-4" />
               {syncing
-                ? "Creating verification case…"
+                ? t("precheck.creatingCase")
                 : synced.length > 0
-                  ? "Sync remaining issues to supplier"
-                  : "Sync issues to supplier for verification"}
+                  ? t("precheck.syncRemaining")
+                  : t("precheck.syncIssues")}
             </button>
           )}
           {syncErr && (
             <p className="mt-2 text-[11px] text-[color:var(--danger)]">
-              Couldn&apos;t create the verification request. Please try again.
+              {t("precheck.syncFailed")}
             </p>
           )}
 
           {syncTemplate && (
             <div className="mt-3 space-y-2" data-el="wizard-verify-result">
               <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[color:var(--success)]">
-                <FileCheck2 className="h-3.5 w-3.5" /> Verification case created (Cases → Verification requests)
+                <FileCheck2 className="h-3.5 w-3.5" /> {t("precheck.caseCreated")}
               </div>
               <textarea
                 readOnly
@@ -223,7 +220,7 @@ export function PrecheckStep({
                   ) : (
                     <Copy className="h-3 w-3" />
                   )}
-                  {syncCopied === "ok" ? "Copied" : syncCopied === "fail" ? "Copy failed — select manually" : "Copy verification message"}
+                  {syncCopied === "ok" ? t("precheck.copied") : syncCopied === "fail" ? t("precheck.copyFailed") : t("precheck.copyVerificationMessage")}
                 </button>
                 <button
                   type="button"
@@ -231,12 +228,11 @@ export function PrecheckStep({
                   className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/10"
                   data-el="wizard-verify-track"
                 >
-                  <FileCheck2 className="h-3 w-3" /> Track in Cases
+                  <FileCheck2 className="h-3 w-3" /> {t("precheck.trackInCases")}
                 </button>
               </div>
               <p className="text-[10px] text-muted-foreground">
-                Once the supplier replies, update the status in Cases. When verified, the risk clears
-                automatically — no need to force it through by acknowledging the risk.
+                {t("precheck.replyHint")}
               </p>
             </div>
           )}
@@ -247,7 +243,7 @@ export function PrecheckStep({
         <div className="rounded-2xl border border-[color:var(--success)]/40 bg-[color:var(--success)]/12 p-4">
           <div className="flex items-center gap-2 text-[color:var(--success)]">
             <ShieldCheck className="h-4 w-4" />
-            <span className="text-sm font-medium">All checks passed — safe to route.</span>
+            <span className="text-sm font-medium">{t("precheck.allChecksPassed")}</span>
           </div>
         </div>
       )}
@@ -257,23 +253,23 @@ export function PrecheckStep({
         <div className="fg-glass rounded-2xl p-4" data-el="return-reasons">
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-primary" aria-hidden />
-            <h3 className="text-sm font-bold">Why it might bounce</h3>
+            <h3 className="text-sm font-bold">{t("precheck.whyBounce")}</h3>
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            Most likely return reasons on this corridor, ranked by probability.
+            {t("precheck.whyBounceDesc")}
           </p>
           {/* Quantified cost of a bounce (pain point 2) */}
           <div
             className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl border border-[color:var(--warning)]/40 bg-[color:var(--warning)]/10 p-2.5"
             data-el="return-cost"
           >
-            <span className="text-[11px] font-semibold text-[color:var(--warning)]">If returned:</span>
+            <span className="text-[11px] font-semibold text-[color:var(--warning)]">{t("precheck.ifReturned")}</span>
             <span className="font-mono text-[11px] text-foreground">
-              ≈ {risk.returnCost.lostDays} days lost
+              {t("precheck.daysLost", { count: risk.returnCost.lostDays })}
             </span>
             <span className="text-muted-foreground">·</span>
             <span className="font-mono text-[11px] text-foreground">
-              {formatUsdCents(risk.returnCost.sunkFeesUsd)} sunk fees
+              {t("precheck.sunkFees", { amount: formatUsdCents(risk.returnCost.sunkFeesUsd) })}
             </span>
           </div>
           <ul className="mt-3 space-y-2">
@@ -371,7 +367,7 @@ export function PrecheckStep({
                     <p className="text-xs text-muted-foreground">{f.description}</p>
                     <div className="mt-2 rounded-xl bg-primary/10 p-2.5">
                       <div className="text-[10px] font-semibold uppercase tracking-wide text-primary">
-                        Remediation
+                        {t("precheck.remediation")}
                       </div>
                       <p className="mt-0.5 text-xs text-foreground">{f.remediation}</p>
                     </div>
@@ -393,8 +389,7 @@ export function PrecheckStep({
           data-el="wizard-verify-gate"
         >
           <p className="text-xs leading-relaxed text-muted-foreground">
-            We recommend verifying the issues above with the supplier before deciding. If they truly
-            can&apos;t be verified and the payment must go out with the risk, you can acknowledge it.
+            {t("precheck.recommendVerify")}
           </p>
           <button
             type="button"
@@ -402,7 +397,7 @@ export function PrecheckStep({
             className="mt-2 text-[12px] font-semibold text-[color:var(--danger)] underline underline-offset-2"
             data-el="wizard-verify-override"
           >
-            Can&apos;t verify — acknowledge the risk anyway
+            {t("precheck.cantVerifyAck")}
           </button>
         </div>
       )}
@@ -415,16 +410,24 @@ export function PrecheckStep({
         >
           <div className="flex items-center gap-2 text-[color:var(--danger)]">
             <ShieldAlert className="h-4 w-4 shrink-0" />
-            <span className="text-sm font-bold">Continuing releases a high-risk payment</span>
+            <span className="text-sm font-bold">{t("precheck.continueReleases")}</span>
           </div>
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-            This payee scores <b className="text-[color:var(--danger)]">{risk.score}/100</b> with an estimated{" "}
-            <b className="text-[color:var(--danger)]">{formatPercent(risk.returnProbability, 0)}</b> return
-            probability. If returned, expect a loss of about{" "}
-            <b className="text-foreground">{risk.returnCost.lostDays} days</b> and{" "}
-            <b className="text-foreground">{formatUsdCents(risk.returnCost.sunkFeesUsd)}</b> in
-            non-refundable fees. High-risk payments can still proceed, but generate an audit trail
-            for compliance review — you accept the compliance and loss responsibility.
+            <Trans
+              i18nKey="precheck.acknowledgeDesc"
+              values={{
+                score: risk.score,
+                prob: formatPercent(risk.returnProbability, 0),
+                days: risk.returnCost.lostDays,
+                fees: formatUsdCents(risk.returnCost.sunkFeesUsd),
+              }}
+              components={[
+                <b key="0" className="text-[color:var(--danger)]" />,
+                <b key="1" className="text-[color:var(--danger)]" />,
+                <b key="2" className="text-foreground" />,
+                <b key="3" className="text-foreground" />,
+              ]}
+            />
           </p>
           <button
             type="button"
@@ -432,7 +435,7 @@ export function PrecheckStep({
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-[color:var(--danger)]/60 bg-[color:var(--danger)]/15 px-4 py-3 text-sm font-semibold text-[color:var(--danger)] transition-transform active:scale-[0.99]"
             data-el="wizard-acknowledge"
           >
-            I acknowledge the risk — continue
+            {t("precheck.acknowledgeContinue")}
           </button>
         </div>
       )}
@@ -452,12 +455,12 @@ export function PrecheckStep({
           )}
           data-el="wizard-to-route"
         >
-          {risk.hasBlocker ? "Compare routes anyway" : "Compare routes"} <ArrowRight className="h-4 w-4" />
+          {risk.hasBlocker ? t("precheck.compareRoutesAnyway") : t("precheck.compareRoutes")} <ArrowRight className="h-4 w-4" />
         </button>
       )}
       {!scanning && !canContinue && hasVerifiable && !verifyGateSatisfied && (
         <p className="text-center text-[11px] text-muted-foreground" data-el="wizard-gate-hint">
-          Sync the supplier-info issues above for verification, or choose &ldquo;Can&apos;t verify — acknowledge the risk anyway&rdquo; to continue.
+          {t("precheck.gateHint")}
         </p>
       )}
     </div>
