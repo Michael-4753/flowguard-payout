@@ -431,6 +431,11 @@
     "replyPlaceholder": "回复已确认的信息（如正确的法定名称 / IBAN）…",
     "postReply": "发布回复",
     "confirmCorrect": "确认信息无误"
+  },
+  "pitch": {
+    "prevSlide": "上一页",
+    "nextSlide": "下一页",
+    "goToSlide": "跳到第 {{n}} 页"
   }
 }
 
