@@ -372,6 +372,12 @@
     "copy": "复制",
     "working": "处理中…",
     "markSubmitted": "标记为已提交"
+  },
+  "aiCard": {
+    "regenerate": "重新生成",
+    "recommendedActions": "建议操作",
+    "error": "无法生成。点击“重新生成”重试——上方数据不受影响。",
+    "generatedBy": "由 DeepSeek 生成 · 操作前请核实"
   }
 }
 
