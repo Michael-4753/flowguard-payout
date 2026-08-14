@@ -12,9 +12,10 @@ import { appAi, AppAIUnavailableError, extractMessageContent } from "@/lib/eazo-
  *  - return    : (compat) return-risk compliance briefing
  *  - corridor  : per-country/bank settlement requirements checklist
  *  - reconcile : explain a reconciliation variance / unmatched proof
+ *  - route     : explain WHY the rule-engine's recommended route wins
  */
 
-type Kind = "flow" | "return" | "corridor" | "reconcile";
+type Kind = "flow" | "return" | "corridor" | "reconcile" | "route";
 
 const SHARED_TAIL = `
 Output rules:
@@ -66,6 +67,19 @@ most likely reason the figures or proofs don't line up, and the next step to
 resolve it. Common causes: intermediary lifting fees, FX rate drift between
 quote and settlement, partial/hold returns, or a missing/mismatched settlement
 reference.
+${SHARED_TAIL}`.trim(),
+
+  route: `
+You are a cross-border payout routing analyst. A DETERMINISTIC rule engine has
+ALREADY chosen the recommended route (marked recommended:true) by scoring each
+option on fee, ETA, return risk, traceability and availability. Do NOT re-decide
+or override the recommendation. Your job is ONLY to explain, in plain business
+English, WHY the recommended route wins versus the alternatives — reference the
+concrete numbers in the snapshot (lower fee, faster ETA, lower return risk, more
+received, on-chain traceability, or an unavailable/gated alternative). If a
+cheaper-looking option was NOT recommended, briefly say why (higher return risk,
+unavailable for this payee, or an opaque intermediary). Keep it decision-support,
+not a decision.
 ${SHARED_TAIL}`.trim(),
 };
 
