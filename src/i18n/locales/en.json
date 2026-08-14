@@ -1,0 +1,18 @@
+{
+  "app": {
+    "name": "FlowGuard",
+    "tagline": "Cross-border payment risk & routing"
+  },
+  "nav": {
+    "home": "Home",
+    "pay": "Pay",
+    "payees": "Payees",
+    "review": "Review",
+    "cases": "Cases",
+    "history": "History"
+  },
+  "compliance": {
+    "label": "Compliance notice:",
+    "body": "This platform is a software decision-support tool focused on pre-payment compliance risk screening, smart comparison and routing across licensed channels, and transparent tracking of the settlement chain. It holds no payment licence, does not touch or hold funds, and provides no crypto/stablecoin exchange, custody or transfer of any kind; all settlement is performed by licensed financial institutions. The information and recommendations it generates are for reference only — the licensed institution's execution result is authoritative."
+  }
+}
