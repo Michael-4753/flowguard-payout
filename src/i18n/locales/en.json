@@ -431,6 +431,11 @@
     "replyPlaceholder": "Reply with the confirmed detail (e.g. correct legal name / IBAN)…",
     "postReply": "Post reply",
     "confirmCorrect": "Confirm details correct"
+  },
+  "pitch": {
+    "prevSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "goToSlide": "Go to slide {{n}}"
   }
 }
 
