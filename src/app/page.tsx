@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { ArrowRight, Coins, Timer, ShieldAlert, Send, Globe, AlertTriangle, Scale } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PaymentRow } from "@/components/shared/payment-row";
@@ -24,6 +25,7 @@ export default function DashboardPage() {
 
 function DashboardBody() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { suppliers, payments, loading, error, refresh } = useFlowGuardData();
 
   const stats = useMemo(() => {
@@ -45,9 +47,9 @@ function DashboardBody() {
 
   return (
     <section className="pt-1" data-el="dashboard">
-      <h1 className="text-2xl font-bold tracking-tight">Payout console</h1>
+      <h1 className="text-2xl font-bold tracking-tight">{t("home.title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Pre-check return risk and route every cross-border payment before it leaves.
+        {t("home.subtitle")}
       </p>
 
       <button
@@ -58,7 +60,7 @@ function DashboardBody() {
       >
         <span className="flex items-center gap-3">
           <Send className="h-5 w-5" aria-hidden />
-          <span className="text-base font-bold">New payment</span>
+          <span className="text-base font-bold">{t("home.newPayment")}</span>
         </span>
         <ArrowRight className="h-5 w-5" aria-hidden />
       </button>
@@ -68,12 +70,12 @@ function DashboardBody() {
       )}
 
       <div className="mt-4 grid grid-cols-2 gap-3" data-el="dashboard-stats">
-        <StatCard icon={<Coins className="h-4 w-4" />} label="Payments" value={`${stats.count}`} />
-        <StatCard icon={<Send className="h-4 w-4" />} label="Volume" value={formatUsd(stats.volume)} />
-        <StatCard icon={<Timer className="h-4 w-4" />} label="Avg. ETA" value={formatHours(stats.avgEta)} />
+        <StatCard icon={<Coins className="h-4 w-4" />} label={t("home.stats.payments")} value={`${stats.count}`} />
+        <StatCard icon={<Send className="h-4 w-4" />} label={t("home.stats.volume")} value={formatUsd(stats.volume)} />
+        <StatCard icon={<Timer className="h-4 w-4" />} label={t("home.stats.avgEta")} value={formatHours(stats.avgEta)} />
         <StatCard
           icon={<ShieldAlert className="h-4 w-4" />}
-          label="High risk"
+          label={t("home.stats.highRisk")}
           value={`${stats.highRisk}`}
           danger={stats.highRisk > 0}
         />
@@ -83,8 +85,8 @@ function DashboardBody() {
       <div className="mt-4 grid grid-cols-1 gap-3" data-el="dashboard-tools">
         <ToolCard
           icon={<Scale className="h-4 w-4" />}
-          label="Reconcile"
-          hint="Match payouts & proofs"
+          label={t("home.reconcile")}
+          hint={t("home.reconcileHint")}
           onClick={() => router.push("/reconcile")}
           el="tool-reconcile"
         />
@@ -95,7 +97,7 @@ function DashboardBody() {
         <div className="mt-6" data-el="country-exposure">
           <div className="mb-3 flex items-center gap-2">
             <Globe className="h-4 w-4 text-primary" aria-hidden />
-            <h2 className="text-sm font-semibold text-muted-foreground">Country exposure</h2>
+            <h2 className="text-sm font-semibold text-muted-foreground">{t("home.countryExposure")}</h2>
           </div>
           <div className="grid grid-cols-2 gap-2.5">
             {countries.map((g) => (
@@ -119,9 +121,9 @@ function DashboardBody() {
                   {formatUsd(g.volumeUsd)}
                 </div>
                 <div className="mt-1 flex flex-wrap gap-x-2 font-mono text-[10px] text-muted-foreground">
-                  <span>{g.suppliers.length} payee(s)</span>
+                  <span>{t("home.payeeCount", { count: g.suppliers.length })}</span>
                   <span style={g.returnRate > 0.05 ? { color: "var(--danger)" } : undefined}>
-                    ret {formatPercent(g.returnRate, 0)}
+                    {t("home.ret", { value: formatPercent(g.returnRate, 0) })}
                   </span>
                 </div>
                 <div className="mt-0.5 font-mono text-[10px] text-muted-foreground">
@@ -134,14 +136,14 @@ function DashboardBody() {
       )}
 
       <div className="mb-4 mt-6 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-muted-foreground">Recent payments</h2>
+        <h2 className="text-sm font-semibold text-muted-foreground">{t("home.recentPayments")}</h2>
         <button
           type="button"
           onClick={() => router.push("/history")}
           className="text-xs font-medium text-primary"
           data-el="dashboard-view-all"
         >
-          View all
+          {t("common.viewAll")}
         </button>
       </div>
 
@@ -152,9 +154,9 @@ function DashboardBody() {
       ) : recent.length === 0 ? (
         <EmptyState
           icon={Send}
-          title="No payments yet"
-          description="Run a return-risk pre-check and route your first payment — it will show up here."
-          action={{ label: "New payment", onClick: () => router.push("/pay") }}
+          title={t("home.emptyTitle")}
+          description={t("home.emptyDesc")}
+          action={{ label: t("common.newPayment"), onClick: () => router.push("/pay") }}
         />
       ) : (
         <div className="space-y-2.5">
