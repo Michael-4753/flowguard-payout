@@ -416,6 +416,21 @@
     "confirming": "确认中…",
     "confirmReceived": "确认已收到资金",
     "secured": "通过不可猜测的链接保护 · 无需登录"
+  },
+  "publicCase": {
+    "loading": "正在加载共享工单…",
+    "notFoundTitle": "无法打开此共享链接。",
+    "notFoundDesc": "链接可能无效或已过期——或该工单是在访客（离线）模式下创建的，数据仅保存在创建者设备上，不会发布为可分享链接。请让发送方登录后重新创建工单再分享。",
+    "header": "FlowGuard · 核实工单",
+    "canPost": "安全共享——你可以发布更新",
+    "readOnly": "安全共享——只读视图",
+    "bankDescription": "银行侧风险说明",
+    "readOnlyNotice": "只读链接。请向发送方索取可写链接以发布更新。",
+    "activity": "动态",
+    "postingAs": "发布身份",
+    "replyPlaceholder": "回复已确认的信息（如正确的法定名称 / IBAN）…",
+    "postReply": "发布回复",
+    "confirmCorrect": "确认信息无误"
   }
 }
 
