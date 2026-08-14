@@ -111,6 +111,25 @@
     "generating": "生成中…",
     "generateVerification": "生成核实请求",
     "generateFailed": "无法生成请求，请重试。"
+  },
+  "route": {
+    "highRiskBanner": "<0>高风险付款（{{score}}/100，约 {{prob}} 退回概率）。</0> 你已确认承担风险并选择继续。高风险付款仍可进行，但会生成合规审计记录——你需承担合规与损失责任。",
+    "compareHint": "点击通道即可比较其资金流、费用和退回风险。所有金额以 <0>USD</0> 结算；收款人由通道以其本地币种入账。",
+    "aiTitle": "AI：为何选这条路径？",
+    "aiCta": "让 AI 解释推荐理由",
+    "aiHint": "选路由规则引擎决定。让 DeepSeek 用通俗语言解释推荐路径为何优于其他备选。",
+    "aiLoading": "正在比较路径…",
+    "aiActions": "关键理由",
+    "guestNotice": "访客模式——付款记录仅保存在本设备（浏览器本地存储），退出访客模式后会被清除。登录后可同步到你的账户。",
+    "submittedForReview": "已提交审批",
+    "submitHighRisk": "提交高风险付款以审批",
+    "submitForReview": "提交审批",
+    "best": "最佳",
+    "stablecoinHint": "数字资产结算由境外持牌机构完成。本平台仅做比价与选路；不经手资金，不做任何加密货币转账。",
+    "fee": "费用",
+    "eta": "预计到账",
+    "returnRisk": "退回风险",
+    "receivedUsd": "到账（USD）"
   }
 }
 
