@@ -391,6 +391,16 @@
     "missingDocs": "可能缺失的单据",
     "similarFailures": "相似历史失败",
     "footer": "AI 信号仅供参考且为附加项——绝不降低引擎评分。发送前请核实。"
+  },
+  "aiExplainer": {
+    "title": "AI 合规简报",
+    "regenerate": "重新生成",
+    "hint": "基于上方检查，让 DeepSeek 给出通俗解释和修复步骤。",
+    "explain": "让 AI 解释",
+    "loading": "正在分析通道…",
+    "error": "无法生成简报。点击“重新生成”重试——上方确定性报告不受影响。",
+    "recommendedActions": "建议操作",
+    "generatedBy": "由 DeepSeek 生成 · 发送前请核实"
   }
 }
 
