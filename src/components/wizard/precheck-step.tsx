@@ -475,6 +475,7 @@ export function PrecheckStep({
  */
 function FactorAction({ factor, supplier }: { factor: RiskFactor; supplier: Supplier }) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState<"idle" | "ok" | "fail">("idle");
   const [template, setTemplate] = useState<string | null>(null);
@@ -488,8 +489,7 @@ function FactorAction({ factor, supplier }: { factor: RiskFactor; supplier: Supp
       >
         <RouteIcon className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
         <span>
-          Jurisdiction-level risk — contacting the payee can&apos;t clear it. Avoid it by choosing a
-          compliant route in the next step.
+          {t("precheck.structuralNote")}
         </span>
       </div>
     );
@@ -539,7 +539,7 @@ function FactorAction({ factor, supplier }: { factor: RiskFactor; supplier: Supp
             ) : (
               <Copy className="h-3 w-3" />
             )}
-            {copied === "ok" ? "Copied" : copied === "fail" ? "Copy failed — select manually" : "Copy message"}
+            {copied === "ok" ? t("precheck.copied") : copied === "fail" ? t("precheck.copyFailed") : t("precheck.copyMessage")}
           </button>
           <button
             type="button"
@@ -547,11 +547,11 @@ function FactorAction({ factor, supplier }: { factor: RiskFactor; supplier: Supp
             className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/10"
             data-el="factor-verification-track"
           >
-            <FileCheck2 className="h-3 w-3" /> Track in Cases
+            <FileCheck2 className="h-3 w-3" /> {t("precheck.trackInCases")}
           </button>
         </div>
         <p className="text-[10px] text-muted-foreground">
-          Saved to Cases → Verification requests. Update the status there once the payee replies.
+          {t("precheck.savedToCases")}
         </p>
       </div>
     );
@@ -569,11 +569,11 @@ function FactorAction({ factor, supplier }: { factor: RiskFactor; supplier: Supp
         )}
         data-el="factor-verification-generate"
       >
-        <FileCheck2 className="h-3 w-3" /> {busy ? "Generating…" : "Generate verification request"}
+        <FileCheck2 className="h-3 w-3" /> {busy ? t("precheck.generating") : t("precheck.generateVerification")}
       </button>
       {err && (
         <p className="mt-1 text-[10px] text-[color:var(--danger)]">
-          Could not generate the request. Please try again.
+          {t("precheck.generateFailed")}
         </p>
       )}
     </div>
