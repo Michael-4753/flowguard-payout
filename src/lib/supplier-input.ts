@@ -20,20 +20,6 @@ export interface NewSupplierInput {
   iban: string;
   accountStatus: AccountStatus;
   preferredChannel: ChannelClass;
-  stablecoinWallet?: string;
-}
-
-// Broad multi-chain address check: EVM (0x + 40 hex), Tron (T + 33), or a
-// generic base58/alphanumeric 26–64 chars. Kept lenient — we validate shape,
-// not chain-specific checksums.
-export function validateWalletAddress(raw: string): string | null {
-  const v = raw.trim();
-  if (v === "") return "Enter a wallet address.";
-  const ok =
-    /^0x[a-fA-F0-9]{40}$/.test(v) ||
-    /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(v) ||
-    /^[1-9A-HJ-NP-Za-km-z]{26,64}$/.test(v);
-  return ok ? null : "Enter a valid wallet address.";
 }
 
 const CURRENCIES: Currency[] = ["USD", "EUR", "GBP", "SGD", "INR", "VND", "AED"];
@@ -61,7 +47,6 @@ export function validateNewSupplier(raw: unknown): ValidationResult {
   const accountStatus = str(b.accountStatus) as AccountStatus;
   const preferredChannel = str(b.preferredChannel) as ChannelClass;
   const countryCode = str(b.countryCode).toUpperCase().slice(0, 2);
-  const stablecoinWallet = str(b.stablecoinWallet);
 
   if (name.length < 2) errors.name = "Enter the legal beneficiary name.";
   if (country.length < 2) errors.country = "Enter a country or region.";
@@ -140,6 +125,5 @@ export function buildSupplier(input: NewSupplierInput): Omit<Supplier, "createdA
     historicalReturnRate: 0,
     avgSettlementHours: 0,
     avgAmountUsd: 0,
-    stablecoinWallet: input.stablecoinWallet,
   };
 }
