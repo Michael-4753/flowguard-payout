@@ -122,19 +122,7 @@ export async function insertSupplier(
   return toDomain(rows[0]);
 }
 
-/** Backfill a payee's stablecoin wallet address (used by the enforcement flow). */
-export async function updateSupplierWallet(
-  userId: string,
-  id: string,
-  stablecoinWallet: string,
-): Promise<Supplier | undefined> {
-  const rows = await db
-    .update(suppliers)
-    .set({ stablecoinWallet })
-    .where(and(eq(suppliers.userId, userId), eq(suppliers.id, id)))
-    .returning();
-  return rows[0] ? toDomain(rows[0]) : undefined;
-}
+
 
 export async function countSuppliers(userId: string): Promise<number> {
   const rows = await db
