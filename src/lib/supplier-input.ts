@@ -22,19 +22,6 @@ export interface NewSupplierInput {
   preferredChannel: ChannelClass;
 }
 
-// Retained for backward-compatible imports only (legacy wallet-backfill path).
-// The compliant flow no longer collects wallet addresses anywhere in the UI —
-// this platform performs no crypto/stablecoin transfer, custody or exchange.
-export function validateWalletAddress(raw: string): string | null {
-  const v = raw.trim();
-  if (v === "") return "Enter a value.";
-  const ok =
-    /^0x[a-fA-F0-9]{40}$/.test(v) ||
-    /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(v) ||
-    /^[1-9A-HJ-NP-Za-km-z]{26,64}$/.test(v);
-  return ok ? null : "Invalid value.";
-}
-
 const CURRENCIES: Currency[] = ["USD", "EUR", "GBP", "SGD", "INR", "VND", "AED"];
 const ACCOUNT_STATUSES: AccountStatus[] = ["active", "dormant", "unverified"];
 const CHANNELS: ChannelClass[] = ["stablecoin-direct", "local-fiat"];
