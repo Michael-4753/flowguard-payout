@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { CheckCircle2, Clock, ShieldCheck, AlertCircle } from "lucide-react";
 import type { PublicReceiptView } from "@/app/api/public/receipt/[token]/route";
 
@@ -16,6 +17,7 @@ export function PublicReceiptScreen({ token }: { token: string }) {
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
+  const { t } = useTranslation();
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -76,25 +78,25 @@ export function PublicReceiptScreen({ token }: { token: string }) {
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-4 p-5">
       <div className="flex items-center gap-2">
         <ShieldCheck className="h-5 w-5 text-primary" aria-hidden />
-        <span className="text-sm font-bold tracking-tight">FlowGuard · Payment receipt</span>
+        <span className="text-sm font-bold tracking-tight">{t("publicReceipt.header")}</span>
       </div>
 
       {loading ? (
         <div className="fg-glass rounded-2xl p-6 text-center text-sm text-muted-foreground">
-          Loading…
+          {t("publicReceipt.loading")}
         </div>
       ) : notFound || !view ? (
         <div className="fg-glass rounded-2xl p-6 text-center" data-el="receipt-notfound">
           <AlertCircle className="mx-auto h-6 w-6 text-[color:var(--danger)]" aria-hidden />
-          <p className="mt-2 text-sm font-semibold">Receipt link not found</p>
+          <p className="mt-2 text-sm font-semibold">{t("publicReceipt.notFoundTitle")}</p>
           <p className="mt-1 text-[12px] text-muted-foreground">
-            This link may be invalid or expired. Please contact the sender.
+            {t("publicReceipt.notFoundDesc")}
           </p>
         </div>
       ) : (
         <div className="fg-glass rounded-2xl p-5" data-el="receipt-card">
           <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
-            Incoming payment from
+            {t("publicReceipt.incomingFrom")}
           </p>
           <p className="mt-0.5 text-base font-bold">{view.supplierName}</p>
 
@@ -112,30 +114,27 @@ export function PublicReceiptScreen({ token }: { token: string }) {
             >
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--success)]" aria-hidden />
               <span>
-                Receipt confirmed
                 {view.confirmedAt
-                  ? ` on ${new Date(view.confirmedAt).toLocaleString()}`
-                  : ""}
-                . Thank you — the sender has been notified.
+                  ? t("publicReceipt.confirmedOn", { date: new Date(view.confirmedAt).toLocaleString() })
+                  : t("publicReceipt.confirmedNoDate")}
               </span>
             </div>
           ) : (
             <div className="mt-4 space-y-2">
               <p className="text-[12px] text-muted-foreground">
-                Once the funds land in your account, confirm receipt below. This
-                records proof of arrival for the sender.
+                {t("publicReceipt.confirmPrompt")}
               </p>
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 rows={2}
-                placeholder="Optional note (e.g. amount received, remarks)"
+                placeholder={t("publicReceipt.notePlaceholder")}
                 className="w-full rounded-xl border border-border bg-[color:var(--fg-soft)] px-3 py-2 text-sm"
                 data-el="receipt-note"
               />
               {err && (
                 <p className="text-[11px] text-[color:var(--danger)]">
-                  Could not confirm. Please try again.
+                  {t("publicReceipt.error")}
                 </p>
               )}
               <button
@@ -147,11 +146,11 @@ export function PublicReceiptScreen({ token }: { token: string }) {
               >
                 {busy ? (
                   <>
-                    <Clock className="h-4 w-4 animate-spin" /> Confirming…
+                    <Clock className="h-4 w-4 animate-spin" /> {t("publicReceipt.confirming")}
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="h-4 w-4" /> Confirm funds received
+                    <CheckCircle2 className="h-4 w-4" /> {t("publicReceipt.confirmReceived")}
                   </>
                 )}
               </button>
@@ -161,7 +160,7 @@ export function PublicReceiptScreen({ token }: { token: string }) {
       )}
 
       <p className="text-center text-[10px] text-muted-foreground">
-        Secured by an unguessable link · no login required
+        {t("publicReceipt.secured")}
       </p>
     </main>
   );
