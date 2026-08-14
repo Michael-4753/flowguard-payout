@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, AlertTriangle, Send, ClipboardCheck, Circle } from "lucide-react";
 import { useEazo } from "@eazo/sdk/react";
@@ -24,15 +25,16 @@ export default function SupplierDetailPage({ params }: { params: Promise<{ id: s
   );
 }
 
-const ACCOUNT_LABEL: Record<string, string> = {
-  active: "Active",
-  dormant: "Dormant",
-  unverified: "Unverified",
+const ACCOUNT_KEY: Record<string, string> = {
+  active: "payeeDetail.accountActive",
+  dormant: "payeeDetail.accountDormant",
+  unverified: "payeeDetail.accountUnverified",
 };
 
 function SupplierDetailBody({ id }: { id: string }) {
   const router = useRouter();
   const user = useEazo((s) => s.auth.user);
+  const { t } = useTranslation();
   const [data, setData] = useState<{ supplier: Supplier; payments: PaymentRecord[] } | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -68,7 +70,7 @@ function SupplierDetailBody({ id }: { id: string }) {
   if (!data) {
     return (
       <div className="fg-glass mt-6 rounded-2xl p-6 text-center text-sm text-muted-foreground">
-        Payee not found.
+        {t("payeeDetail.notFound")}
       </div>
     );
   }
@@ -85,7 +87,7 @@ function SupplierDetailBody({ id }: { id: string }) {
         className="mb-3 flex items-center gap-1 text-xs text-muted-foreground"
         data-el="supplier-back"
       >
-        <ArrowLeft className="h-3.5 w-3.5" /> Back
+        <ArrowLeft className="h-3.5 w-3.5" /> {t("payeeDetail.back")}
       </button>
 
       <div className="fg-glass rounded-[24px] p-5" data-el="supplier-header">
@@ -99,26 +101,26 @@ function SupplierDetailBody({ id }: { id: string }) {
             {supplier.restrictedRegion && (
               <span className="inline-flex items-center gap-1 rounded-full border border-[color:var(--danger)]/40 bg-[color:var(--danger)]/15 px-2 py-1 text-[10px] font-semibold text-[color:var(--danger)]">
                 <AlertTriangle className="h-3 w-3" />
-                Restricted
+                {t("payeeDetail.restricted")}
               </span>
             )}
           </div>
         </div>
 
         <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
-          <Field label="Beneficiary bank" value={supplier.bankName} danger={supplier.bankBlacklisted} />
-          <Field label="Account status" value={ACCOUNT_LABEL[supplier.accountStatus]} danger={supplier.accountStatus !== "active"} />
-          <Field label="SWIFT / BIC" value={supplier.swift} mono />
-          <Field label="IBAN" value={supplier.iban} mono />
-          <Field label="Currency" value={supplier.currency} mono />
-          <Field label="Preferred channel" value={CHANNEL_CLASS_LABEL[supplier.preferredChannel]} />
+          <Field label={t("payeeDetail.beneficiaryBank")} value={supplier.bankName} danger={supplier.bankBlacklisted} />
+          <Field label={t("payeeDetail.accountStatus")} value={t(ACCOUNT_KEY[supplier.accountStatus])} danger={supplier.accountStatus !== "active"} />
+          <Field label={t("payeeDetail.swift")} value={supplier.swift} mono />
+          <Field label={t("payeeDetail.iban")} value={supplier.iban} mono />
+          <Field label={t("payeeDetail.currency")} value={supplier.currency} mono />
+          <Field label={t("payeeDetail.preferredChannel")} value={CHANNEL_CLASS_LABEL[supplier.preferredChannel]} />
           <Field
-            label="Return rate"
+            label={t("payeeDetail.returnRate")}
             value={formatPercent(supplier.historicalReturnRate, 1)}
             mono
             danger={supplier.historicalReturnRate > 0.05}
           />
-          <Field label="Avg. ETA" value={formatHours(supplier.avgSettlementHours)} mono />
+          <Field label={t("payeeDetail.avgEta")} value={formatHours(supplier.avgSettlementHours)} mono />
         </dl>
 
         <button
@@ -127,7 +129,7 @@ function SupplierDetailBody({ id }: { id: string }) {
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.99]"
           data-el="supplier-pay"
         >
-          <Send className="h-4 w-4" /> Pay this payee
+          <Send className="h-4 w-4" /> {t("payeeDetail.payThisPayee")}
         </button>
       </div>
 
@@ -135,10 +137,10 @@ function SupplierDetailBody({ id }: { id: string }) {
       <div className="fg-glass mt-4 rounded-2xl p-4" data-el="payout-requirements">
         <div className="flex items-center gap-2">
           <ClipboardCheck className="h-4 w-4 text-primary" aria-hidden />
-          <h2 className="text-sm font-bold">Payout requirements</h2>
+          <h2 className="text-sm font-bold">{t("payeeDetail.payoutRequirements")}</h2>
         </div>
         <p className="mt-1 text-[11px] text-muted-foreground">
-          Reusable checklist for this corridor — what this bank / country needs every time.
+          {t("payeeDetail.payoutRequirementsDesc")}
         </p>
         <ul className="mt-3 space-y-2.5">
           {requirements.map((req) => (
@@ -156,11 +158,11 @@ function SupplierDetailBody({ id }: { id: string }) {
                   <span className="text-[13px] font-medium">{req.label}</span>
                   {req.mandatory ? (
                     <span className="rounded-full bg-[color:var(--warning)]/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[color:var(--warning)]">
-                      Required
+                      {t("payeeDetail.required")}
                     </span>
                   ) : (
                     <span className="rounded-full bg-[color:var(--fg-soft)] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
-                      Recommended
+                      {t("payeeDetail.recommended")}
                     </span>
                   )}
                 </div>
@@ -174,21 +176,21 @@ function SupplierDetailBody({ id }: { id: string }) {
       {returned.length > 0 && (
         <div className="mt-4 rounded-2xl border border-[color:var(--danger)]/30 bg-[color:var(--danger)]/8 p-4">
           <div className="text-xs font-semibold text-[color:var(--danger)]">
-            Failure / high-risk history ({returned.length})
+            {t("payeeDetail.failureHistory", { count: returned.length })}
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            Past payments that were returned or flagged high risk for this payee.
+            {t("payeeDetail.failureHistoryDesc")}
           </p>
         </div>
       )}
 
-      <h2 className="mb-3 mt-6 text-sm font-semibold text-muted-foreground">Recent payments</h2>
+      <h2 className="mb-3 mt-6 text-sm font-semibold text-muted-foreground">{t("payeeDetail.recentPayments")}</h2>
       {payments.length === 0 ? (
         <EmptyState
           icon={Send}
-          title="No payments to this payee yet"
-          description="Route a payment to this payee and it will appear here with its pre-check snapshot."
-          action={{ label: "New payment", onClick: () => router.push(`/pay?supplier=${id}`) }}
+          title={t("payeeDetail.emptyTitle")}
+          description={t("payeeDetail.emptyDesc")}
+          action={{ label: t("payeeDetail.newPayment"), onClick: () => router.push(`/pay?supplier=${id}`) }}
         />
       ) : (
         <div className="space-y-2.5">
