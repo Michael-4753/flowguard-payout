@@ -46,7 +46,7 @@ const DECK_ZH = [
     eyebrow: "已交付",
     title: "可运行的 MVP —— 真跑通,不是幻灯片",
     bullets: [
-      ["完整控制闭环", "预检 → 供应商核查 → 双人审批 → 执行(MT103 / 钱包)→ 收款方到账回执 → 自动对账,全链路打通。"],
+      ["完整控制闭环", "预检 → 供应商核查 → 双人审批 → 生成付款指令提交持牌机构 → 收款方到账回执 → 自动对账,全链路打通。"],
       ["核实即自动清风险", "供应商确认被标问题后,Case 关闭,风险分 / 阻断自动复算 —— 无需人工硬改。"],
       ["真后端", "PostgreSQL 多租户隔离、鉴权守卫、服务端强制状态机,每笔付款与 Case 均有审计轨迹。"],
       ["免登录到账证明", "收款人通过不可猜测的 token 链接确认收款;确认作为真实结算凭据存证,并在对账中自动匹配。"],
@@ -77,8 +77,8 @@ const DECK_ZH = [
     eyebrow: "路线图",
     title: "从模拟走向真实通道",
     bullets: [
-      ["真实通道接入", "接入真实的稳定币与本地法币付款服务商。"],
-      ["链上托管", "把托管持久化到后端,并在真实链上结算。"],
+      ["真实通道接入", "对接持牌机构(银行 / PSP;数字资产结算由境外持牌机构完成)。纯软件定位:不持牌、不经手资金、不做加密货币转账。"],
+      ["更深对账", "只读接入 ERP/财务系统,打通付款 → 对账 → 入账闭环。资金结算始终由持牌机构完成。"],
       ["多币种", "扩展走廊与币种覆盖。"],
       ["企业级 RBAC", "为大型团队提供细粒度角色与审批策略。"],
     ],
@@ -157,8 +157,8 @@ const DECK_EN = [
     eyebrow: "Roadmap",
     title: "From simulation to real rails",
     bullets: [
-      ["Live rail integrations", "Connect real stablecoin and local-fiat payout providers."],
-      ["On-chain escrow", "Persist escrow to the backend and settle on real chains."],
+      ["Live rail integrations", "Route to licensed institutions (banks / PSPs; digital-asset settlement via an overseas licensed institution). Software-only: no payment licence, no fund custody, no crypto transfer."],
+      ["Deeper reconciliation", "Read-only ERP/finance integrations to close the payment → reconciliation → bookkeeping loop. Settlement stays with licensed institutions."],
       ["Multi-currency", "Expand corridor and currency coverage."],
       ["Enterprise RBAC", "Granular roles and approval policies for larger teams."],
     ],
