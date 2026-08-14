@@ -60,6 +60,16 @@
     "errGreaterThanZero": "Amount must be greater than 0.",
     "errTooLarge": "Amount is too large.",
     "errDecimals": "Use at most 2 decimal places."
+  },
+  "stepper": {
+    "draft": "Draft",
+    "precheck": "Pre-check",
+    "route": "Route"
+  },
+  "pay": {
+    "genericError": "Something went wrong. Please try again.",
+    "submitted": "Submitted for review — awaiting checker approval",
+    "creditedIn": "→ credited in {{currency}}"
   }
 }
 

@@ -60,6 +60,16 @@
     "errGreaterThanZero": "金额必须大于 0。",
     "errTooLarge": "金额过大。",
     "errDecimals": "最多保留 2 位小数。"
+  },
+  "stepper": {
+    "draft": "草稿",
+    "precheck": "预检",
+    "route": "选路"
+  },
+  "pay": {
+    "genericError": "出错了，请重试。",
+    "submitted": "已提交审批——等待复核人批准",
+    "creditedIn": "→ 以 {{currency}} 入账"
   }
 }
 
