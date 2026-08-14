@@ -70,30 +70,16 @@ export function validateNewSupplier(raw: unknown): ValidationResult {
   if (!ACCOUNT_STATUSES.includes(accountStatus)) errors.accountStatus = "Choose an account status.";
   if (!CHANNELS.includes(preferredChannel)) errors.preferredChannel = "Choose a preferred channel.";
 
-  // Stablecoin-direct settles to a wallet address, not a bank account — so the
-  // bank IBAN/SWIFT are optional there (validated only when provided) and the
-  // wallet is required instead. Local-fiat still requires a valid IBAN + SWIFT.
-  const isStablecoin = preferredChannel === "stablecoin-direct";
-  if (swift !== "" || !isStablecoin) {
-    if (!/^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(swift)) {
-      errors.swift = isStablecoin
-        ? "If provided, SWIFT/BIC must be 8 or 11 letters/digits."
-        : "SWIFT/BIC must be 8 or 11 letters/digits.";
-    }
+  // Beneficiary bank details (SWIFT/IBAN) are required for BOTH channels: the
+  // licensed institution settles to the beneficiary's account. This platform does
+  // not collect wallet addresses and does not perform any crypto/stablecoin
+  // transfer — the digital-asset channel is settled by an overseas licensed
+  // institution.
+  if (!/^[A-Z0-9]{8}([A-Z0-9]{3})?$/.test(swift)) {
+    errors.swift = "SWIFT/BIC must be 8 or 11 letters/digits.";
   }
-  if (iban !== "" || !isStablecoin) {
-    if (!/^[A-Z0-9]{10,34}$/.test(iban)) {
-      errors.iban = isStablecoin
-        ? "If provided, IBAN must be 10–34 letters/digits."
-        : "Enter a valid IBAN (10–34 letters/digits).";
-    }
-  }
-  // Wallet required for stablecoin-direct; optional (but validated) otherwise.
-  if (isStablecoin && stablecoinWallet === "") {
-    errors.stablecoinWallet = "Stablecoin-direct needs a wallet address.";
-  } else if (stablecoinWallet !== "") {
-    const walletErr = validateWalletAddress(stablecoinWallet);
-    if (walletErr) errors.stablecoinWallet = walletErr;
+  if (!/^[A-Z0-9]{10,34}$/.test(iban)) {
+    errors.iban = "Enter a valid IBAN / account (10–34 letters/digits).";
   }
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
@@ -110,7 +96,6 @@ export function validateNewSupplier(raw: unknown): ValidationResult {
       iban,
       accountStatus,
       preferredChannel,
-      stablecoinWallet: stablecoinWallet || undefined,
     },
   };
 }
