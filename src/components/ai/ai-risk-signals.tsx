@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Sparkles, Loader2, RefreshCw, AlertTriangle, History, FileWarning, ShieldCheck } from "lucide-react";
 import { request } from "@/lib/api/request";
 import { AppAIClientUnavailableError } from "@/lib/api/app-ai-request";
@@ -50,6 +51,7 @@ function parseSignals(text: string): Signals | null {
 export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<string, unknown> }) {
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [signals, setSignals] = useState<Signals | null>(null);
+  const { t } = useTranslation();
 
   async function run() {
     setState("loading");
@@ -84,7 +86,7 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" aria-hidden />
-          <h3 className="text-sm font-bold">AI supplementary risk signals</h3>
+          <h3 className="text-sm font-bold">{t("aiSignals.title")}</h3>
         </div>
         {(state === "done" || state === "error") && (
           <button
@@ -93,7 +95,7 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
             className="flex items-center gap-1 text-[11px] font-medium text-primary"
             data-el="ai-risk-signals-retry"
           >
-            <RefreshCw className="h-3 w-3" /> Regenerate
+            <RefreshCw className="h-3 w-3" /> {t("aiSignals.regenerate")}
           </button>
         )}
       </div>
@@ -101,8 +103,7 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
       {state === "idle" && (
         <>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            Beyond the format/list rules above: let DeepSeek catch semantic contradictions, similar past
-            failures, and likely-missing documents. It can only add caution — never lower the score.
+            {t("aiSignals.hint")}
           </p>
           <button
             type="button"
@@ -110,7 +111,7 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-primary/50 px-4 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
             data-el="ai-risk-signals-run"
           >
-            <Sparkles className="h-4 w-4" /> Scan for hidden risk with AI
+            <Sparkles className="h-4 w-4" /> {t("aiSignals.scan")}
           </button>
         </>
       )}
@@ -118,20 +119,20 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
       {state === "loading" && (
         <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="h-4 w-4 animate-spin text-primary" aria-hidden />
-          Scanning for semantic & contextual risk…
+          {t("aiSignals.loading")}
         </div>
       )}
 
       {state === "error" && (
         <p className="mt-3 text-[12px] text-[color:var(--danger)]">
-          Could not run the AI scan. Tap Regenerate to retry — the deterministic report above is unaffected.
+          {t("aiSignals.error")}
         </p>
       )}
 
       {state === "done" && nothing && (
         <div className="mt-3 flex items-center gap-2 text-[12px] text-[color:var(--success)]">
           <ShieldCheck className="h-4 w-4" aria-hidden />
-          AI found no additional semantic contradictions or likely-missing documents.
+          {t("aiSignals.nothing")}
         </div>
       )}
 
@@ -140,7 +141,7 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
           {signals.contradictions.length > 0 && (
             <Section
               icon={<AlertTriangle className="h-3.5 w-3.5 text-[color:var(--danger)]" />}
-              label="Possible contradictions"
+              label={t("aiSignals.contradictions")}
               tone="danger"
             >
               {signals.contradictions.map((c, i) => (
@@ -151,7 +152,7 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
           {signals.missingDocs.length > 0 && (
             <Section
               icon={<FileWarning className="h-3.5 w-3.5 text-[color:var(--warning)]" />}
-              label="Likely-missing documents"
+              label={t("aiSignals.missingDocs")}
               tone="warning"
             >
               {signals.missingDocs.map((d, i) => (
@@ -160,7 +161,7 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
             </Section>
           )}
           {signals.similarCases.length > 0 && (
-            <Section icon={<History className="h-3.5 w-3.5 text-primary" />} label="Similar past failures" tone="muted">
+            <Section icon={<History className="h-3.5 w-3.5 text-primary" />} label={t("aiSignals.similarFailures")} tone="muted">
               {signals.similarCases.map((c, i) => (
                 <li key={i}>
                   <span className="font-medium text-foreground">{c.case}</span>
@@ -170,7 +171,7 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
             </Section>
           )}
           <p className="font-mono text-[9px] text-muted-foreground">
-            AI signals are advisory and additive — they never lower the engine score. Verify before sending.
+            {t("aiSignals.footer")}
           </p>
         </div>
       )}
