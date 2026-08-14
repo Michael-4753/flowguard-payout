@@ -63,6 +63,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div key={pathname} className="fg-fade">
               {children}
             </div>
+            <ComplianceNotice />
           </FlowGuardDataProvider>
         </AuthGate>
       </main>
