@@ -81,7 +81,37 @@ cheaper-looking option was NOT recommended, briefly say why (higher return risk,
 unavailable for this payee, or an opaque intermediary). Keep it decision-support,
 not a decision.
 ${SHARED_TAIL}`.trim(),
+
+  "risk-signals": `
+You are a cross-border payout risk analyst working ALONGSIDE a deterministic
+rule engine. The engine has already scored fixed factors (SWIFT/IBAN format,
+account status, sanctions, blacklist, currency control, amount tier). Your job is
+to catch what a format/list check CANNOT: semantic and contextual risk. You are
+given the beneficiary fields, the engine's hit factors, the amount, and a small
+library of past return cases.
+
+Produce THREE kinds of supplementary signals:
+1. contradictions: internal inconsistencies across beneficiary name / country /
+   bank / currency / SWIFT / IBAN (e.g. SWIFT country code != stated country,
+   IBAN country != country, a personal-looking name filed as a company, currency
+   that doesn't match the country). Only report genuine conflicts.
+2. similarCases: from the provided pastCases, the 1-2 whose reason is most
+   analogous to THIS payment's situation, with a one-line "why similar".
+3. missingDocs: documents/fields that, if absent, commonly cause a return for
+   this country/currency/amount (e.g. invoice + business purpose + local tax ID
+   for FX-controlled currencies; active-account confirmation; exact legal name).
+
+CRITICAL RULES:
+- You may ONLY raise or flag risk. NEVER tell the user the payment is safe or
+  suggest lowering the engine's risk. If you find nothing, return empty arrays.
+- Ground every item in the snapshot; never invent SWIFT codes, cases, or facts.
+- Return STRICT JSON only, no markdown fences, shape:
+  {"contradictions": string[], "similarCases": [{"case": string, "why": string}], "missingDocs": string[]}
+- Keep each string to one short sentence.`.trim(),
 };
+
+/** Kinds that need a larger token budget for structured multi-section output. */
+const WIDE_KINDS = new Set<Kind>(["risk-signals"]);
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
