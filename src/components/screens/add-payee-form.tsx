@@ -29,7 +29,6 @@ const EMPTY = {
   iban: "",
   accountStatus: "active" as AccountStatus,
   preferredChannel: "local-fiat" as ChannelClass,
-  stablecoinWallet: "",
 };
 
 export function AddPayeeForm({ onClose, onAdded }: { onClose: () => void; onAdded: () => void }) {
@@ -120,19 +119,6 @@ export function AddPayeeForm({ onClose, onAdded }: { onClose: () => void; onAdde
                 </Select>
               </Field>
             </div>
-
-            <Field
-              label={form.preferredChannel === "stablecoin-direct" ? "Stablecoin wallet address (required for this channel)" : "Stablecoin wallet address (optional)"}
-              error={errors.stablecoinWallet}
-            >
-              <Text
-                value={form.stablecoinWallet}
-                onChange={(v) => set("stablecoinWallet", v)}
-                placeholder="0x… / T… (USDC-compatible)"
-                invalid={!!errors.stablecoinWallet}
-                mono
-              />
-            </Field>
 
             {/* Pain point ③: AI settlement-requirements checklist for this corridor. */}
             {form.country.trim().length > 1 && form.bankName.trim().length > 1 && (
