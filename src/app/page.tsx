@@ -80,14 +80,7 @@ function DashboardBody() {
       </div>
 
       {/* Secondary tools (kept reachable off the primary nav) */}
-      <div className="mt-4 grid grid-cols-2 gap-3" data-el="dashboard-tools">
-        <ToolCard
-          icon={<Lock className="h-4 w-4" />}
-          label="Milestone escrow"
-          hint="Lock & release funds"
-          onClick={() => router.push("/escrow")}
-          el="tool-escrow"
-        />
+      <div className="mt-4 grid grid-cols-1 gap-3" data-el="dashboard-tools">
         <ToolCard
           icon={<Scale className="h-4 w-4" />}
           label="Reconcile"
