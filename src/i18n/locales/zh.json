@@ -38,6 +38,29 @@
     "recentPayments": "最近付款",
     "emptyTitle": "还没有付款",
     "emptyDesc": "运行一次退回风险预检并为你的第一笔付款选路——之后会显示在这里。"
+  },
+  "build": {
+    "title": "新建付款",
+    "subtitle": "选择收款人和金额，运行退回风险预检。",
+    "payee": "收款人",
+    "amount": "金额",
+    "amountPlaceholder": "如 18400",
+    "settlementCurrency": "结算币种",
+    "sendIn": "你以 <0>{{currency}}</0> 发起（结算币种）。",
+    "creditedIn": " 收款人由付款通道以其本地币种（<0>{{currency}}</0>）入账。",
+    "channelPreference": "通道偏好",
+    "auto": "自动（推荐）",
+    "digitalAssetHint": "数字资产结算由境外持牌机构完成并为收款人入账。本平台仅做比价与选路——不经手资金，不做任何加密货币兑换、托管或转账。",
+    "runPrecheck": "运行预检",
+    "hintSelectPayee": "请先在上方选择收款人。",
+    "hintEnterAmount": "输入金额以运行预检。",
+    "errSelectPayee": "请选择收款人以继续。",
+    "errEnterAmount": "请输入金额（USD）。",
+    "errValidNumber": "请输入有效数字。",
+    "errGreaterThanZero": "金额必须大于 0。",
+    "errTooLarge": "金额过大。",
+    "errDecimals": "最多保留 2 位小数。"
   }
 }
+
 

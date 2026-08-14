@@ -38,6 +38,29 @@
     "recentPayments": "Recent payments",
     "emptyTitle": "No payments yet",
     "emptyDesc": "Run a return-risk pre-check and route your first payment — it will show up here."
+  },
+  "build": {
+    "title": "New payment",
+    "subtitle": "Pick a payee and amount to run the return-risk pre-check.",
+    "payee": "Payee",
+    "amount": "Amount",
+    "amountPlaceholder": "e.g. 18400",
+    "settlementCurrency": "Settlement currency",
+    "sendIn": "You send in <0>{{currency}}</0> (settlement currency).",
+    "creditedIn": " The payee is credited in their local currency (<0>{{currency}}</0>) by the payout rail.",
+    "channelPreference": "Channel preference",
+    "auto": "Auto (recommended)",
+    "digitalAssetHint": "Digital-asset settlement is completed by an overseas licensed institution that credits the payee. This platform only compares and routes — it holds no funds and performs no crypto exchange, custody or transfer.",
+    "runPrecheck": "Run pre-check",
+    "hintSelectPayee": "Select a payee above to continue.",
+    "hintEnterAmount": "Enter an amount to run the pre-check.",
+    "errSelectPayee": "Select a payee to continue.",
+    "errEnterAmount": "Enter an amount in USD.",
+    "errValidNumber": "Enter a valid number.",
+    "errGreaterThanZero": "Amount must be greater than 0.",
+    "errTooLarge": "Amount is too large.",
+    "errDecimals": "Use at most 2 decimal places."
   }
 }
+
 
