@@ -210,28 +210,6 @@ export function PayoutExecutionPanel({
   );
 }
 
-function WalletQr({ address, amountLabel }: { address: string; amountLabel: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    if (!address || !canvasRef.current) return;
-    void QRCode.toCanvas(canvasRef.current, address, { width: 160, margin: 1 });
-  }, [address]);
-
-  if (!address) {
-    return (
-      <div className="mt-3 rounded-xl border border-[color:var(--danger)]/40 bg-[color:var(--danger)]/10 p-3 text-[11px] text-[color:var(--danger)]">
-        No stablecoin wallet on file for this payee. Backfill the wallet address before sending.
-      </div>
-    );
-  }
-  return (
-    <div className="mt-3 flex flex-col items-center gap-2 rounded-xl border border-border/60 bg-[color:var(--fg-soft)] p-3">
-      <canvas ref={canvasRef} className="rounded-lg bg-white p-1.5" aria-label="Wallet address QR" />
-      <span className="font-mono text-[12px] font-bold">{amountLabel}</span>
-    </div>
-  );
-}
-
 /** Render the instruction into a clean printable window and trigger the browser's PDF dialog. */
 function printInstruction(instruction: PayoutInstruction, payment: PaymentRecord) {
   const rows = instruction.fields
