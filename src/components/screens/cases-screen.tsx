@@ -329,6 +329,7 @@ function VerificationCard({
 function ShareLinks({ record }: { record: VerificationCase }) {
   const [copied, setCopied] = useState<"read" | "write" | "fail" | null>(null);
   const guest = useIsGuest();
+  const { t } = useTranslation();
   const origin = typeof window !== "undefined" ? window.location.origin : "";
 
   async function copy(kind: "read" | "write", token: string) {
@@ -347,14 +348,14 @@ function ShareLinks({ record }: { record: VerificationCase }) {
         data-el="verification-share-guest"
       >
         <LinkIcon className="h-3 w-3 shrink-0" />
-        <span>Guest cases stay on this device and can’t be shared. Sign in and create the case again to generate a shareable link.</span>
+        <span>{t("cases.guestShare")}</span>
       </div>
     );
   }
 
   return (
     <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3" data-el="verification-share">
-      <span className="text-[10px] text-muted-foreground">Share:</span>
+      <span className="text-[10px] text-muted-foreground">{t("cases.share")}</span>
       <button
         type="button"
         onClick={() => copy("read", record.readToken)}
@@ -362,7 +363,7 @@ function ShareLinks({ record }: { record: VerificationCase }) {
         data-el="verification-copy-read"
       >
         {copied === "read" ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <LinkIcon className="h-3 w-3" />}
-        {copied === "read" ? "Copied" : "Read-only link"}
+        {copied === "read" ? t("cases.copied") : t("cases.readOnlyLink")}
       </button>
       <button
         type="button"
@@ -371,12 +372,12 @@ function ShareLinks({ record }: { record: VerificationCase }) {
         data-el="verification-copy-write"
       >
         {copied === "write" ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <LinkIcon className="h-3 w-3" />}
-        {copied === "write" ? "Copied" : "Write link (business/supplier)"}
+        {copied === "write" ? t("cases.copied") : t("cases.writeLink")}
       </button>
       {copied === "fail" && (
         <span className="flex w-full items-center gap-1 text-[10px] text-[color:var(--danger)]">
           <AlertTriangle className="h-3 w-3 shrink-0" />
-          Couldn’t copy automatically — long-press or select the link to copy it manually.
+          {t("cases.copyFailedManual")}
         </span>
       )}
     </div>
@@ -392,6 +393,7 @@ function CommentBox({
 }) {
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
+  const { t } = useTranslation();
 
   async function send() {
     if (!msg.trim() || busy) return;
@@ -413,7 +415,7 @@ function CommentBox({
         value={msg}
         onChange={(e) => setMsg(e.target.value)}
         rows={1}
-        placeholder="Add an internal note…"
+        placeholder={t("cases.internalNote")}
         className="min-w-0 flex-1 resize-none rounded-xl border border-border bg-[color:var(--fg-soft)] px-3 py-2 text-[12px]"
       />
       <button
@@ -423,7 +425,7 @@ function CommentBox({
         className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-[11px] font-bold text-primary-foreground disabled:opacity-60"
         data-el="verification-add-comment"
       >
-        <Send className="h-3 w-3" /> Post
+        <Send className="h-3 w-3" /> {t("cases.post")}
       </button>
     </div>
   );
@@ -454,6 +456,7 @@ const FILTERS: (ChannelClass | "all")[] = ["all", "stablecoin-direct", "local-fi
 function LibraryTab() {
   const user = useEazo((s) => s.auth.user);
   const guest = useIsGuest();
+  const { t } = useTranslation();
   const [cases, setCases] = useState<FailureCase[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<ChannelClass | "all">("all");
@@ -499,7 +502,7 @@ function LibraryTab() {
                 : "border-border text-muted-foreground",
             )}
           >
-            {f === "all" ? "All channels" : CHANNEL_CLASS_LABEL[f]}
+            {f === "all" ? t("cases.allChannels") : CHANNEL_CLASS_LABEL[f]}
           </button>
         ))}
       </div>
@@ -526,9 +529,9 @@ function LibraryTab() {
               </div>
 
               <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] text-muted-foreground">
-                <span>Failed at: <b className="text-foreground">{c.failedAt}</b></span>
+                <span>{t("cases.failedAt")} <b className="text-foreground">{c.failedAt}</b></span>
                 <span className="inline-flex items-center gap-1">
-                  <Clock className="h-3 w-3" aria-hidden /> held {c.heldDays}d
+                  <Clock className="h-3 w-3" aria-hidden /> {t("cases.heldDays", { days: c.heldDays })}
                 </span>
               </div>
 
@@ -536,7 +539,7 @@ function LibraryTab() {
                 <Wrench className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
                 <div>
                   <div className="text-[10px] font-semibold uppercase tracking-wide text-primary">
-                    Remediation
+                    {t("cases.remediation")}
                   </div>
                   <p className="mt-0.5 text-xs text-foreground">{c.remediation}</p>
                 </div>
