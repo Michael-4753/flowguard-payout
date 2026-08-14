@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RotateCcw, ShieldCheck, Receipt, Send, CheckCircle2, Link2, Copy, Check, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
@@ -49,6 +49,27 @@ function HistoryBody() {
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
   const [execId, setExecId] = useState<string | null>(null);
+  // Deep-link focus: /history?focus={id} scrolls to and briefly highlights that
+  // record so the reviewer doesn't have to hunt for it after approving/returning.
+  const [focusId, setFocusId] = useState<string | null>(null);
+  const itemRefs = useRef<Record<string, HTMLElement | null>>({});
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const id = new URLSearchParams(window.location.search).get("focus");
+    if (id) setFocusId(id);
+  }, []);
+
+  // Once the target row is rendered, scroll it into view and clear the ring
+  // after a moment. Depends on `payments` so it also runs after data loads.
+  useEffect(() => {
+    if (!focusId) return;
+    const el = itemRefs.current[focusId];
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    const t = setTimeout(() => setFocusId(null), 2600);
+    return () => clearTimeout(t);
+  }, [focusId, payments]);
 
   const filtered = useMemo(
     () =>
