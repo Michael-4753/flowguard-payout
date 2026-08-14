@@ -319,6 +319,27 @@
     "emptyTitle": "还没有对该收款人的付款",
     "emptyDesc": "向该收款人选路一笔付款后，它会连同预检快照显示在这里。",
     "newPayment": "新建付款"
+  },
+  "addPayee": {
+    "title": "添加收款人",
+    "close": "关闭",
+    "toastAdded": "收款人已添加到台账",
+    "toastError": "无法添加收款人，请重试。",
+    "beneficiaryName": "收款人名称",
+    "countryRegion": "国家/地区",
+    "currency": "币种",
+    "beneficiaryBank": "收款银行",
+    "swift": "SWIFT / BIC",
+    "iban": "IBAN",
+    "accountStatus": "账户状态",
+    "preferredChannel": "首选通道",
+    "aiTitle": "AI：该通道需要什么",
+    "aiCta": "让 AI 生成结算清单",
+    "aiHint": "无需重新学习这家银行的规则——DeepSeek 会为该国家和币种起草命名/SWIFT/IBAN/单据清单。",
+    "aiLoading": "正在检查通道要求…",
+    "aiActions": "清单",
+    "cancel": "取消",
+    "submit": "添加收款人"
   }
 }
 
