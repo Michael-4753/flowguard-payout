@@ -104,7 +104,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {badge > 0 && (
                     <span
                       className="absolute -right-2 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-[color:var(--danger)] px-1 text-[9px] font-bold leading-none text-[color:var(--primary-foreground)]"
-                      aria-label={`${badge} awaiting reply`}
+                      aria-label={t("nav.awaitingReply", { count: badge })}
                       data-el="nav-cases-badge"
                     >
                       {badge > 9 ? "9+" : badge}
