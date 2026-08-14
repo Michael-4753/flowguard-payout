@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Check, Wallet } from "lucide-react";
+import { ArrowRight, Check, Globe2 } from "lucide-react";
 import type { ChannelClass, Currency, Supplier } from "@/lib/engine/types";
 import { CHANNEL_CLASS_LABEL, RISK_LEVEL_LABEL } from "@/lib/engine/types";
-import { WalletBackfillModal } from "./wallet-backfill-modal";
 import { cn } from "@/utils/utils";
 
 const CHANNELS: (ChannelClass | "auto")[] = ["auto", "stablecoin-direct", "local-fiat"];
@@ -26,7 +25,6 @@ export function BuildStep({
   const [settleCurrency, setSettleCurrency] = useState<Currency>("USD");
   const [channel, setChannel] = useState<ChannelClass | "auto">("auto");
   const [error, setError] = useState<string | null>(null);
-  const [walletGate, setWalletGate] = useState(false);
 
   const MAX_AMOUNT = 100_000_000; // $100M ceiling — guards against overflow / typos.
 
@@ -63,11 +61,6 @@ export function BuildStep({
     const amtErr = amountError(amount);
     if (amtErr) return setError(amtErr);
     setError(null);
-    // Hard-stop: an explicit Stablecoin Direct choice requires a payee wallet.
-    if (channel === "stablecoin-direct" && selected && !selected.stablecoinWallet) {
-      setWalletGate(true);
-      return;
-    }
     proceed();
   }
 
@@ -180,11 +173,11 @@ export function BuildStep({
           className="mt-2 flex items-start gap-1.5 text-[11px] leading-relaxed text-[color:var(--warning)]"
           data-el="stablecoin-wallet-hint"
         >
-          <Wallet className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+          <Globe2 className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
           <span>
-            Stablecoin Direct requires the payee to hold a wallet that can receive the accepted
-            stablecoin (e.g. USDC). Confirm this with them first — otherwise the payout cannot be
-            claimed and will be returned.
+            Digital-asset settlement is completed by an overseas licensed institution that credits the
+            payee. This platform only compares and routes — it holds no funds and performs no crypto
+            exchange, custody or transfer.
           </span>
         </p>
       )}
@@ -207,18 +200,6 @@ export function BuildStep({
         <p className="mt-2 text-center text-[11px] text-muted-foreground" data-el="wizard-run-hint">
           {!supplierId ? "Select a payee above to continue." : "Enter an amount to run the pre-check."}
         </p>
-      )}
-
-      {walletGate && selected && (
-        <WalletBackfillModal
-          supplierId={selected.id}
-          supplierName={selected.name}
-          onClose={() => setWalletGate(false)}
-          onSaved={() => {
-            setWalletGate(false);
-            proceed();
-          }}
-        />
       )}
     </div>
   );
