@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { storage } from "@eazo/sdk";
 import { Copy, Check, Printer, Send, Landmark, Globe2, Clock, Paperclip } from "lucide-react";
 import { dispatchPayment, attachSettlementProof } from "@/lib/api";
@@ -31,6 +32,7 @@ export function PayoutExecutionPanel({
     [payment, supplier],
   );
   const isStable = instruction.channel === "stablecoin-direct";
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<null | "generic" | "reference">(null);
@@ -103,9 +105,12 @@ export function PayoutExecutionPanel({
         <h3 className="text-sm font-bold">{instruction.title}</h3>
       </div>
       <p className="mt-1 text-[11px] text-muted-foreground">
-        Approved · {payment.amountUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {payment.settleCurrency} settled
-        {payment.currency !== payment.settleCurrency ? ` → credited in ${payment.currency}` : ""}. Submit this instruction to the{" "}
-        {isStable ? "overseas licensed institution" : "bank / PSP"}, then record its settlement reference below. The licensed institution completes the settlement — this platform does not move funds.
+        {t("payout.summary", {
+          amount: payment.amountUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+          settle: payment.settleCurrency,
+          creditNote: payment.currency !== payment.settleCurrency ? t("payout.creditNote", { currency: payment.currency }) : "",
+          institution: isStable ? t("payout.institutionOverseas") : t("payout.institutionBank"),
+        })}
       </p>
 
       <dl className="mt-3 divide-y divide-border/60 rounded-xl border border-border/60">
@@ -122,12 +127,12 @@ export function PayoutExecutionPanel({
       {/* Settlement proof capture — records what was actually sent for reconciliation. */}
       <div className="mt-3 rounded-xl border border-border/60 p-3">
         <label className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-          {isStable ? "Institution settlement reference" : "Bank confirmation / MT103 ref"}
+          {isStable ? t("payout.refLabelStable") : t("payout.refLabelBank")}
         </label>
         <input
           value={reference}
           onChange={(e) => setReference(e.target.value)}
-          placeholder={isStable ? "Settlement ref from the licensed institution" : "e.g. FT24… / UETR"}
+          placeholder={isStable ? t("payout.refPlaceholderStable") : t("payout.refPlaceholderBank")}
           className="mt-1 w-full rounded-lg border border-border bg-[color:var(--fg-soft)] px-3 py-2 font-mono text-[12px]"
           data-el="payout-proof-ref"
         />
@@ -140,7 +145,7 @@ export function PayoutExecutionPanel({
             data-el="payout-proof-upload"
           >
             <Paperclip className="h-3.5 w-3.5" />
-            {uploading ? "Uploading…" : attachment ? "Replace slip" : "Attach slip"}
+            {uploading ? t("payout.uploading") : attachment ? t("payout.replaceSlip") : t("payout.attachSlip")}
             <input type="file" accept="image/*,application/pdf" className="hidden" onChange={handleUpload} disabled={uploading} />
           </label>
           {attachment && (
@@ -159,8 +164,8 @@ export function PayoutExecutionPanel({
       {err && (
         <p className="mt-2 text-[11px] text-[color:var(--danger)]">
           {err === "reference"
-            ? `Enter the ${isStable ? "institution settlement reference" : "bank confirmation reference"} before recording it.`
-            : "Something went wrong. Please try again."}
+            ? (isStable ? t("payout.errRefStable") : t("payout.errRefBank"))
+            : t("payout.errGeneric")}
         </p>
       )}
 
@@ -172,7 +177,7 @@ export function PayoutExecutionPanel({
           data-el="payout-copy"
         >
           {copied ? <Check className="h-3.5 w-3.5 text-[color:var(--success)]" /> : <Copy className="h-3.5 w-3.5" />}
-          {copied ? "Copied" : "Copy"}
+          {copied ? t("payout.copied") : t("payout.copy")}
         </button>
         <button
           type="button"
@@ -194,11 +199,11 @@ export function PayoutExecutionPanel({
         >
           {busy ? (
             <>
-              <Clock className="h-3.5 w-3.5 animate-spin" /> Working…
+              <Clock className="h-3.5 w-3.5 animate-spin" /> {t("payout.working")}
             </>
           ) : (
             <>
-              <Send className="h-3.5 w-3.5" /> Mark as submitted
+              <Send className="h-3.5 w-3.5" /> {t("payout.markSubmitted")}
             </>
           )}
         </button>
