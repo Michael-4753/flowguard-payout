@@ -111,7 +111,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     </span>
                   )}
                 </span>
-                {item.label}
+                {t(`nav.${item.key}`)}
               </button>
             );
           })}
