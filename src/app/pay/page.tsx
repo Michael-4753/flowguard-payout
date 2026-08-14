@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { AppShell } from "@/components/shell/app-shell";
@@ -26,6 +27,7 @@ function PayWizard() {
   const router = useRouter();
   const params = useSearchParams();
   const { suppliers, loading, refresh } = useFlowGuardData();
+  const { t } = useTranslation();
 
   const querySupplier = params.get("supplier") ?? undefined;
   const queryAmount = params.get("amount") ? Number(params.get("amount")) : undefined;
@@ -44,7 +46,7 @@ function PayWizard() {
       setAssessed({ ...res, amountUsd: v.amountUsd, settleCurrency: v.settleCurrency, preferredChannel: v.preferredChannel });
       setStep(1);
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(t("pay.genericError"));
     } finally {
       setAssessing(false);
     }
@@ -61,11 +63,11 @@ function PayWizard() {
         settleCurrency: assessed.settleCurrency,
       });
       setConfirmed(true);
-      toast.success("Submitted for review — awaiting checker approval");
+      toast.success(t("pay.submitted"));
       await refresh();
       setTimeout(() => router.push("/review"), 900);
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(t("pay.genericError"));
     }
   }
 
@@ -128,6 +130,7 @@ function DraftBanner({
   settleCurrency: Currency;
   payeeCurrency: Currency;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="mb-3 flex items-center justify-between gap-2 rounded-2xl border border-border px-4 py-2.5">
       <span className="truncate text-sm font-semibold">{name}</span>
@@ -136,7 +139,7 @@ function DraftBanner({
           {amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {settleCurrency}
         </span>
         {payeeCurrency !== settleCurrency && (
-          <span className="text-[10px] font-medium text-muted-foreground">→ credited in {payeeCurrency}</span>
+          <span className="text-[10px] font-medium text-muted-foreground">{t("pay.creditedIn", { currency: payeeCurrency })}</span>
         )}
       </span>
     </div>

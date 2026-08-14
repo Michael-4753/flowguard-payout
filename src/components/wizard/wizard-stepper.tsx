@@ -1,14 +1,17 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { Check } from "lucide-react";
 import { cn } from "@/utils/utils";
 
-const STEPS = ["Draft", "Pre-check", "Route"] as const;
+const STEP_KEYS = ["stepper.draft", "stepper.precheck", "stepper.route"] as const;
 
 export function WizardStepper({ current }: { current: 0 | 1 | 2 }) {
+  const { t } = useTranslation();
   return (
     <div className="mb-4 flex items-center gap-1.5" data-el="wizard-stepper">
-      {STEPS.map((label, i) => {
+      {STEP_KEYS.map((key, i) => {
+        const label = t(key);
         const done = i < current;
         const active = i === current;
         return (
@@ -33,7 +36,7 @@ export function WizardStepper({ current }: { current: 0 | 1 | 2 }) {
                 {label}
               </span>
             </div>
-            {i < STEPS.length - 1 && <span className="mx-1 h-px flex-1 bg-border" aria-hidden />}
+            {i < STEP_KEYS.length - 1 && <span className="mx-1 h-px flex-1 bg-border" aria-hidden />}
           </div>
         );
       })}
