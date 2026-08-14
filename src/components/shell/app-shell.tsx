@@ -24,6 +24,7 @@ const NAV = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { t } = useTranslation();
   const pendingCases = usePendingVerificationCount();
 
   return (
@@ -48,13 +49,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             F
           </span>
           <div className="min-w-0 leading-tight">
-            <div className="truncate text-sm font-bold tracking-tight">FlowGuard</div>
+            <div className="truncate text-sm font-bold tracking-tight">{t("app.name")}</div>
             <div className="truncate text-[10px] text-muted-foreground">
-              Cross-border payment risk &amp; routing
+              {t("app.tagline")}
             </div>
           </div>
         </Link>
-        <GuestBadge />
+        <div className="flex shrink-0 items-center gap-2">
+          <LanguageSwitcher />
+          <GuestBadge />
+        </div>
       </header>
 
       {/* Content */}
