@@ -303,6 +303,7 @@ function ClarifiedChips({
   record: PaymentRecord;
   clarified: Map<string, "verified" | "clarified">;
 }) {
+  const { t } = useTranslation();
   const hits = record.riskFactors.filter((f) => f.hit && clarified.has(f.id));
   if (hits.length === 0) return null;
   return (
@@ -313,7 +314,7 @@ function ClarifiedChips({
           className="inline-flex items-center gap-1 rounded-full border border-[color:var(--success)]/40 bg-[color:var(--success)]/12 px-2 py-0.5 text-[10px] font-semibold text-[color:var(--success)]"
         >
           <ShieldCheck className="h-3 w-3" aria-hidden /> {f.title} ·{" "}
-          {clarified.get(f.id) === "verified" ? "verified" : "clarified"}
+          {clarified.get(f.id) === "verified" ? t("history.verified") : t("history.clarified")}
         </span>
       ))}
     </div>
@@ -322,6 +323,7 @@ function ClarifiedChips({
 
 /** Copyable login-free receipt link the payer sends to the beneficiary. */
 function ReceiptLinkRow({ token }: { token: string }) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const url =
     typeof window !== "undefined" ? `${window.location.origin}/receipt/${token}` : `/receipt/${token}`;
@@ -340,10 +342,10 @@ function ReceiptLinkRow({ token }: { token: string }) {
       data-el="history-receipt-link"
     >
       <div className="flex items-center gap-1.5 text-[11px] font-semibold">
-        <Link2 className="h-3.5 w-3.5 text-primary" aria-hidden /> Payee receipt link
+        <Link2 className="h-3.5 w-3.5 text-primary" aria-hidden /> {t("history.receiptLinkTitle")}
       </div>
       <p className="mt-1 text-[10px] text-muted-foreground">
-        Send this login-free link to the beneficiary so they can confirm the funds arrived.
+        {t("history.receiptLinkDesc")}
       </p>
       <div className="mt-2 flex items-center gap-2">
         <code className="min-w-0 flex-1 truncate rounded-lg bg-background/60 px-2 py-1.5 font-mono text-[10px]">
@@ -356,7 +358,7 @@ function ReceiptLinkRow({ token }: { token: string }) {
           data-el="history-receipt-copy"
         >
           {copied ? <Check className="h-3 w-3 text-[color:var(--success)]" /> : <Copy className="h-3 w-3" />}
-          {copied ? "Copied" : "Copy"}
+          {copied ? t("history.copied") : t("history.copy")}
         </button>
       </div>
     </div>
