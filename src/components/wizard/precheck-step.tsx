@@ -301,6 +301,34 @@ export function PrecheckStep({
       {/* LLM compliance briefing (DeepSeek, App AI) layered on the rules */}
       {!scanning && <AiPrecheckExplainer supplier={supplier} risk={risk} />}
 
+      {/* AI-only supplementary risk DETECTION (semantic/context) — additive, never lowers the score. */}
+      {!scanning && (
+        <AiRiskSignals
+          buildSnapshot={() => ({
+            beneficiary: {
+              name: supplier.name,
+              country: supplier.country,
+              currency: supplier.currency,
+              bankName: supplier.bankName,
+              swift: supplier.swift,
+              iban: supplier.iban,
+              entityType: supplier.entityType,
+              accountStatus: supplier.accountStatus,
+            },
+            engine: {
+              score: risk.score,
+              level: risk.level,
+              hitFactors: risk.factors.filter((f) => f.hit).map((f) => ({ id: f.id, title: f.title })),
+            },
+            pastCases: FAILURE_CASES.map((c) => ({
+              corridor: c.corridor,
+              reason: c.reason,
+              failedAt: c.failedAt,
+            })),
+          })}
+        />
+      )}
+
       {/* Factor list */}
       {!scanning && (
         <div className="space-y-2" data-el="wizard-factors">
