@@ -1,12 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DECKS, type DeckLang } from "./deck-content";
 import { Slide } from "./slide";
 
 export function PitchDeck() {
-  const [lang, setLang] = useState<DeckLang>("en");
+  const { t, i18n } = useTranslation();
+  // Follow the app-wide language on first render; the switch below can override.
+  const [lang, setLang] = useState<DeckLang>(i18n.language?.startsWith("zh") ? "zh" : "en");
   const [i, setI] = useState(0);
   const deck = DECKS[lang];
   const total = deck.length;
@@ -71,7 +74,7 @@ export function PitchDeck() {
       {/* click zones for prev / next */}
       <button
         type="button"
-        aria-label="Previous slide"
+        aria-label={t("pitch.prevSlide")}
         onClick={() => go(-1)}
         disabled={i === 0}
         className="absolute left-0 top-1/2 z-20 -translate-y-1/2 rounded-full border border-border bg-[color:var(--fg-glass)] p-2 backdrop-blur transition disabled:opacity-30 sm:left-6"
@@ -80,7 +83,7 @@ export function PitchDeck() {
       </button>
       <button
         type="button"
-        aria-label="Next slide"
+        aria-label={t("pitch.nextSlide")}
         onClick={() => go(1)}
         disabled={safeIndex === total - 1}
         className="absolute right-0 top-1/2 z-20 -translate-y-1/2 rounded-full border border-border bg-[color:var(--fg-glass)] p-2 backdrop-blur transition disabled:opacity-30 sm:right-6"
@@ -95,7 +98,7 @@ export function PitchDeck() {
             <button
               key={s.id}
               type="button"
-              aria-label={`Go to slide ${idx + 1}`}
+              aria-label={t("pitch.goToSlide", { n: idx + 1 })}
               onClick={() => setI(idx)}
               className={`h-1.5 rounded-full transition-all ${
                 idx === safeIndex ? "w-6 bg-[color:var(--primary)]" : "w-1.5 bg-[color:var(--fg-line)]"
