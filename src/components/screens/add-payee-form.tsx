@@ -8,6 +8,7 @@ import { validateNewSupplier, type NewSupplierInput } from "@/lib/supplier-input
 import type { AccountStatus, ChannelClass, Currency } from "@/lib/engine/types";
 import { CHANNEL_CLASS_LABEL } from "@/lib/engine/types";
 import { cn } from "@/utils/utils";
+import { AiInsightCard } from "@/components/ai/ai-insight-card";
 
 const CURRENCIES: Currency[] = ["USD", "EUR", "GBP", "SGD", "INR", "VND", "AED"];
 const ACCOUNT_STATUSES: { value: AccountStatus; label: string }[] = [
@@ -132,6 +133,24 @@ export function AddPayeeForm({ onClose, onAdded }: { onClose: () => void; onAdde
                 mono
               />
             </Field>
+
+            {/* Pain point ③: AI settlement-requirements checklist for this corridor. */}
+            {form.country.trim().length > 1 && form.bankName.trim().length > 1 && (
+              <AiInsightCard
+                kind="corridor"
+                title="AI: what this corridor requires"
+                cta="Get settlement checklist with AI"
+                hint="Skip re-learning this bank's rules — DeepSeek drafts the naming/SWIFT/IBAN/doc checklist for this country & currency."
+                loadingLabel="Checking corridor requirements…"
+                actionsLabel="Checklist"
+                buildSnapshot={() => ({
+                  country: form.country,
+                  currency: form.currency,
+                  bankName: form.bankName,
+                  preferredChannel: form.preferredChannel,
+                })}
+              />
+            )}
           </div>
         </div>
 
