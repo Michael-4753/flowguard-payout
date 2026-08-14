@@ -13,9 +13,10 @@ import { appAi, AppAIUnavailableError, extractMessageContent } from "@/lib/eazo-
  *  - corridor  : per-country/bank settlement requirements checklist
  *  - reconcile : explain a reconciliation variance / unmatched proof
  *  - route     : explain WHY the rule-engine's recommended route wins
+ *  - risk-signals : AI-only supplementary risk detection (semantic/context)
  */
 
-type Kind = "flow" | "return" | "corridor" | "reconcile" | "route";
+type Kind = "flow" | "return" | "corridor" | "reconcile" | "route" | "risk-signals";
 
 const SHARED_TAIL = `
 Output rules:
@@ -134,7 +135,7 @@ export async function POST(request: NextRequest) {
           content: `Snapshot (JSON):\n${JSON.stringify(snapshot).slice(0, 4000)}\n\nProduce the insight JSON.`,
         },
       ],
-      params: { temperature: 0.3, max_tokens: 800 },
+      params: { temperature: 0.3, max_tokens: WIDE_KINDS.has(kind) ? 1100 : 800 },
     });
   } catch (error) {
     if (error instanceof AppAIUnavailableError) {
