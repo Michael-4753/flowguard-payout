@@ -1,20 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import QRCode from "qrcode";
+import { useMemo, useState } from "react";
 import { storage } from "@eazo/sdk";
-import { Copy, Check, Printer, Send, Landmark, Wallet, Clock, Paperclip } from "lucide-react";
+import { Copy, Check, Printer, Send, Landmark, Globe2, Clock, Paperclip } from "lucide-react";
 import { dispatchPayment, attachSettlementProof } from "@/lib/api";
 import { buildPayoutInstruction, type PayoutInstruction } from "@/lib/payout-instruction";
 import type { PaymentRecord, Supplier } from "@/lib/engine/types";
 import { cn } from "@/utils/utils";
 
 /**
- * Post-approval execution panel. Turns an approved (`initiated`) payment into the
- * concrete material a finance operator uses: an MT103 remittance advice for Local
- * Fiat, or a wallet-address QR card for Stablecoin Direct. Supports copy,
- * print-to-PDF, capturing settlement proof (bank confirmation / tx hash + slip),
- * and "Mark as sent" (records the proof and advances the payment to `settling`).
+ * Post-approval instruction panel. Turns an approved (`initiated`) payment into
+ * the concrete instruction a finance operator SUBMITS to a licensed institution:
+ * an MT103 remittance advice for the bank/PSP, or a settlement instruction for
+ * the overseas licensed institution that performs a digital-asset settlement.
+ * This platform does not move or hold funds. Supports copy, print-to-PDF,
+ * recording the licensed institution's settlement reference/slip, and marking
+ * the instruction as submitted (advances the payment to `settling`).
  */
 export function PayoutExecutionPanel({
   payment,
@@ -95,7 +96,7 @@ export function PayoutExecutionPanel({
     <div className="fg-glass rounded-2xl p-4" data-el="payout-execution">
       <div className="flex items-center gap-2">
         {isStable ? (
-          <Wallet className="h-4 w-4 text-primary" aria-hidden />
+          <Globe2 className="h-4 w-4 text-primary" aria-hidden />
         ) : (
           <Landmark className="h-4 w-4 text-primary" aria-hidden />
         )}
@@ -103,13 +104,9 @@ export function PayoutExecutionPanel({
       </div>
       <p className="mt-1 text-[11px] text-muted-foreground">
         Approved · {payment.amountUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {payment.settleCurrency} settled
-        {payment.currency !== payment.settleCurrency ? ` → credited in ${payment.currency}` : ""}. Execute at your{" "}
-        {isStable ? "company wallet" : "bank / PSP"}, then mark it as sent.
+        {payment.currency !== payment.settleCurrency ? ` → credited in ${payment.currency}` : ""}. Submit this instruction to the{" "}
+        {isStable ? "overseas licensed institution" : "bank / PSP"}, then record its settlement reference below. The licensed institution completes the settlement — this platform does not move funds.
       </p>
-
-      {isStable && instruction.channel === "stablecoin-direct" && (
-        <WalletQr address={instruction.walletAddress} amountLabel={instruction.amountLabel} />
-      )}
 
       <dl className="mt-3 divide-y divide-border/60 rounded-xl border border-border/60">
         {instruction.fields.map((f) => (
@@ -125,12 +122,12 @@ export function PayoutExecutionPanel({
       {/* Settlement proof capture — records what was actually sent for reconciliation. */}
       <div className="mt-3 rounded-xl border border-border/60 p-3">
         <label className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-          {isStable ? "On-chain tx hash" : "Bank confirmation / MT103 ref"}
+          {isStable ? "Institution settlement reference" : "Bank confirmation / MT103 ref"}
         </label>
         <input
           value={reference}
           onChange={(e) => setReference(e.target.value)}
-          placeholder={isStable ? "0x…" : "e.g. FT24… / UETR"}
+          placeholder={isStable ? "Settlement ref from the licensed institution" : "e.g. FT24… / UETR"}
           className="mt-1 w-full rounded-lg border border-border bg-[color:var(--fg-soft)] px-3 py-2 font-mono text-[12px]"
           data-el="payout-proof-ref"
         />
@@ -162,7 +159,7 @@ export function PayoutExecutionPanel({
       {err && (
         <p className="mt-2 text-[11px] text-[color:var(--danger)]">
           {err === "reference"
-            ? `Enter the ${isStable ? "on-chain tx hash" : "bank confirmation reference"} before marking as sent.`
+            ? `Enter the ${isStable ? "institution settlement reference" : "bank confirmation reference"} before recording it.`
             : "Something went wrong. Please try again."}
         </p>
       )}
@@ -201,7 +198,7 @@ export function PayoutExecutionPanel({
             </>
           ) : (
             <>
-              <Send className="h-3.5 w-3.5" /> Mark as sent
+              <Send className="h-3.5 w-3.5" /> Mark as submitted
             </>
           )}
         </button>
@@ -233,7 +230,7 @@ function printInstruction(instruction: PayoutInstruction, payment: PaymentRecord
     <h1>${escapeHtml(instruction.title)}</h1>
     <p class="sub">FlowGuard payout advice · ${escapeHtml(payment.id)} · ${new Date().toLocaleString()}</p>
     <table>${rows}</table>
-    <p class="foot">Generated by FlowGuard. Verify all details against the beneficiary record before submitting to the bank.</p>
+    <p class="foot">Generated by FlowGuard, a software decision-support tool. Verify all details against the beneficiary record before submitting to the licensed institution. FlowGuard does not hold or move funds; settlement is performed by the licensed institution.</p>
   </body></html>`;
   const w = window.open("", "_blank", "width=720,height=900");
   if (!w) return;
