@@ -5,7 +5,7 @@ import { Sparkles, Loader2, RefreshCw } from "lucide-react";
 import { request } from "@/lib/api/request";
 import { AppAIClientUnavailableError } from "@/lib/api/app-ai-request";
 
-export type InsightKind = "flow" | "return" | "corridor" | "reconcile";
+export type InsightKind = "flow" | "return" | "corridor" | "reconcile" | "route";
 
 interface Insight {
   summary: string;
