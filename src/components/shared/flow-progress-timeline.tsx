@@ -5,6 +5,7 @@ import { deriveFlowProgress } from "@/lib/analytics";
 import type { FlowHop, PaymentRecord } from "@/lib/engine/types";
 import { formatMinutes, formatUsd } from "@/lib/format";
 import { cn } from "@/utils/utils";
+import { AiInsightCard } from "@/components/ai/ai-insight-card";
 
 /**
  * Money-flow narrative board (design signature: "资金流叙事"). Renders the
@@ -64,6 +65,36 @@ export function FlowProgressTimeline({ record }: { record: PaymentRecord }) {
           />
         ))}
       </ol>
+
+      {/* Pain point ①: AI reads WHERE the money is stuck on this corridor. */}
+      {!done && (
+        <div className="mt-3">
+          <AiInsightCard
+            kind="flow"
+            title="AI: where is my money?"
+            cta="Explain this flow with AI"
+            hint="Ask DeepSeek where the funds are, why they may be held, and what to do next — based on the hops above."
+            loadingLabel="Tracing the corridor…"
+            actionsLabel="What you can do"
+            buildSnapshot={() => ({
+              status: record.status,
+              returned,
+              currentHop: hops[currentIndex]?.bankName,
+              currentHopRole: hops[currentIndex]?.role,
+              hops: hops.map((h, i) => ({
+                order: i,
+                bank: h.bankName,
+                role: h.role,
+                minutes: h.minutes,
+                feeUsd: h.feeUsd,
+                remainingUsd: h.remainingUsd,
+                chokepoint: h.chokepoint,
+                reached: i < currentIndex,
+              })),
+            })}
+          />
+        </div>
+      )}
     </div>
   );
 }
