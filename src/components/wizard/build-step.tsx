@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation, Trans } from "react-i18next";
 import { ArrowRight, Check, Globe2 } from "lucide-react";
 import type { ChannelClass, Currency, Supplier } from "@/lib/engine/types";
 import { CHANNEL_CLASS_LABEL, RISK_LEVEL_LABEL } from "@/lib/engine/types";
@@ -25,6 +26,7 @@ export function BuildStep({
   const [settleCurrency, setSettleCurrency] = useState<Currency>("USD");
   const [channel, setChannel] = useState<ChannelClass | "auto">("auto");
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const MAX_AMOUNT = 100_000_000; // $100M ceiling — guards against overflow / typos.
 
@@ -34,10 +36,10 @@ export function BuildStep({
     const trimmed = raw.trim();
     if (trimmed === "") return null;
     const n = Number(trimmed);
-    if (!Number.isFinite(n)) return "Enter a valid number.";
-    if (n <= 0) return "Amount must be greater than 0.";
-    if (n > MAX_AMOUNT) return "Amount is too large.";
-    if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) return "Use at most 2 decimal places.";
+    if (!Number.isFinite(n)) return t("build.errValidNumber");
+    if (n <= 0) return t("build.errGreaterThanZero");
+    if (n > MAX_AMOUNT) return t("build.errTooLarge");
+    if (!/^\d+(\.\d{1,2})?$/.test(trimmed)) return t("build.errDecimals");
     return null;
   }
 
@@ -56,8 +58,8 @@ export function BuildStep({
   }
 
   function submit() {
-    if (!supplierId) return setError("Select a payee to continue.");
-    if (amount.trim() === "") return setError("Enter an amount in USD.");
+    if (!supplierId) return setError(t("build.errSelectPayee"));
+    if (amount.trim() === "") return setError(t("build.errEnterAmount"));
     const amtErr = amountError(amount);
     if (amtErr) return setError(amtErr);
     setError(null);
@@ -66,13 +68,13 @@ export function BuildStep({
 
   return (
     <div className="fg-glass rounded-[24px] p-5" data-el="wizard-build">
-      <h2 className="text-lg font-bold">New payment</h2>
+      <h2 className="text-lg font-bold">{t("build.title")}</h2>
       <p className="mt-1 text-xs text-muted-foreground">
-        Pick a payee and amount to run the return-risk pre-check.
+        {t("build.subtitle")}
       </p>
 
       {/* Payee */}
-      <label className="mt-4 block text-xs text-muted-foreground">Payee</label>
+      <label className="mt-4 block text-xs text-muted-foreground">{t("build.payee")}</label>
       <div className="mt-2 space-y-2">
         {suppliers.map((s) => (
           <button
@@ -101,7 +103,7 @@ export function BuildStep({
 
       {/* Amount */}
       <label className="mt-4 flex items-center justify-between text-xs text-muted-foreground" htmlFor="amount">
-        <span>Amount</span>
+        <span>{t("build.amount")}</span>
       </label>
       <div className="mt-2 flex gap-2">
         <input
@@ -115,7 +117,7 @@ export function BuildStep({
             setAmount(e.target.value);
             if (error) setError(null);
           }}
-          placeholder="e.g. 18400"
+          placeholder={t("build.amountPlaceholder")}
           aria-invalid={amountInvalid}
           aria-describedby={amountInvalid ? "amount-error" : undefined}
           className={cn(
@@ -127,7 +129,7 @@ export function BuildStep({
         <select
           value={settleCurrency}
           onChange={(e) => setSettleCurrency(e.target.value as Currency)}
-          aria-label="Settlement currency"
+          aria-label={t("build.settlementCurrency")}
           className="shrink-0 rounded-2xl border border-border bg-[color:var(--card)] px-3 font-mono text-sm outline-none focus:border-primary"
           data-el="wizard-settle-currency"
         >
@@ -142,14 +144,14 @@ export function BuildStep({
         </p>
       )}
       <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground" data-el="settlement-note">
-        You send in <b className="text-foreground">{settleCurrency}</b> (settlement currency).
+        <Trans i18nKey="build.sendIn" values={{ currency: settleCurrency }} components={[<b key="0" className="text-foreground" />]} />
         {selected && selected.currency !== settleCurrency && (
-          <> The payee is credited in their local currency (<b className="text-foreground">{selected.currency}</b>) by the payout rail.</>
+          <Trans i18nKey="build.creditedIn" values={{ currency: selected.currency }} components={[<b key="0" className="text-foreground" />]} />
         )}
       </p>
 
       {/* Channel preference */}
-      <label className="mt-4 block text-xs text-muted-foreground">Channel preference</label>
+      <label className="mt-4 block text-xs text-muted-foreground">{t("build.channelPreference")}</label>
       <div className="mt-2 flex flex-wrap gap-2">
         {CHANNELS.map((c) => (
           <button
@@ -163,7 +165,7 @@ export function BuildStep({
                 : "border-border text-muted-foreground",
             )}
           >
-            {c === "auto" ? "Auto (recommended)" : CHANNEL_CLASS_LABEL[c]}
+            {c === "auto" ? t("build.auto") : CHANNEL_CLASS_LABEL[c]}
           </button>
         ))}
       </div>
@@ -175,9 +177,7 @@ export function BuildStep({
         >
           <Globe2 className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
           <span>
-            Digital-asset settlement is completed by an overseas licensed institution that credits the
-            payee. This platform only compares and routes — it holds no funds and performs no crypto
-            exchange, custody or transfer.
+            {t("build.digitalAssetHint")}
           </span>
         </p>
       )}
@@ -198,7 +198,7 @@ export function BuildStep({
       </button>
       {!canSubmit && (
         <p className="mt-2 text-center text-[11px] text-muted-foreground" data-el="wizard-run-hint">
-          {!supplierId ? "Select a payee above to continue." : "Enter an amount to run the pre-check."}
+          {!supplierId ? t("build.hintSelectPayee") : t("build.hintEnterAmount")}
         </p>
       )}
     </div>
