@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { ChevronRight, MapPin, AlertTriangle, Plus } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
@@ -25,6 +26,7 @@ export default function SuppliersPage() {
 
 function SuppliersBody() {
   const { suppliers, payments, loading, error, refresh } = useFlowGuardData();
+  const { t } = useTranslation();
   const [currency, setCurrency] = useState<Currency | "all">("all");
   const [adding, setAdding] = useState(false);
 
@@ -41,9 +43,9 @@ function SuppliersBody() {
     <section className="pt-1" data-el="suppliers">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight">Payee ledger</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t("payees.title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Beneficiaries grouped by country, with SWIFT/IBAN, channel and failure history.
+            {t("payees.subtitle")}
           </p>
         </div>
         <button
@@ -52,11 +54,11 @@ function SuppliersBody() {
           className="flex shrink-0 items-center gap-1.5 rounded-full bg-[color:var(--primary)] px-3.5 py-2 text-sm font-bold text-[color:var(--primary-foreground)] transition-transform active:scale-[0.98]"
           data-el="add-payee-btn"
         >
-          <Plus className="h-4 w-4" /> Add payee
+          <Plus className="h-4 w-4" /> {t("payees.addPayee")}
         </button>
       </div>
       <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-        {suppliers.length} payees · {groups.length} countries
+        {t("payees.summary", { payees: suppliers.length, countries: groups.length })}
       </p>
 
       {adding && <AddPayeeForm onClose={() => setAdding(false)} onAdded={() => void refresh()} />}
@@ -64,7 +66,7 @@ function SuppliersBody() {
       {/* Currency / corridor filter */}
       <div className="mt-3 flex flex-wrap items-center gap-2 pb-1" data-el="currency-filter">
         <Chip active={currency === "all"} onClick={() => setCurrency("all")}>
-          All currencies
+          {t("payees.allCurrencies")}
         </Chip>
         {currencies.map((c) => (
           <Chip key={c} active={currency === c} onClick={() => setCurrency(c)}>
@@ -85,13 +87,13 @@ function SuppliersBody() {
         <div className="mt-4">
           <EmptyState
             icon={MapPin}
-            title={suppliers.length === 0 ? "No payees yet" : "No payees in this currency"}
+            title={suppliers.length === 0 ? t("payees.emptyNoneTitle") : t("payees.emptyNoCurrencyTitle")}
             description={
               suppliers.length === 0
-                ? "Add your first beneficiary to start building the ledger."
-                : "Switch the currency filter above to see other payees."
+                ? t("payees.emptyNoneDesc")
+                : t("payees.emptyNoCurrencyDesc")
             }
-            action={suppliers.length === 0 ? { label: "Add payee", onClick: () => setAdding(true) } : undefined}
+            action={suppliers.length === 0 ? { label: t("payees.addPayee"), onClick: () => setAdding(true) } : undefined}
           />
         </div>
       ) : (
@@ -116,12 +118,12 @@ function SuppliersBody() {
               </div>
               {/* Country exposure line */}
               <div className="mb-2 flex flex-wrap gap-x-4 gap-y-0.5 px-1 font-mono text-[10px] text-muted-foreground">
-                <span>{g.suppliers.length} payee(s)</span>
-                <span>volume {formatUsd(g.volumeUsd)}</span>
+                <span>{t("payees.payeeCount", { count: g.suppliers.length })}</span>
+                <span>{t("payees.volume", { amount: formatUsd(g.volumeUsd) })}</span>
                 <span
                   style={g.returnRate > 0.05 ? { color: "var(--danger)" } : undefined}
                 >
-                  return {formatPercent(g.returnRate, 1)}
+                  {t("payees.return", { rate: formatPercent(g.returnRate, 1) })}
                 </span>
               </div>
               <div className="space-y-2.5">
@@ -139,6 +141,7 @@ function SuppliersBody() {
 
 function PayeeCard({ supplier: s }: { supplier: Supplier }) {
   const router = useRouter();
+  const { t } = useTranslation();
   return (
     <button
       type="button"
@@ -158,7 +161,7 @@ function PayeeCard({ supplier: s }: { supplier: Supplier }) {
         </div>
         <div className="mt-2 flex gap-4 font-mono text-[10px] text-muted-foreground">
           <span>
-            Return rate{" "}
+            {t("payees.returnRate")}{" "}
             <b
               className="text-foreground"
               style={s.historicalReturnRate > 0.05 ? { color: "var(--danger)" } : undefined}
@@ -167,7 +170,7 @@ function PayeeCard({ supplier: s }: { supplier: Supplier }) {
             </b>
           </span>
           <span>
-            Avg. ETA <b className="text-foreground">{formatHours(s.avgSettlementHours)}</b>
+            {t("payees.avgEta")} <b className="text-foreground">{formatHours(s.avgSettlementHours)}</b>
           </span>
         </div>
       </div>
