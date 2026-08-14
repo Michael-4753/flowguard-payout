@@ -57,7 +57,12 @@ function HistoryBody() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const id = new URLSearchParams(window.location.search).get("focus");
-    if (id) setFocusId(id);
+    if (id) {
+      // Make sure the target isn't hidden behind an active filter.
+      setLevel("all");
+      setStatus("all");
+      setFocusId(id);
+    }
   }, []);
 
   // Once the target row is rendered, scroll it into view and clear the ring
@@ -152,7 +157,19 @@ function HistoryBody() {
           {filtered.map((p, i) => {
             const eff = effectiveRisk(p);
             return (
-            <article key={p.id} className="fg-enter fg-glass rounded-2xl p-4" style={{ "--i": i } as React.CSSProperties} data-el="history-item">
+            <article
+              key={p.id}
+              ref={(el) => {
+                itemRefs.current[p.id] = el;
+              }}
+              className={cn(
+                "fg-enter fg-glass rounded-2xl p-4 transition-shadow duration-500",
+                focusId === p.id &&
+                  "ring-2 ring-[color:var(--success)] shadow-[0_0_0_4px_color-mix(in_srgb,var(--success)_20%,transparent)]",
+              )}
+              style={{ "--i": i } as React.CSSProperties}
+              data-el="history-item"
+            >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="flex min-w-0 items-center gap-2">

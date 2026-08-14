@@ -179,9 +179,14 @@ function ReviewCard({
       });
       toast.success(
         approve
-          ? `Approved — ${record.supplierName} is recorded in History`
-          : `Returned to maker — ${record.supplierName} is recorded in History`,
-        { action: { label: "View in History", onClick: () => router.push("/history") } },
+          ? `已批准 · ${record.supplierName} 已记录在 History`
+          : `已返回给发起人 · ${record.supplierName} 已记录在 History`,
+        {
+          action: {
+            label: "在 History 中查看",
+            onClick: () => router.push(`/history?focus=${record.id}`),
+          },
+        },
       );
       await onDone();
     } catch (e) {
