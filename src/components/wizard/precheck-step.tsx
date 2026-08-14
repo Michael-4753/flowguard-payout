@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation, Trans } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp, Copy, Check, AlertTriangle, FileCheck2, Route as RouteIcon, Users, Send } from "lucide-react";
 import type { RiskAssessment, RiskFactor, Supplier } from "@/lib/engine/types";
@@ -28,6 +29,7 @@ export function PrecheckStep({
 }) {
   const router = useRouter();
   const { clarifiedFactors } = useFlowGuardData();
+  const { t } = useTranslation();
   const [scanning, setScanning] = useState(true);
   const [acknowledged, setAcknowledged] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
