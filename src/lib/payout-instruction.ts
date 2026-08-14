@@ -1,7 +1,11 @@
-// Post-approval payout instruction builder. Turns an approved payment + its
-// beneficiary profile into the concrete material a finance operator hands to the
-// bank (Local Fiat → MT103 remittance advice) or executes on-chain (Stablecoin
-// Direct → wallet transfer payload). Pure & deterministic: no network, no state.
+// Post-approval payout INSTRUCTION builder. Turns an approved payment + its
+// beneficiary profile into the concrete material a finance operator SUBMITS to a
+// licensed institution (Local Fiat → MT103 remittance advice for the bank/PSP;
+// Digital-asset settlement → settlement instruction handed to the overseas
+// licensed institution that performs the settlement). This platform is a
+// software decision-support tool only: it does NOT move funds, hold funds, or
+// perform any crypto/stablecoin exchange, custody or transfer. Pure &
+// deterministic: no network, no state.
 
 import type { PaymentRecord, Supplier } from "@/lib/engine/types";
 
@@ -53,23 +57,22 @@ export function buildPayoutInstruction(
   const settle = payment.settleCurrency;
 
   if (payment.route.channelClass === "stablecoin-direct") {
-    const wallet = supplier.stablecoinWallet ?? "";
-    const amountLabel = `${amount} ${settle} (in USDC)`;
+    const amountLabel = `${amount} ${settle}`;
     const fields: InstructionField[] = [
       { label: "Beneficiary", value: supplier.name },
-      { label: "Network", value: "USDC (verify chain with payee)" },
-      { label: "Destination wallet", value: wallet || "— missing —", mono: true },
+      { label: "Beneficiary country", value: supplier.country },
+      { label: "Settlement type", value: "Digital-asset settlement via overseas licensed institution" },
       { label: "Amount", value: amountLabel, mono: true },
       { label: "Settlement currency", value: settle },
       { label: "Reference", value: payment.onchainRef || payment.invoiceNo, mono: true },
       { label: "Invoice", value: payment.invoiceNo, mono: true },
     ];
-    const title = "Stablecoin transfer — execute from company wallet";
+    const title = "Settlement instruction — submit to the licensed institution";
     return {
       channel: "stablecoin-direct",
       title,
       fields,
-      walletAddress: wallet,
+      walletAddress: "",
       amountLabel,
       copyText: toCopyText(title, fields),
     };
