@@ -51,19 +51,11 @@ function HistoryBody() {
   const [execId, setExecId] = useState<string | null>(null);
   // Deep-link focus: /history?focus={id} scrolls to and briefly highlights that
   // record so the reviewer doesn't have to hunt for it after approving/returning.
-  const [focusId, setFocusId] = useState<string | null>(null);
+  // Read once from the URL at mount (client component) — no effect needed.
+  const [focusId, setFocusId] = useState<string | null>(() =>
+    typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("focus"),
+  );
   const itemRefs = useRef<Record<string, HTMLElement | null>>({});
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const id = new URLSearchParams(window.location.search).get("focus");
-    if (id) {
-      // Make sure the target isn't hidden behind an active filter.
-      setLevel("all");
-      setStatus("all");
-      setFocusId(id);
-    }
-  }, []);
 
   // Once the target row is rendered, scroll it into view and clear the ring
   // after a moment. Depends on `payments` so it also runs after data loads.
