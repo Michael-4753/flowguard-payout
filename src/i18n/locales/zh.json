@@ -276,6 +276,22 @@
     "failedAt": "失败于：",
     "heldDays": "滞留 {{days}} 天",
     "remediation": "补救措施"
+  },
+  "payees": {
+    "title": "收款人台账",
+    "subtitle": "按国家分组的收款人，含 SWIFT/IBAN、通道及失败历史。",
+    "addPayee": "添加收款人",
+    "summary": "{{payees}} 个收款人 · {{countries}} 个国家",
+    "allCurrencies": "全部币种",
+    "emptyNoneTitle": "还没有收款人",
+    "emptyNoCurrencyTitle": "该币种下没有收款人",
+    "emptyNoneDesc": "添加你的第一个收款人，开始建立台账。",
+    "emptyNoCurrencyDesc": "切换上方币种筛选以查看其他收款人。",
+    "payeeCount": "{{count}} 个收款人",
+    "volume": "交易量 {{amount}}",
+    "return": "退回率 {{rate}}",
+    "returnRate": "退回率",
+    "avgEta": "平均到账"
   }
 }
 

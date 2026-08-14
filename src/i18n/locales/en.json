@@ -276,6 +276,22 @@
     "failedAt": "Failed at:",
     "heldDays": "held {{days}}d",
     "remediation": "Remediation"
+  },
+  "payees": {
+    "title": "Payee ledger",
+    "subtitle": "Beneficiaries grouped by country, with SWIFT/IBAN, channel and failure history.",
+    "addPayee": "Add payee",
+    "summary": "{{payees}} payees · {{countries}} countries",
+    "allCurrencies": "All currencies",
+    "emptyNoneTitle": "No payees yet",
+    "emptyNoCurrencyTitle": "No payees in this currency",
+    "emptyNoneDesc": "Add your first beneficiary to start building the ledger.",
+    "emptyNoCurrencyDesc": "Switch the currency filter above to see other payees.",
+    "payeeCount": "{{count}} payee(s)",
+    "volume": "volume {{amount}}",
+    "return": "return {{rate}}",
+    "returnRate": "Return rate",
+    "avgEta": "Avg. ETA"
   }
 }
 
