@@ -168,6 +168,33 @@
     "toastApproved": "Approved · {{name}} recorded in History",
     "toastReturned": "Returned to maker · {{name}} recorded in History",
     "toastViewInHistory": "View in History"
+  },
+  "history": {
+    "title": "Payment history",
+    "subtitle": "Every routed payment with its pre-check snapshot and chosen channel.",
+    "resetConfirm": "Reset demo data? This clears your guest payments, verification cases and added payees on this device. The seed payees return automatically.",
+    "resetDemo": "Reset demo data",
+    "filterRisk": "Risk",
+    "filterStatus": "Status",
+    "all": "All",
+    "emptyNoneTitle": "No payments yet",
+    "emptyNoMatchTitle": "No payments match these filters",
+    "emptyNoneDesc": "Once you route a payment, it appears here with its pre-check snapshot.",
+    "emptyNoMatchDesc": "Try resetting the risk or status filter above.",
+    "newPayment": "New payment",
+    "amount": "Amount ({{currency}})",
+    "channel": "Channel",
+    "returnProb": "Return prob.",
+    "settledCredited": "Settled in {{settle}} → credited in {{local}} (payee's local currency)",
+    "verified": "verified",
+    "clarified": "clarified",
+    "generateInstruction": "Generate payout instruction",
+    "receiptConfirmed": "Payee confirmed receipt on {{date}}{{note}}.",
+    "reuseDraft": "Reuse draft",
+    "receiptLinkTitle": "Payee receipt link",
+    "receiptLinkDesc": "Send this login-free link to the beneficiary so they can confirm the funds arrived.",
+    "copied": "Copied",
+    "copy": "Copy"
   }
 }
 

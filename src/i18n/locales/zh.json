@@ -168,6 +168,33 @@
     "toastApproved": "已批准 · {{name}} 已记录在 History",
     "toastReturned": "已返回给发起人 · {{name}} 已记录在 History",
     "toastViewInHistory": "在 History 中查看"
+  },
+  "history": {
+    "title": "付款历史",
+    "subtitle": "每一笔已选路的付款及其预检快照与所选通道。",
+    "resetConfirm": "重置演示数据？这将清除本设备上你的访客付款、核实工单和新增收款人。种子收款人会自动恢复。",
+    "resetDemo": "重置演示数据",
+    "filterRisk": "风险",
+    "filterStatus": "状态",
+    "all": "全部",
+    "emptyNoneTitle": "还没有付款",
+    "emptyNoMatchTitle": "没有符合筛选条件的付款",
+    "emptyNoneDesc": "选路一笔付款后，它会连同预检快照显示在这里。",
+    "emptyNoMatchDesc": "试着重置上方的风险或状态筛选。",
+    "newPayment": "新建付款",
+    "amount": "金额（{{currency}}）",
+    "channel": "通道",
+    "returnProb": "退回概率",
+    "settledCredited": "以 {{settle}} 结算 → 以 {{local}} 入账（收款人本地币种）",
+    "verified": "已核实",
+    "clarified": "已澄清",
+    "generateInstruction": "生成付款指令",
+    "receiptConfirmed": "收款人已于 {{date}} 确认收款{{note}}。",
+    "reuseDraft": "复用为草稿",
+    "receiptLinkTitle": "收款人收据链接",
+    "receiptLinkDesc": "将此免登录链接发送给收款人，供其确认资金已到账。",
+    "copied": "已复制",
+    "copy": "复制"
   }
 }
 
