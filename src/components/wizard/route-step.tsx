@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation, Trans } from "react-i18next";
 import { Check, Lock, Info, ShieldAlert, Globe2 } from "lucide-react";
 import type { RiskAssessment, RouteOption, RoutingResult, Supplier } from "@/lib/engine/types";
 import { FlowNarrativeStage } from "@/components/flow/flow-narrative-stage";
@@ -23,6 +24,7 @@ export function RouteStep({
 }) {
   const [selectedId, setSelectedId] = useState(routing.recommendedId);
   const guest = useIsGuest();
+  const { t } = useTranslation();
   const highRisk = risk.level === "high";
 
   function handleConfirm() {
@@ -41,9 +43,11 @@ export function RouteStep({
         >
           <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--danger)]" aria-hidden />
           <p className="text-[11px] leading-relaxed text-[color:var(--danger)]">
-            <b>High-risk payment ({risk.score}/100, ~{formatPercent(risk.returnProbability, 0)} return probability).</b>{" "}
-            You acknowledged the risk and chose to continue. High-risk payments can still proceed, but
-            generate an audit trail for compliance review — you accept the compliance and loss responsibility.
+            <Trans
+              i18nKey="route.highRiskBanner"
+              values={{ score: risk.score, prob: formatPercent(risk.returnProbability, 0) }}
+              components={[<b key="0" />]}
+            />
           </p>
         </div>
       )}
@@ -57,8 +61,7 @@ export function RouteStep({
       />
 
       <p className="text-center text-[11px] text-muted-foreground">
-        Tap a channel to compare its money-flow, fees and return risk. All amounts settle in{" "}
-        <b className="text-foreground">USD</b>; the payee is credited in their local currency by the rail.
+        <Trans i18nKey="route.compareHint" components={[<b key="0" className="text-foreground" />]} />
       </p>
 
       {/* Route comparison cards */}
@@ -76,11 +79,11 @@ export function RouteStep({
       {/* AI explains WHY the rule-engine recommended this route (engine still decides). */}
       <AiInsightCard
         kind="route"
-        title="AI: why this route?"
-        cta="Explain the recommendation with AI"
-        hint="Routing is decided by the rule engine. Let DeepSeek explain in plain language why the recommended route wins over the alternatives."
-        loadingLabel="Comparing the routes…"
-        actionsLabel="Key reasons"
+        title={t("route.aiTitle")}
+        cta={t("route.aiCta")}
+        hint={t("route.aiHint")}
+        loadingLabel={t("route.aiLoading")}
+        actionsLabel={t("route.aiActions")}
         buildSnapshot={() => ({
           recommendedId: routing.recommendedId,
           options: routing.options.map((o) => ({
@@ -107,8 +110,7 @@ export function RouteStep({
         >
           <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
           <span>
-            Guest mode — payment records are saved on this device only (browser local storage) and are
-            cleared when you leave guest mode. Sign in to sync them to your account.
+            {t("route.guestNotice")}
           </span>
         </div>
       )}
@@ -130,15 +132,15 @@ export function RouteStep({
       >
         {confirmed ? (
           <>
-            <Check className="h-4 w-4" /> Submitted for review
+            <Check className="h-4 w-4" /> {t("route.submittedForReview")}
           </>
         ) : highRisk ? (
           <>
-            <ShieldAlert className="h-4 w-4" /> Submit high-risk payment for review
+            <ShieldAlert className="h-4 w-4" /> {t("route.submitHighRisk")}
           </>
         ) : (
           <>
-            <Lock className="h-4 w-4" /> Submit for review
+            <Lock className="h-4 w-4" /> {t("route.submitForReview")}
           </>
         )}
       </button>
@@ -155,6 +157,7 @@ function RouteCard({
   active: boolean;
   onClick: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <button
       type="button"
@@ -172,7 +175,7 @@ function RouteCard({
           <span className="truncate text-sm font-bold">{option.name}</span>
           {option.recommended && (
             <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase text-primary-foreground">
-              Best
+              {t("route.best")}
             </span>
           )}
         </div>
@@ -183,16 +186,16 @@ function RouteCard({
       <p className="mt-1 text-[11px] text-muted-foreground">{option.reason}</p>
       {option.available && (
         <div className="mt-2.5 grid grid-cols-4 gap-1 font-mono text-[10px]">
-          <Metric label="Fee" value={formatUsdCents(option.totalFeeUsd)} />
-          <Metric label="ETA" value={formatMinutes(option.etaMinutes)} />
-          <Metric label="Return risk" value={formatPercent(option.returnRisk, 0)} />
-          <Metric label="Received (USD)" value={formatUsdCents(option.receiveUsd)} highlight />
+          <Metric label={t("route.fee")} value={formatUsdCents(option.totalFeeUsd)} />
+          <Metric label={t("route.eta")} value={formatMinutes(option.etaMinutes)} />
+          <Metric label={t("route.returnRisk")} value={formatPercent(option.returnRisk, 0)} />
+          <Metric label={t("route.receivedUsd")} value={formatUsdCents(option.receiveUsd)} highlight />
         </div>
       )}
       {option.available && option.channelClass === "stablecoin-direct" && (
         <p className="mt-2 flex items-start gap-1.5 text-[10px] leading-relaxed text-[color:var(--warning)]" data-el="route-stablecoin-hint">
           <Globe2 className="mt-0.5 h-3 w-3 shrink-0" aria-hidden />
-          <span>Digital-asset settlement is completed by an overseas licensed institution. This platform only compares and routes; it holds no funds and performs no crypto transfer.</span>
+          <span>{t("route.stablecoinHint")}</span>
         </p>
       )}
     </button>
