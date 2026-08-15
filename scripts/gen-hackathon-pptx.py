@@ -273,26 +273,11 @@ add_text(s, Inches(0.9), Inches(6.95), Inches(11.5), Inches(0.4),
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
 eyebrow(s, "预录 Demo 视频 · 逐页展示"); title(s, "Demo：逐页看每个页面在做什么", size=32)
 add_text(s, Inches(0.9), Inches(1.85), Inches(11.5), Inches(0.6),
-         "一条真实付款主线，串起 App 的六个页面——每页一句话说清它负责什么。", 15, MUT)
-# Six page cards in a 3-col × 2-row grid (matches the online /hackathon deck).
-DEMO_PAGES = [
-    ("首页 · 概览", "看板式首页：待办付款、进行中笔数与整体退回风险一屏概览，作为进入各流程的入口。"),
-    ("付款向导 · 退回预检", "录入收款方后，规则引擎给出退回概率与命中因子，AI 补充语义风险，先拦截而非先失败。"),
-    ("付款向导 · 比价选路", "在多类持牌通道间按费用/时效/退回率排序推荐路径，AI 用自然语言解释为什么选它。"),
-    ("结算对账看板", "逐跳追踪资金流经的中间行、标注黑箱卡点，聚合进度与凭证，自动核销并导出对账单。"),
-    ("双人放行审批", "大额付款进入双人/多级复核，指令生成前留痕，责任可追溯——平台不经手资金。"),
-    ("AI 核实工单 / 案例", "把检查结论翻译成通俗说明与修复步骤，一键生成供应商核实工单，沉淀为可复用案例。"),
-]
-CARD_W, CARD_H, GAP_X, GAP_Y = 3.7, 1.95, 0.25, 0.25
-GRID_X, GRID_Y = 0.95, 2.55
-for i, (nm, body) in enumerate(DEMO_PAGES):
-    cx = GRID_X + (i % 3) * (CARD_W + GAP_X)
-    cy = GRID_Y + (i // 3) * (CARD_H + GAP_Y)
-    rect(s, Inches(cx), Inches(cy), Inches(CARD_W), Inches(CARD_H), RGBColor(0xF1, 0xF5, 0xF9))
-    rect(s, Inches(cx + 0.2), Inches(cy + 0.16), Inches(0.42), Inches(0.42), TEAL)
-    add_text(s, Inches(cx + 0.2), Inches(cy + 0.18), Inches(0.42), Inches(0.4), str(i + 1), 13, WHITE, bold=True, align=PP_ALIGN.CENTER)
-    add_text(s, Inches(cx + 0.75), Inches(cy + 0.2), Inches(CARD_W - 0.9), Inches(0.4), nm, 13, INK, bold=True)
-    add_text(s, Inches(cx + 0.22), Inches(cy + 0.72), Inches(CARD_W - 0.44), Inches(1.1), body, 10.5, MUT)
+         "一条真实付款主线，逐页走过 App 的每个页面，展示它在做什么。", 15, MUT)
+# Demo video not yet placed — keep an empty placeholder box (same region) so the
+# slide layout stays intact and a demo video can be placed in manually later.
+rect(s, Inches(1.35), Inches(2.5), Inches(10.6), Inches(4.3), RGBColor(0xF1, 0xF5, 0xF9))
+add_text(s, Inches(1.35), Inches(4.5), Inches(10.6), Inches(0.5), "在此处放入 Demo 视频", 14, MUT, align=PP_ALIGN.CENTER)
 footnote(s, "预录 Demo 视频、逐页展示各功能页面——不是 PPT 概念。可扫码访问在线应用实测。")
 
 # ---------- 9 architecture ----------
