@@ -14,6 +14,7 @@ import {
   type MilestoneProgram,
   type MilestoneStatus,
 } from "@/lib/milestones/milestone-store";
+import { countryLabel } from "@/lib/i18n-labels";
 
 const STATUS_STYLE: Record<MilestoneStatus, string> = {
   pending: "bg-[color:var(--fg-soft)] text-muted-foreground",
@@ -102,7 +103,7 @@ function ProgramCard({
           <p className="flex items-center gap-2 text-base font-bold text-foreground">
             <Flag className="h-4 w-4 text-[color:var(--primary)]" /> {program.project}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">{program.supplierName} · {program.supplierCountry}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{program.supplierName} · {countryLabel(t, { id: program.supplierId, country: program.supplierCountry })}</p>
         </div>
         <div className="text-right">
           <p className="text-xs font-semibold text-foreground">{t("milestones.progress", { done, total })}</p>
