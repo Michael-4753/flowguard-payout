@@ -45,7 +45,7 @@ export function AiPrecheckExplainer({
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [briefing, setBriefing] = useState<Briefing | null>(null);
   const [rawFallback, setRawFallback] = useState("");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   async function run() {
     setState("loading");
@@ -69,7 +69,7 @@ export function AiPrecheckExplainer({
       const res = await request("/api/precheck/explain", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ snapshot }),
+        body: JSON.stringify({ snapshot, lang: i18n.language?.startsWith("zh") ? "zh" : "en" }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
