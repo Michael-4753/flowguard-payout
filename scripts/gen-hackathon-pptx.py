@@ -282,9 +282,9 @@ DEMO_PAGES = [
     ("AI 核实工单 / 案例", "检查结论转通俗说明与修复步骤，一键生成核实工单，沉淀为可复用案例。"),
 ]
 ROW_H, ROW_GAP = 0.72, 0.12
-LX, LY, LW = 0.9, 2.35, 7.4
+LX, LY, LW = 0.9, 1.95, 7.4
 # Left area = 2 rows × 3 cols grid of page cards.
-CW, CH, GX, GY = 2.36, 1.95, 0.15, 0.18
+CW, CH, GX, GY = 2.36, 2.35, 0.15, 0.2
 for i, (nm, body) in enumerate(DEMO_PAGES):
     cx = LX + (i % 3) * (CW + GX)
     cy = LY + (i // 3) * (CH + GY)
