@@ -196,6 +196,7 @@ def feature(eb, tt, st, items, shot=None, video=None):
 SHOTS = "/home/user/flowguard-payout/public/pitch-shots"
 FEAT1_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_0oyps7645nfy4jjj-dac41ff6e4-feat-precheck-demo.mp4"
 FEAT2_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_385lhafcz161fcq3-190894a7b5-feat-route-demo.mp4"
+FEAT3_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_3qmrjx5a4911h6it-3fb6d329d4-feat-reconcile-demo.mp4"
 feature("核心功能① · AI 为何必要","收款方信息预检-AI Agent","收款账户信息智能校验、国别规则适配、退回风险评分、合规风险提示报告。",
         [("账户信息智能校验","收款名/SWIFT/IBAN 一致性与账户状态校验，先拦截而非先失败。"),
          ("国别规则适配","按收款人国家/币种自动适配该走廊的结算要求，省去每次重新摸规则。"),
@@ -213,7 +214,7 @@ feature("核心功能③ · 成果可演示","统一结算状态与对账看板"
          ("凭证与台账可视化","聚合交易凭证，多笔跨国付款台账集中可视化管理。"),
          ("自动对账核销","应收 vs 实收、费用与汇兑损失自动匹配核销，并可导出对账单。"),
          ("结算链路透明","结算全程可追踪；平台只做透明化追踪，不经手资金。")],
-        shot=f"{SHOTS}/feat-reconcile.png")
+        shot=f"{SHOTS}/feat-reconcile.png", video=FEAT3_VIDEO)
 
 # ---------- 8 AI coverage table ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
