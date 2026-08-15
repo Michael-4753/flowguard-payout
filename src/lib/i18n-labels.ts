@@ -92,3 +92,19 @@ export function hopLabel(t: TFunction, hop: { id: string; label: string }): stri
 export function hopBank(t: TFunction, hop: { id: string; bankName: string }): string {
   return t(`hop.${hop.id}.bank`, { defaultValue: hop.bankName });
 }
+
+/**
+ * Localized money-flow status caption. Takes the structured caption from
+ * `deriveFlowProgress` ({ key, hopId?, bankName? }) and renders it, translating
+ * the referenced bank name too. Empty key → empty string.
+ */
+export function flowCaption(
+  t: TFunction,
+  caption: { key: string; hopId?: string; bankName?: string },
+): string {
+  if (!caption.key) return "";
+  const bank = caption.hopId
+    ? hopBank(t, { id: caption.hopId, bankName: caption.bankName ?? "" })
+    : caption.bankName || t("flow.captionIntermediary");
+  return t(caption.key, { bank });
+}
