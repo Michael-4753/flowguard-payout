@@ -121,7 +121,7 @@ export const DECK_EN: DeckSlide[] = [
       { head: "Send-and-pray wires", body: "You only learn a payment will bounce after it leaves — funds frozen for days while returns settle." },
       { head: "Dirty beneficiary data", body: "Wrong company name, bad IBAN, dormant accounts. Banks silently return the wire; reconciliation is manual." },
       { head: "No dual control", body: "A single cashier can push a large payout alone — real compliance and fraud exposure." },
-      { head: "Wrong rail = wasted money", body: "Stablecoin direct vs local fiat picked by gut feel means higher fees and higher failure rates." },
+      { head: "Wrong rail = wasted money", body: "Licensed Digital Settlement vs local fiat picked by gut feel means higher fees and higher failure rates." },
     ],
   },
   {
