@@ -177,6 +177,7 @@ export const HACK_DECK: HackSlide[] = [
       { name: "历史 · 付款历史", body: "每一笔已选路付款及其预检快照与所选通道，全程可回溯。" },
     ],
     shot: "/pitch-shots/demo.png",
+    video: "/eazo-assets/att_5eunp0uemw6qhym7beo-demo-walkthrough.mp4",
     footnote: "预录 Demo 视频、逐页展示各功能页面——不是 PPT 概念。可扫码访问在线应用实测。",
   },
   {
