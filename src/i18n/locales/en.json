@@ -542,5 +542,49 @@
       "huge": "Very large payout (≥ $1M) — routed through the high-risk approval lane and requires a second-signature review.",
       "remediation": "Larger payouts warrant extra scrutiny — verify the invoice, business purpose and beneficiary before approval."
     }
+  },
+  "failCase": {
+    "fc-01": {
+      "corridor": "US → Vietnam",
+      "reason": "Beneficiary name mismatch at beneficiary bank screening",
+      "failedAt": "Beneficiary bank",
+      "remediation": "Match the beneficiary legal name exactly to the bank record (including suffix). Re-send with corrected name field."
+    },
+    "fc-02": {
+      "corridor": "US → UAE",
+      "reason": "FX-control hold — missing business-purpose documentation",
+      "failedAt": "Correspondent (intermediary)",
+      "remediation": "Attach invoice + contract + business purpose. Prefer a licensed local PSP corridor for controlled currencies."
+    },
+    "fc-03": {
+      "corridor": "EU → India",
+      "reason": "Invalid IBAN check digits — invalid-account return",
+      "failedAt": "Local payout bank",
+      "remediation": "Re-collect and validate the IBAN structure and check digits before re-submitting."
+    },
+    "fc-04": {
+      "corridor": "US → Estonia",
+      "reason": "Dormant beneficiary account rejected the inbound wire",
+      "failedAt": "Beneficiary bank",
+      "remediation": "Confirm the account is active with the beneficiary before sending; ask for a recent statement."
+    },
+    "fc-05": {
+      "corridor": "US → high-risk region",
+      "reason": "Sanctions screening hold at correspondent bank",
+      "failedAt": "Correspondent (intermediary)",
+      "remediation": "Do not resend without compliance clearance. Complete enhanced due diligence and obtain a compliance sign-off."
+    },
+    "fc-06": {
+      "corridor": "US → Singapore",
+      "reason": "Beneficiary bank on internal risk blacklist — interception",
+      "failedAt": "PSP netting hub",
+      "remediation": "Request an alternate beneficiary bank; re-route via a different licensed PSP or overseas licensed settlement gateway."
+    },
+    "fc-07": {
+      "corridor": "US → Vietnam",
+      "reason": "Malformed SWIFT/BIC — bounced at routing bank",
+      "failedAt": "Correspondent (intermediary)",
+      "remediation": "Verify the 8/11-character SWIFT/BIC with the beneficiary bank and re-submit."
+    }
   }
 }
