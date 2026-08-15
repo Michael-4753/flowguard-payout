@@ -116,7 +116,7 @@ export function AddPayeeForm({ onClose, onAdded }: { onClose: () => void; onAdde
               <Field label={t("addPayee.preferredChannel")} error={errors.preferredChannel}>
                 <Select value={form.preferredChannel} onChange={(v) => set("preferredChannel", v as ChannelClass)} invalid={!!errors.preferredChannel}>
                   {CHANNELS.map((c) => (
-                    <option key={c} value={c}>{CHANNEL_CLASS_LABEL[c]}</option>
+                    <option key={c} value={c}>{channelLabel(t, c)}</option>
                   ))}
                 </Select>
               </Field>

@@ -113,7 +113,7 @@ function SupplierDetailBody({ id }: { id: string }) {
           <Field label={t("payeeDetail.swift")} value={supplier.swift} mono />
           <Field label={t("payeeDetail.iban")} value={supplier.iban} mono />
           <Field label={t("payeeDetail.currency")} value={supplier.currency} mono />
-          <Field label={t("payeeDetail.preferredChannel")} value={CHANNEL_CLASS_LABEL[supplier.preferredChannel]} />
+          <Field label={t("payeeDetail.preferredChannel")} value={channelLabel(t, supplier.preferredChannel)} />
           <Field
             label={t("payeeDetail.returnRate")}
             value={formatPercent(supplier.historicalReturnRate, 1)}

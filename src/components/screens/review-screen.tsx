@@ -234,7 +234,7 @@ function ReviewCard({
       )}
 
       <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
-        <Cell label={t("review.channel")} value={CHANNEL_CLASS_LABEL[record.route.channelClass]} />
+        <Cell label={t("review.channel")} value={channelLabel(t, record.route.channelClass)} />
         <Cell label={t("review.returnProb")} value={formatPercent(eff.returnProbability, 0)} />
         <Cell label={t("review.riskScore")} value={eff.changed ? t("review.riskScoreWas", { score: eff.riskScore, was: record.riskScore }) : String(eff.riskScore)} />
       </div>
