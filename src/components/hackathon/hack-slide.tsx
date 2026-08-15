@@ -193,15 +193,30 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
         <Blobs />
         <div className="relative">
           <SlideHeader eyebrow={slide.eyebrow} title={slide.title} subtitle={slide.subtitle} />
-          {slide.shot && (
-            // Demo video not yet placed — keep an equally-sized empty placeholder
-            // box so the layout stays intact and a demo video can be added later.
-            <div className="mx-auto mt-5 flex aspect-[16/9] w-full max-w-5xl max-h-[56vh] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl">
-              在此处放入 Demo 视频
-            </div>
-          )}
+          <div className="mt-6 grid w-full gap-6 lg:grid-cols-[1.05fr_1fr] lg:items-start">
+            {/* Left column: what each app page does */}
+            {slide.pages && (
+              <ul className="space-y-2.5">
+                {slide.pages.map((p, i) => (
+                  <li key={p.name} className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3.5">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">{i + 1}</span>
+                      <h3 className="text-sm font-semibold leading-tight">{p.name}</h3>
+                    </div>
+                    <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{p.body}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {/* Right column: demo video (placeholder until a video is added) */}
+            {slide.shot && (
+              <div className="flex aspect-[9/16] w-full max-h-[64vh] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl lg:sticky lg:top-0">
+                在此处放入 Demo 视频
+              </div>
+            )}
+          </div>
           {slide.footnote && (
-            <p className="mt-4 inline-block rounded-full bg-[color:var(--fg-soft)] px-4 py-1.5 text-xs text-muted-foreground sm:ml-4">{slide.footnote}</p>
+            <p className="mt-4 inline-block rounded-full bg-[color:var(--fg-soft)] px-4 py-1.5 text-xs text-muted-foreground">{slide.footnote}</p>
           )}
         </div>
       </section>
