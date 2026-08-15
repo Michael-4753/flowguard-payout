@@ -33,13 +33,14 @@ export const HACK_DECK: HackSlide[] = [
     id: "toc",
     kind: "toc",
     eyebrow: "目录",
-    title: "今天用 5 分钟讲清 10 件事",
+    title: "今天用 5 分钟讲清 11 件事",
     toc: [
       "真实问题：谁在痛、痛在哪",
       "产品介绍：FlowGuard 是什么",
       "核心功能①：付款前退回风险预检",
       "核心功能②：AI 补充风险信号 + 合规简报",
       "核心功能③：双人审批 + 生成付款指令",
+      "核心功能④：里程碑条件结算工作台",
       "AI 覆盖一览：四痛点 → 四能力",
       "现场 Demo：你能看到什么",
       "技术架构：怎么实现的",
@@ -86,6 +87,7 @@ export const HACK_DECK: HackSlide[] = [
       { head: "一键转核实", body: "数据质量类因子可一键生成供应商核实工单，核实后自动清除/软化。" },
       { head: "为高风险把关", body: "超大额、受限地区、休眠账户等自动进入高风险通道。" },
     ],
+    shot: "/pitch-shots/feat-precheck.png",
   },
   {
     id: "f2",
@@ -99,6 +101,7 @@ export const HACK_DECK: HackSlide[] = [
       { head: "AI 起草核实消息", body: "自动向供应商起草精准、具体的求证消息，省去反复沟通。" },
       { head: "为什么必须有 AI", body: "退回原因高度非结构化、随通道与国家变化；规则是骨架，AI 是识别隐藏风险的关键。" },
     ],
+    shot: "/pitch-shots/feat-ai.png",
   },
   {
     id: "f3",
@@ -112,6 +115,21 @@ export const HACK_DECK: HackSlide[] = [
       { head: "产出是指令", body: "批准=生成付款指令，交由持牌机构划付——平台不经手资金。" },
       { head: "防错防内控", body: "把关键控制点前置，减少人为疏漏造成的资金损失。" },
     ],
+    shot: "/pitch-shots/feat-review.png",
+  },
+  {
+    id: "f4",
+    kind: "feature",
+    eyebrow: "核心功能④ · 成果可演示",
+    title: "里程碑条件结算工作台",
+    subtitle: "按里程碑进度设条件、校验通过后推送放款提醒；不托管、不放款。",
+    bullets: [
+      { head: "项目/里程碑台账", body: "外包/项目付款节点集中管理，进度与金额一目了然。" },
+      { head: "条件与状态流转", body: "待开始→进行中→待校验→已校验，逐节点可控。" },
+      { head: "放款提醒→生成指令", body: "校验通过弹出放款提醒，一键跳转生成付款指令。" },
+      { head: "合规边界", body: "仅做条件结算管理，实际放款在银行/持牌机构完成。" },
+    ],
+    shot: "/pitch-shots/feat-milestones.png",
   },
   {
     id: "aitable",
