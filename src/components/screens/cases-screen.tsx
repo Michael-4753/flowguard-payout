@@ -445,7 +445,7 @@ function StatusChip({ status }: { status: VerificationStatus }) {
       )}
       data-el="verification-status"
     >
-      {VERIFICATION_STATUS_LABEL[status]}
+      {verificationStatusLabel(t, status)}
     </span>
   );
 }
@@ -503,7 +503,7 @@ function LibraryTab() {
                 : "border-border text-muted-foreground",
             )}
           >
-            {f === "all" ? t("cases.allChannels") : CHANNEL_CLASS_LABEL[f]}
+            {f === "all" ? t("cases.allChannels") : channelLabel(t, f)}
           </button>
         ))}
       </div>
@@ -523,7 +523,7 @@ function LibraryTab() {
                     <span className="text-sm font-semibold text-foreground">{c.reason}</span>
                   </div>
                   <p className="mt-1 font-mono text-[10px] text-muted-foreground">
-                    {c.corridor} · {CHANNEL_CLASS_LABEL[c.channelClass]}
+                    {c.corridor} · {channelLabel(t, c.channelClass)}
                   </p>
                 </div>
                 <span className="shrink-0 font-mono text-sm font-bold">{formatUsd(c.amountUsd)}</span>
