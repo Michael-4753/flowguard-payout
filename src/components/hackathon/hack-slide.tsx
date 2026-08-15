@@ -193,24 +193,11 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
         <Blobs />
         <div className="relative">
           <SlideHeader eyebrow={slide.eyebrow} title={slide.title} subtitle={slide.subtitle} />
-          {slide.pages && (
-            <div className="mx-auto mt-6 grid w-full max-w-5xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {slide.pages.map((p, i) => (
-                <div key={p.name} className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-4">
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{i + 1}</span>
-                    <h3 className="text-sm font-semibold leading-tight">{p.name}</h3>
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{p.body}</p>
-                </div>
-              ))}
-            </div>
-          )}
           {slide.shot && (
-            // Screenshot removed — keep an equally-sized empty placeholder box so
-            // the layout stays intact and a screenshot can be pasted in manually.
+            // Demo video not yet placed — keep an equally-sized empty placeholder
+            // box so the layout stays intact and a demo video can be added later.
             <div className="mx-auto mt-5 flex aspect-[16/9] w-full max-w-5xl max-h-[56vh] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl">
-              在此处粘贴截图
+              在此处放入 Demo 视频
             </div>
           )}
           {slide.footnote && (
