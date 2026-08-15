@@ -195,6 +195,7 @@ def feature(eb, tt, st, items, shot=None, video=None):
     return s
 SHOTS = "/home/user/flowguard-payout/public/pitch-shots"
 FEAT1_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_0oyps7645nfy4jjj-dac41ff6e4-feat-precheck-demo.mp4"
+FEAT2_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_385lhafcz161fcq3-190894a7b5-feat-route-demo.mp4"
 feature("核心功能① · AI 为何必要","收款方信息预检-AI Agent","收款账户信息智能校验、国别规则适配、退回风险评分、合规风险提示报告。",
         [("账户信息智能校验","收款名/SWIFT/IBAN 一致性与账户状态校验，先拦截而非先失败。"),
          ("国别规则适配","按收款人国家/币种自动适配该走廊的结算要求，省去每次重新摸规则。"),
@@ -206,7 +207,7 @@ feature("核心功能② · AI 为何必要","多路径智能路由推荐引擎"
          ("多维度比价","按费用、时效、退回率对各持牌通道自动排序，给出可解释的最优路径。"),
          ("只建议、不执行","平台仅输出最优路径对比建议，实际付款由持牌机构执行——平台不经手资金。"),
          ("为什么要 AI","通道规则随国别/币种/额度多变，AI 帮助在多变约束下给出可解释的路径推荐。")],
-        shot=f"{SHOTS}/feat-route.png")
+        shot=f"{SHOTS}/feat-route.png", video=FEAT2_VIDEO)
 feature("核心功能③ · 成果可演示","统一结算状态与对账看板","聚合各通道汇款进度、中转链路信息、交易凭证，实现多笔跨国付款台账可视化与自动对账核销。",
         [("多通道进度聚合","汇总各持牌通道的汇款进度与中转链路信息，钱走到哪一目了然。"),
          ("凭证与台账可视化","聚合交易凭证，多笔跨国付款台账集中可视化管理。"),
