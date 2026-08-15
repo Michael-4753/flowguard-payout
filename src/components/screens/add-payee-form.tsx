@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { addSupplier } from "@/lib/api";
 import { validateNewSupplier, type NewSupplierInput } from "@/lib/supplier-input";
 import type { AccountStatus, ChannelClass, Currency } from "@/lib/engine/types";
-import { CHANNEL_CLASS_LABEL } from "@/lib/engine/types";
+import { channelLabel } from "@/lib/i18n-labels";
 import { cn } from "@/utils/utils";
 import { AiInsightCard } from "@/components/ai/ai-insight-card";
 
