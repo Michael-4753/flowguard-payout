@@ -126,7 +126,6 @@ export const HACK_DECK: HackSlide[] = [
       { head: "为什么要 AI", body: "AI 用自然语言说清钱现在卡在哪家中间行、为何被卡、还要多久、你能做什么。" },
     ],
     shot: "/pitch-shots/feat-route.png",
-    video: "/eazo-assets/att_385lhafcz161fcq3-190894a7b5-feat-route-demo.mp4",
   },
   {
     id: "f3",
