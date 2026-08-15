@@ -5,6 +5,7 @@ import { useTranslation, Trans } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp, Copy, Check, AlertTriangle, FileCheck2, Route as RouteIcon, Users, Send } from "lucide-react";
 import type { RiskAssessment, RiskFactor, Supplier } from "@/lib/engine/types";
+import { factorTitle, factorDescription, factorRemediation } from "@/lib/i18n-labels";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
 import { AiPrecheckExplainer } from "@/components/wizard/ai-precheck-explainer";
@@ -166,7 +167,7 @@ export function PrecheckStep({
                   <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-[color:var(--warning)]" />
                 )}
                 <span className={cn("font-medium", synced.includes(f.id) && "text-muted-foreground line-through")}>
-                  {f.title}
+                  {factorTitle(t, f)}
                 </span>
               </li>
             ))}
@@ -347,9 +348,9 @@ export function PrecheckStep({
                 >
                   <SeverityDot severity={f.severity} />
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold">{f.title}</div>
+                    <div className="truncate text-sm font-semibold">{factorTitle(t, f)}</div>
                     <p className="mt-0.5 line-clamp-1 text-[11px] text-muted-foreground">
-                      {f.description}
+                      {factorDescription(t, f)}
                     </p>
                   </div>
                   {f.hit && (
@@ -366,12 +367,12 @@ export function PrecheckStep({
                 </button>
                 {open && (
                   <div className="border-t border-border px-3.5 pb-3.5 pt-3">
-                    <p className="text-xs text-muted-foreground">{f.description}</p>
+                    <p className="text-xs text-muted-foreground">{factorDescription(t, f)}</p>
                     <div className="mt-2 rounded-xl bg-primary/10 p-2.5">
                       <div className="text-[10px] font-semibold uppercase tracking-wide text-primary">
                         {t("precheck.remediation")}
                       </div>
-                      <p className="mt-0.5 text-xs text-foreground">{f.remediation}</p>
+                      <p className="mt-0.5 text-xs text-foreground">{factorRemediation(t, f)}</p>
                     </div>
                     {f.hit && <FactorAction factor={f} supplier={supplier} />}
                   </div>
