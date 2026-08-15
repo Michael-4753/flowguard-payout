@@ -66,6 +66,34 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
     );
   }
 
+  if (slide.kind === "aitable") {
+    return (
+      <section className="flex h-full w-full flex-col justify-center bg-background px-6 py-8 sm:px-12">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--primary)]">{slide.eyebrow}</p>
+        <h2 className="mt-1 text-2xl font-black text-foreground sm:text-4xl">{slide.title}</h2>
+        {slide.subtitle && <p className="mt-2 max-w-4xl text-sm text-muted-foreground">{slide.subtitle}</p>}
+        <div className="mt-4 overflow-hidden rounded-2xl border border-border">
+          <div className="grid grid-cols-[1.1fr_1.4fr_3.2fr] bg-[color:var(--fg-soft)] text-[11px] font-bold text-foreground sm:text-xs">
+            <div className="px-3 py-2">痛点</div>
+            <div className="px-3 py-2">入口</div>
+            <div className="px-3 py-2">AI 做什么</div>
+          </div>
+          {slide.aiRows?.map((r, idx) => (
+            <div key={r.call} className={`grid grid-cols-[1.1fr_1.4fr_3.2fr] border-t border-border text-[11px] sm:text-xs ${idx % 2 ? "bg-card" : "bg-background"}`}>
+              <div className="px-3 py-2.5 font-semibold text-foreground">{r.pain}</div>
+              <div className="px-3 py-2.5 text-muted-foreground">{r.entry}</div>
+              <div className="px-3 py-2.5 text-foreground">
+                <span className="font-bold text-[color:var(--primary)]">「{r.call}」</span>
+                <span className="text-muted-foreground"> — {r.does}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        {slide.footnote && <p className="mt-3 text-xs text-muted-foreground">{slide.footnote}</p>}
+      </section>
+    );
+  }
+
   if (slide.kind === "demo") {
     return (
       <section className="flex h-full w-full flex-col justify-center bg-background px-6 py-8 sm:px-12">
