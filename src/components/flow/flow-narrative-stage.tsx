@@ -64,7 +64,7 @@ export function FlowNarrativeStage({
               data-el="flow-route-node"
             >
               <span className="truncate text-[11px] font-semibold">
-                {CHANNEL_CLASS_LABEL[o.channelClass]}
+                {channelLabel(t, o.channelClass)}
               </span>
               <span className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground">
                 {o.available ? (
