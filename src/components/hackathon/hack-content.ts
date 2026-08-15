@@ -13,6 +13,8 @@ export interface HackSlide {
   eyebrow?: string;
   title: string;
   subtitle?: string;
+  /** cover slide: one-line product definition shown under the slogan. */
+  lead?: string;
   bullets?: { head: string; body: string }[];
   toc?: string[];
   shot?: string;        // screenshot path for demo slide
