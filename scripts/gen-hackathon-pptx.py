@@ -283,13 +283,16 @@ DEMO_PAGES = [
 ]
 ROW_H, ROW_GAP = 0.72, 0.12
 LX, LY, LW = 0.9, 2.35, 7.4
+# Left area = 2 rows × 3 cols grid of page cards.
+CW, CH, GX, GY = 2.36, 1.95, 0.15, 0.18
 for i, (nm, body) in enumerate(DEMO_PAGES):
-    ry = LY + i * (ROW_H + ROW_GAP)
-    rect(s, Inches(LX), Inches(ry), Inches(LW), Inches(ROW_H), RGBColor(0xF1, 0xF5, 0xF9))
-    rect(s, Inches(LX + 0.14), Inches(ry + 0.14), Inches(0.4), Inches(0.4), TEAL)
-    add_text(s, Inches(LX + 0.14), Inches(ry + 0.15), Inches(0.4), Inches(0.38), str(i + 1), 12, WHITE, bold=True, align=PP_ALIGN.CENTER)
-    add_text(s, Inches(LX + 0.66), Inches(ry + 0.08), Inches(LW - 0.8), Inches(0.32), nm, 12, INK, bold=True)
-    add_text(s, Inches(LX + 0.66), Inches(ry + 0.38), Inches(LW - 0.8), Inches(0.3), body, 9.5, MUT)
+    cx = LX + (i % 3) * (CW + GX)
+    cy = LY + (i // 3) * (CH + GY)
+    rect(s, Inches(cx), Inches(cy), Inches(CW), Inches(CH), RGBColor(0xF1, 0xF5, 0xF9))
+    rect(s, Inches(cx + 0.16), Inches(cy + 0.16), Inches(0.38), Inches(0.38), TEAL)
+    add_text(s, Inches(cx + 0.16), Inches(cy + 0.17), Inches(0.38), Inches(0.36), str(i + 1), 12, WHITE, bold=True, align=PP_ALIGN.CENTER)
+    add_text(s, Inches(cx + 0.62), Inches(cy + 0.16), Inches(CW - 0.76), Inches(0.4), nm, 11, INK, bold=True)
+    add_text(s, Inches(cx + 0.18), Inches(cy + 0.66), Inches(CW - 0.36), Inches(1.2), body, 9, MUT)
 # Right column: demo video placeholder (vertical 9:16-ish box).
 rect(s, Inches(8.65), Inches(2.35), Inches(3.75), Inches(4.72), RGBColor(0xF1, 0xF5, 0xF9))
 add_text(s, Inches(8.65), Inches(4.55), Inches(3.75), Inches(0.5), "在此处放入 Demo 视频", 13, MUT, align=PP_ALIGN.CENTER)
