@@ -166,7 +166,6 @@ export const HACK_DECK: HackSlide[] = [
     kind: "demo",
     eyebrow: "预录 Demo 视频 · 逐页展示",
     title: "Demo：逐页看每个页面在做什么",
-    subtitle: "一条真实付款主线，逐页走过 App 的每个页面，展示它在做什么。",
     shot: "/pitch-shots/demo.png",
     footnote: "预录 Demo 视频、逐页展示各功能页面——不是 PPT 概念。可扫码访问在线应用实测。",
   },
