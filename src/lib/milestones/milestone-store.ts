@@ -56,9 +56,9 @@ function seed(): MilestoneProgram[] {
     {
       id: "mp-seed-1",
       project: "越南工厂 · 模具外包项目",
-      supplierId: "sup-vn-01",
-      supplierName: "Saigon Precision Tooling",
-      supplierCountry: "Vietnam",
+      supplierId: "lumen-viet",
+      supplierName: "Lumen Viet Manufacturing Co",
+      supplierCountry: "Vietnam · Ho Chi Minh City",
       currency: "VND",
       createdAt: "2026-02-01T00:00:00.000Z",
       milestones: [
@@ -69,15 +69,15 @@ function seed(): MilestoneProgram[] {
     },
     {
       id: "mp-seed-2",
-      project: "墨西哥 · 本地化营销外包",
-      supplierId: "sup-mx-01",
-      supplierName: "Estudio Marca MX",
-      supplierCountry: "Mexico",
-      currency: "MXN",
+      project: "印度 · 设计外包项目",
+      supplierId: "sahana-design",
+      supplierName: "Sahana Design House",
+      supplierCountry: "India · Bengaluru",
+      currency: "INR",
       createdAt: "2026-03-05T00:00:00.000Z",
       milestones: [
         { id: "ms-2a", title: "策略与素材", condition: "品牌手册 + 首批素材交付", amountUsd: 3600, status: "in_progress", updatedAt: "2026-03-08T00:00:00.000Z" },
-        { id: "ms-2b", title: "投放与复盘", condition: "投放数据报告 + 复盘会议纪要", amountUsd: 5400, status: "pending", updatedAt: "2026-03-05T00:00:00.000Z" },
+        { id: "ms-2b", title: "终稿与复盘", condition: "终稿交付 + 复盘会议纪要", amountUsd: 5400, status: "pending", updatedAt: "2026-03-05T00:00:00.000Z" },
       ],
     },
   ];
