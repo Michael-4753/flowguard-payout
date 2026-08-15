@@ -190,9 +190,9 @@
     "verified": "已核实",
     "clarified": "已澄清",
     "generateInstruction": "生成付款指令",
-    "receiptConfirmed": "收款人已于 {{date}} 确认收款{{note}}。",
+    "receiptConfirmed": "收款人已于 {{date}} 确认到账{{note}}。",
     "reuseDraft": "复用为草稿",
-    "receiptLinkTitle": "收款人收据链接",
+    "receiptLinkTitle": "收款人到账确认链接",
     "receiptLinkDesc": "将此免登录链接发送给收款人，供其确认资金已到账。",
     "copied": "已复制",
     "copy": "复制"

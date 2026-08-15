@@ -190,9 +190,9 @@
     "verified": "verified",
     "clarified": "clarified",
     "generateInstruction": "Generate payout instruction",
-    "receiptConfirmed": "Payee confirmed receipt on {{date}}{{note}}.",
+    "receiptConfirmed": "Payee confirmed arrival on {{date}}{{note}}.",
     "reuseDraft": "Reuse draft",
-    "receiptLinkTitle": "Payee receipt link",
+    "receiptLinkTitle": "Payee arrival-confirmation link",
     "receiptLinkDesc": "Send this login-free link to the beneficiary so they can confirm the funds arrived.",
     "copied": "Copied",
     "copy": "Copy"
