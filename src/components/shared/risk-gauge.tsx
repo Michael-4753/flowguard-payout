@@ -19,6 +19,7 @@ export function RiskGauge({
   level: RiskLevel;
   size?: number;
 }) {
+  const { t } = useTranslation();
   const stroke = 10;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
@@ -65,7 +66,7 @@ export function RiskGauge({
             {Math.round(score)}
           </div>
           <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
-            Return-risk score
+            {t("riskGauge.title")}
           </div>
         </div>
       </div>
