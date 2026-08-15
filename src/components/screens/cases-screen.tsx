@@ -432,6 +432,7 @@ function CommentBox({
 }
 
 function StatusChip({ status }: { status: VerificationStatus }) {
+  const { t } = useTranslation();
   return (
     <span
       className={cn(
