@@ -133,26 +133,46 @@ bullets_grid(s, [
 ])
 
 # ---------- 5/6/7 features ----------
-def feature(eb, tt, st, items):
+def feature(eb, tt, st, items, shot=None):
     s = prs.slides.add_slide(BLANK); bg(s, WHITE)
-    eyebrow(s, eb); title(s, tt); subtitle(s, st)
-    bullets_grid(s, items)
+    eyebrow(s, eb); title(s, tt, size=30)
+    add_text(s, Inches(0.9), Inches(1.7), Inches(7.7), Inches(0.7), st, 14, MUT)
+    lw = 7.7; ch = 1.02; gap = 0.18; top = 2.6
+    for idx, (head, body) in enumerate(items):
+        y = Inches(top + idx * (ch + gap))
+        rect(s, Inches(0.9), y, Inches(lw), Inches(ch), CARDBG)
+        add_text(s, Inches(1.1), y + Inches(0.12), Inches(lw - 0.4), Inches(0.4), f"{idx+1}. {head}", 15, INK, bold=True)
+        add_text(s, Inches(1.1), y + Inches(0.5), Inches(lw - 0.4), Inches(0.5), body, 11.5, MUT)
+    if shot and os.path.exists(shot):
+        rect(s, Inches(8.9), Inches(1.65), Inches(3.55), Inches(5.4), RGBColor(0xF1, 0xF5, 0xF9))
+        s.shapes.add_picture(shot, Inches(9.05), Inches(1.8), height=Inches(5.1))
+        add_text(s, Inches(8.9), Inches(7.12), Inches(3.55), Inches(0.3), "产品界面（现场可实测）", 9, MUT, align=PP_ALIGN.CENTER)
     return s
+SHOTS = "/home/user/flowguard-payout/public/pitch-shots"
 feature("核心功能① · AI 为何必要","付款前退回风险预检","确定性规则引擎：给出退回概率、命中风险因子、最可能的卡点。",
         [("先拦截，而非先失败","竞品在失败后对账；我们在提交前给出退回概率并指出卡点。"),
          ("可解释","每个风险因子都能展开，告诉出纳为什么会被退、该补什么。"),
          ("一键转核实","数据质量类因子可一键生成供应商核实工单，核实后自动清除/软化。"),
-         ("为高风险把关","超大额、受限地区、休眠账户等自动进入高风险通道。")])
+         ("为高风险把关","超大额、受限地区、休眠账户等自动进入高风险通道。")],
+        shot=f"{SHOTS}/feat-precheck.png")
 feature("核心功能② · AI 为何必要","AI 补充风险信号 + 合规简报","规则覆盖不了的语义与情境风险，交给 AI（DeepSeek）。",
         [("抓规则抓不到的","语义矛盾、与历史失败的相似度、可能缺失的单据——只加警示，绝不降低评分。"),
          ("合规简报","把一堆检查项，翻译成出纳看得懂的通俗解释与修复步骤。"),
          ("AI 起草核实消息","自动向供应商起草精准、具体的求证消息，省去反复沟通。"),
-         ("为什么必须有 AI","退回原因高度非结构化、随通道与国家变化；规则是骨架，AI 是识别隐藏风险的关键。")])
+         ("为什么必须有 AI","退回原因高度非结构化、随通道与国家变化；规则是骨架，AI 是识别隐藏风险的关键。")],
+        shot=f"{SHOTS}/feat-ai.png")
 feature("核心功能③ · 成果可演示","双人审批 + 生成付款指令","Maker-Checker 职责分离，服务端硬性禁止自我批准。",
         [("第二签才放行","出纳(Maker)提交，复核人(Checker)第二签批准；高风险进第二签通道。"),
          ("全程审计留痕","每次批准/退回都记录签批人与时间，写入历史。"),
          ("产出是指令","批准=生成付款指令，交由持牌机构划付——平台不经手资金。"),
-         ("防错防内控","把关键控制点前置，减少人为疏漏造成的资金损失。")])
+         ("防错防内控","把关键控制点前置，减少人为疏漏造成的资金损失。")],
+        shot=f"{SHOTS}/feat-review.png")
+feature("核心功能④ · 成果可演示","里程碑条件结算工作台","按里程碑进度设条件、校验通过后推送放款提醒；不托管、不放款。",
+        [("项目/里程碑台账","外包/项目付款节点集中管理，进度与金额一目了然。"),
+         ("条件与状态流转","待开始→进行中→待校验→已校验，逐节点可控。"),
+         ("放款提醒→生成指令","校验通过弹出放款提醒，一键跳转生成付款指令。"),
+         ("合规边界","仅做条件结算管理，实际放款在银行/持牌机构完成。")],
+        shot=f"{SHOTS}/feat-milestones.png")
 
 # ---------- 8 AI coverage table ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
