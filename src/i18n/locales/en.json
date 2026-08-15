@@ -26,6 +26,13 @@
       "open": "Awaiting reply",
       "verified": "Verified",
       "clarified": "Clarified"
+    },
+    "country": {
+      "lumen-viet": "Vietnam · Ho Chi Minh City",
+      "nordwind-dev": "Estonia · Tallinn",
+      "sahana-design": "India · Bengaluru",
+      "meridian-freight": "High-risk region · under review",
+      "atlas-domestic": "United States · Chicago"
     }
   },
   "nav": {
