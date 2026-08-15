@@ -68,8 +68,6 @@ export function buildPayoutInstruction(
       channel: "stablecoin-direct",
       title,
       fields,
-      walletAddress: "",
-      amountLabel,
       copyText: toCopyText(title, fields),
     };
   }
