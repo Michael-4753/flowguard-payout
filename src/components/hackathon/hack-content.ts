@@ -141,6 +141,7 @@ export const HACK_DECK: HackSlide[] = [
       { head: "结算链路透明", body: "结算全程可追踪；平台只做透明化追踪，不经手资金。" },
     ],
     shot: "/pitch-shots/feat-reconcile.png",
+    video: "/eazo-assets/att_3qmrjx5a4911h6it-3fb6d329d4-feat-reconcile-demo.mp4",
   },
   {
     id: "aitable",
