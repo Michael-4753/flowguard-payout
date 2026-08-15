@@ -179,7 +179,7 @@ FlowGuard 由三大核心能力构成，从「先核查」到「透明追踪」�
 ### 7.5 工程质量
 
 - 全站 TypeScript strict，`tsc --noEmit` 零错误；ESLint 零告警。
-- 双语键 en-US / zh-CN 结构 100% 对齐（411/411），用户可见文案不硬编码、统一经 `t()`。
+- 双语键 en-US / zh-CN 结构 100% 对齐（412/412），用户可见文案不硬编码、统一经 `t()`。
 - 关键路由（pay / review / cases / history / reconcile / 公开收据）端到端可跑通。
 
 ---
