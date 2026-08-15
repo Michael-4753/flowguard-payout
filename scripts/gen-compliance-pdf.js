@@ -26,7 +26,12 @@ const CONTENT_W = () => doc.page.width - M * 2;
 const BOTTOM = () => doc.page.height - M - FOOTER_H;
 
 function inline(text) {
-  return text.replace(/\*\*(.+?)\*\*/g, "$1").replace(/`([^`]+)`/g, "$1").replace(/\*(.+?)\*/g, "$1");
+  let t = text.replace(/\*\*(.+?)\*\*/g, "$1").replace(/`([^`]+)`/g, "$1").replace(/\*(.+?)\*/g, "$1");
+  // Bundled Noto Sans CJK has no emoji glyphs (✅ ❌ ✔ and the U+FE0F
+  // variation selector render as tofu boxes). Map them to glyphs the font
+  // actually contains so the PDF shows real symbols instead of boxes.
+  t = t.replace(/\uFE0F/g, "").replace(/✅/g, "✓").replace(/✔/g, "✓").replace(/❌/g, "×");
+  return t;
 }
 // ensure `need` vertical px available; else new page. Never rely on pdfkit auto-page.
 function ensure(need) {
