@@ -26,8 +26,8 @@ Corridor / compliance rules of thumb:
 - Dormant / unverified beneficiary accounts frequently reject inbound wires.
 - Blacklisted beneficiary banks are intercepted; suggest an alternate bank or a
   licensed local-fiat PSP corridor.
-- Two payout paths exist: "Licensed Digital Settlement" (licensed overseas
-  digital-settlement institution, overseas entities only, on-chain traceable —
+- Two payout paths exist: "Licensed Overseas Settlement" (licensed overseas
+  settlement institution/provider, overseas entities only, traceable —
   the platform never touches funds or performs any crypto conversion) and
   "Local Fiat Payout" (PSP + correspondent bank rail).
 
