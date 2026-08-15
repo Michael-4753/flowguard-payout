@@ -13,7 +13,7 @@ import { RiskBadge } from "@/components/shared/badges";
 import { fetchSupplier } from "@/lib/api";
 import { corridorRequirements } from "@/lib/engine";
 import { formatPercent, formatHours } from "@/lib/format";
-import { CHANNEL_CLASS_LABEL } from "@/lib/engine/types";
+import { channelLabel } from "@/lib/i18n-labels";
 import type { PaymentRecord, Supplier } from "@/lib/engine/types";
 
 export default function SupplierDetailPage({ params }: { params: Promise<{ id: string }> }) {
