@@ -193,20 +193,20 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
         <Blobs />
         <div className="relative">
           <SlideHeader eyebrow={slide.eyebrow} title={slide.title} subtitle={slide.subtitle} />
-          <div className="mt-6 grid w-full gap-6 lg:grid-cols-[1.05fr_1fr] lg:items-start">
-            {/* Left column: what each app page does */}
+          <div className="mt-6 grid w-full gap-6 lg:grid-cols-[1.55fr_1fr] lg:items-start">
+            {/* Left column: what each app page does — 2 rows × 3 cols grid */}
             {slide.pages && (
-              <ul className="space-y-2.5">
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
                 {slide.pages.map((p, i) => (
-                  <li key={p.name} className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3.5">
+                  <div key={p.name} className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3.5">
                     <div className="flex items-center gap-2">
                       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">{i + 1}</span>
                       <h3 className="text-sm font-semibold leading-tight">{p.name}</h3>
                     </div>
                     <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{p.body}</p>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
             {/* Right column: demo video (placeholder until a video is added) */}
             {slide.shot && (
