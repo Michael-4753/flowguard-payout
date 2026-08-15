@@ -78,3 +78,17 @@ export function failCaseText(
 ): string {
   return t(`failCase.${c.id}.${field}`, { defaultValue: c[field] });
 }
+
+/**
+ * Localized money-flow hop label / handling-bank name. Hops have stable ids
+ * (`local-fiat-hop-1` …); translate on id, falling back to the English value
+ * the engine produced. Proper nouns (e.g. correspondent bank names) may stay
+ * identical across locales by design.
+ */
+export function hopLabel(t: TFunction, hop: { id: string; label: string }): string {
+  return t(`hop.${hop.id}.label`, { defaultValue: hop.label });
+}
+
+export function hopBank(t: TFunction, hop: { id: string; bankName: string }): string {
+  return t(`hop.${hop.id}.bank`, { defaultValue: hop.bankName });
+}
