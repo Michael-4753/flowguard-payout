@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { ArrowRight, Check, Globe2 } from "lucide-react";
 import type { ChannelClass, Currency, Supplier } from "@/lib/engine/types";
-import { channelLabel, riskLabel } from "@/lib/i18n-labels";
+import { channelLabel, riskLabel, countryLabel } from "@/lib/i18n-labels";
 import { cn } from "@/utils/utils";
 
 const CHANNELS: (ChannelClass | "auto")[] = ["auto", "stablecoin-direct", "local-fiat"];
@@ -90,7 +90,7 @@ export function BuildStep({
             <div className="min-w-0">
               <div className="truncate text-sm font-semibold">{s.name}</div>
               <div className="truncate font-mono text-[10px] text-muted-foreground">
-                {s.country} · {s.swift}
+                {countryLabel(t, s)} · {s.swift}
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
