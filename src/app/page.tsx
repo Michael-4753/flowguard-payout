@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { ArrowRight, Coins, Timer, ShieldAlert, Send, Globe, AlertTriangle, Scale } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PaymentRow } from "@/components/shared/payment-row";
-import { HeroFlowStrip } from "@/components/shared/hero-flow-strip";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
