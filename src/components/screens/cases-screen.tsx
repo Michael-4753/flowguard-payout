@@ -16,14 +16,13 @@ import { useIsGuest, subscribeGuest } from "@/lib/guest/guest-session";
 import { formatUsd, formatDate } from "@/lib/format";
 import { copyText } from "@/utils/copy-text";
 import {
-  CHANNEL_CLASS_LABEL,
   CASE_ACTOR_LABEL,
-  VERIFICATION_STATUS_LABEL,
   type ChannelClass,
   type FailureCase,
   type VerificationCase,
   type VerificationStatus,
 } from "@/lib/engine/types";
+import { channelLabel, verificationStatusLabel } from "@/lib/i18n-labels";
 import { cn } from "@/utils/utils";
 import { AiInsightCard } from "@/components/ai/ai-insight-card";
 
