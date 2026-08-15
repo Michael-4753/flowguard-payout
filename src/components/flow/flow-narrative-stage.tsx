@@ -9,11 +9,11 @@ import { formatMinutes, formatUsdCents } from "@/lib/format";
 
 const BLACKBOX_META: Record<
   FlowHop["blackboxLevel"],
-  { label: string; className: string }
+  { labelKey: string; className: string }
 > = {
-  clear: { label: "Traceable", className: "text-[color:var(--success)]" },
-  partial: { label: "Partial visibility", className: "text-[color:var(--warning)]" },
-  opaque: { label: "Black box", className: "text-[color:var(--danger)]" },
+  clear: { labelKey: "flow.blackboxClear", className: "text-[color:var(--success)]" },
+  partial: { labelKey: "flow.blackboxPartial", className: "text-[color:var(--warning)]" },
+  opaque: { labelKey: "flow.blackboxOpaque", className: "text-[color:var(--danger)]" },
 };
 
 /**
@@ -89,7 +89,7 @@ export function FlowNarrativeStage({
         >
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--danger)]" aria-hidden />
           <div className="min-w-0 text-[11px] leading-relaxed text-[color:var(--danger)]">
-            <span className="font-semibold">{criticalHits.length} blocking risk(s): </span>
+            <span className="font-semibold">{t("flow.blockingRisks", { count: criticalHits.length })}</span>
             {criticalHits.map((f) => factorTitle(t, f)).join(" · ")}
           </div>
         </div>
@@ -101,9 +101,9 @@ export function FlowNarrativeStage({
         data-el="flow-corridor-summary"
       >
         <span className="inline-flex items-center gap-1">
-          <Building2 className="h-3 w-3" aria-hidden /> {intermediaries} intermediary hop(s)
+          <Building2 className="h-3 w-3" aria-hidden /> {t("flow.intermediaryHops", { count: intermediaries })}
         </span>
-        {typeof avgHops === "number" && <span>corridor avg {avgHops}</span>}
+        {typeof avgHops === "number" && <span>{t("flow.corridorAvg", { count: avgHops })}</span>}
         <span
           className={cn(
             "inline-flex items-center gap-1",
@@ -111,7 +111,7 @@ export function FlowNarrativeStage({
           )}
         >
           {opaque > 0 ? <EyeOff className="h-3 w-3" aria-hidden /> : <Eye className="h-3 w-3" aria-hidden />}
-          {opaque > 0 ? `${opaque} black-box hop(s)` : "fully traceable"}
+          {opaque > 0 ? t("flow.blackBoxHops", { count: opaque }) : t("flow.fullyTraceable")}
         </span>
       </div>
 
@@ -138,6 +138,7 @@ export function FlowNarrativeStage({
 }
 
 function HopNode({ hop, index, last }: { hop: FlowHop; index: number; last: boolean }) {
+  const { t } = useTranslation();
   const roleColor =
     hop.role === "origin"
       ? "var(--success)"
@@ -213,7 +214,7 @@ function HopNode({ hop, index, last }: { hop: FlowHop; index: number; last: bool
             ) : (
               <Eye className="h-3 w-3" aria-hidden />
             )}
-            {BLACKBOX_META[hop.blackboxLevel].label}
+            {t(BLACKBOX_META[hop.blackboxLevel].labelKey)}
           </span>
         </div>
         <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10px] text-muted-foreground">
