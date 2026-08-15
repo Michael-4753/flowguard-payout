@@ -86,8 +86,6 @@
     "amount": "Amount",
     "amountPlaceholder": "e.g. 18400",
     "settlementCurrency": "Settlement currency",
-    "sendIn": "You send in <0>{{currency}}</0> (settlement currency).",
-    "creditedIn": " The payee is credited in their local currency (<0>{{currency}}</0>) by the payout rail.",
     "channelPreference": "Channel preference",
     "auto": "Auto (recommended)",
     "digitalAssetHint": "Digital-asset settlement is completed by an overseas licensed institution that credits the payee. This platform only compares and routes — it holds no funds and performs no crypto exchange, custody or transfer.",
@@ -99,7 +97,10 @@
     "errValidNumber": "Enter a valid number.",
     "errGreaterThanZero": "Amount must be greater than 0.",
     "errTooLarge": "Amount is too large.",
-    "errDecimals": "Use at most 2 decimal places."
+    "errDecimals": "Use at most 2 decimal places.",
+    "currencyLockedTitle": "Settlement currency comes from the contract (bound to the payee) and cannot be changed at payout.",
+    "currencyFromContract": "Settlement currency comes from the contract: settled and credited to the payee in <0>{{currency}}</0> (bound to the payee, not switchable at payout).",
+    "currencyPickPayee": "Select a payee first — the settlement currency comes from their contract."
   },
   "stepper": {
     "draft": "Draft",
