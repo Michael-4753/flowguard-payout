@@ -150,6 +150,5 @@ for (let p = 0; p < range.count; p++) {
       M, doc.page.height - M - 8, { width: CONTENT_W(), align: "center" });
 }
 
-doc.flushPages();
 doc.end();
 stream.on("finish", () => console.log("PDF written:", OUT, fs.statSync(OUT).size, "bytes", "| pages:", range.count));
