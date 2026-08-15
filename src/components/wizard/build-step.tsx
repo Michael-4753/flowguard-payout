@@ -129,17 +129,15 @@ export function BuildStep({
           )}
           data-el="wizard-amount"
         />
-        <select
-          value={settleCurrency}
-          onChange={(e) => setSettleCurrency(e.target.value as Currency)}
+        <div
+          className="flex shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-[color:var(--fg-soft)] px-3 font-mono text-sm text-foreground"
           aria-label={t("build.settlementCurrency")}
-          className="shrink-0 rounded-2xl border border-border bg-[color:var(--card)] px-3 font-mono text-sm outline-none focus:border-primary"
+          title={t("build.currencyLockedTitle")}
           data-el="wizard-settle-currency"
         >
-          {SETTLE_CURRENCIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+          <Lock className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden />
+          {settleCurrency ?? "—"}
+        </div>
       </div>
       {amountInvalid && (
         <p id="amount-error" className="mt-1.5 text-xs text-[color:var(--danger)]" data-el="wizard-amount-error">
@@ -147,9 +145,10 @@ export function BuildStep({
         </p>
       )}
       <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground" data-el="settlement-note">
-        <Trans i18nKey="build.sendIn" values={{ currency: settleCurrency }} components={[<b key="0" className="text-foreground" />]} />
-        {selected && selected.currency !== settleCurrency && (
-          <Trans i18nKey="build.creditedIn" values={{ currency: selected.currency }} components={[<b key="0" className="text-foreground" />]} />
+        {settleCurrency ? (
+          <Trans i18nKey="build.currencyFromContract" values={{ currency: settleCurrency }} components={[<b key="0" className="text-foreground" />]} />
+        ) : (
+          t("build.currencyPickPayee")
         )}
       </p>
 
