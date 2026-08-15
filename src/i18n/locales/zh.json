@@ -151,7 +151,9 @@
     "savedToCases": "已保存至 Cases → 核实请求。收款人回复后请在那里更新状态。",
     "generating": "生成中…",
     "generateVerification": "生成核实请求",
-    "generateFailed": "无法生成请求，请重试。"
+    "generateFailed": "无法生成请求，请重试。",
+    "trackCaseCta": "去工单跟踪核实（推荐）",
+    "trackCaseHint": "已生成核实工单。建议先去工单跟踪供应商回复、待问题澄清后再放行；确认承担风险仅用于确实无法核实且必须带险发出的情况。"
   },
   "route": {
     "highRiskBanner": "<0>高风险付款（{{score}}/100，约 {{prob}} 退回概率）。</0> 你已确认承担风险并选择继续。高风险付款仍可进行，但会生成合规审计记录——你需承担合规与损失责任。",

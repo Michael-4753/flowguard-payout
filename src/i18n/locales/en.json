@@ -151,7 +151,9 @@
     "savedToCases": "Saved to Cases → Verification requests. Update the status there once the payee replies.",
     "generating": "Generating…",
     "generateVerification": "Generate verification request",
-    "generateFailed": "Could not generate the request. Please try again."
+    "generateFailed": "Could not generate the request. Please try again.",
+    "trackCaseCta": "Track the case & verify (recommended)",
+    "trackCaseHint": "A verification case has been created. We recommend tracking the supplier reply there and releasing only after it clears. Acknowledging the risk is only for cases that truly can't be verified yet must go out."
   },
   "route": {
     "highRiskBanner": "<0>High-risk payment ({{score}}/100, ~{{prob}} return probability).</0> You acknowledged the risk and chose to continue. High-risk payments can still proceed, but generate an audit trail for compliance review — you accept the compliance and loss responsibility.",
