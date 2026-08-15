@@ -8,6 +8,7 @@
     "pay": "付款",
     "payees": "收款人",
     "review": "审批",
+    "milestones": "里程碑",
     "cases": "工单",
     "history": "历史",
     "awaitingReply": "{{count}} 条待回复"

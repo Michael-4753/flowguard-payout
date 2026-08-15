@@ -8,6 +8,7 @@
     "pay": "Pay",
     "payees": "Payees",
     "review": "Review",
+    "milestones": "Milestones",
     "cases": "Cases",
     "history": "History",
     "awaitingReply": "{{count}} awaiting reply"
