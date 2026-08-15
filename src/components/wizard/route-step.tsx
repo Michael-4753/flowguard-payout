@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Check, Lock, Info, ShieldAlert, Globe2 } from "lucide-react";
 import type { RiskAssessment, RouteOption, RoutingResult, Supplier } from "@/lib/engine/types";
+import { channelLabel } from "@/lib/i18n-labels";
 import { FlowNarrativeStage } from "@/components/flow/flow-narrative-stage";
 import { AiInsightCard } from "@/components/ai/ai-insight-card";
 import { formatUsdCents, formatPercent, formatMinutes } from "@/lib/format";
@@ -172,7 +173,7 @@ function RouteCard({
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="truncate text-sm font-bold">{option.name}</span>
+          <span className="truncate text-sm font-bold">{channelLabel(t, option.channelClass)}</span>
           {option.recommended && (
             <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase text-primary-foreground">
               {t("route.best")}
