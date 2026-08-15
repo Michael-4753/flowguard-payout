@@ -197,7 +197,7 @@ SHOTS = "/home/user/flowguard-payout/public/pitch-shots"
 FEAT1_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_70duam7r6rrsf3w7-896ee20d49-feat-precheck-demo-v2.mp4"
 FEAT2_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_385lhafcz161fcq3-190894a7b5-feat-route-demo.mp4"
 FEAT3_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_3qmrjx5a4911h6it-3fb6d329d4-feat-reconcile-demo.mp4"
-feature("核心功能① · AI 为何必要","收款方信息预检-AI Agent","收款账户信息智能校验、国别规则适配、退回风险评分、合规风险提示报告。",
+feature("核心功能① · 事前防退回","收款方信息预检-AI Agent","收款账户信息智能校验、国别规则适配、退回风险评分、合规风险提示报告。",
         [("账户信息智能校验","收款名/SWIFT/IBAN 一致性与账户状态校验，先拦截而非先失败。"),
          ("国别规则适配","按收款人国家/币种自动适配该走廊的结算要求，省去每次重新摸规则。"),
          ("退回风险评分","确定性规则引擎给出退回概率与命中因子；AI 补充语义/情境风险，只加警示、不降评分。"),
@@ -209,7 +209,7 @@ feature("核心功能② · 事中破黑箱","结算链路透明化追踪","逐�
          ("多通道比价选路","看清链路后在多类持牌结算通道间，按费用/时效/退回率自动比价，给出可解释的最优路径——平台不执行付款。"),
          ("为什么要 AI","AI 用自然语言说清钱现在卡在哪家中间行、为何被卡、还要多久、你能做什么。")],
         shot=f"{SHOTS}/feat-route.png")
-feature("核心功能③ · 成果可演示","统一结算状态与对账看板","聚合各通道汇款进度、中转链路信息、交易凭证，实现多笔跨国付款台账可视化与自动对账核销。",
+feature("核心功能③ · 事后好对账","统一结算状态与对账看板","聚合各通道汇款进度、中转链路信息、交易凭证，实现多笔跨国付款台账可视化与自动对账核销。",
         [("多通道进度聚合","汇总各持牌通道的汇款进度与中转链路信息，钱走到哪一目了然。"),
          ("凭证与台账可视化","聚合交易凭证，多笔跨国付款台账集中可视化管理。"),
          ("自动对账核销","应收 vs 实收、费用与汇兑损失自动匹配核销，并可导出对账单。"),
