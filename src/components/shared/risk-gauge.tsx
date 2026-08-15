@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import type { RiskLevel } from "@/lib/engine/types";
 
 const RING_COLOR: Record<RiskLevel, string> = {
