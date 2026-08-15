@@ -211,7 +211,9 @@
     "approveGenerate": "Approve & generate instruction",
     "toastApproved": "Approved · {{name}} recorded in History",
     "toastReturned": "Returned to maker · {{name}} recorded in History",
-    "toastViewInHistory": "View in History"
+    "toastViewInHistory": "View in History",
+    "toastApprovedNext": "Approved · Next: submit the instruction to the licensed institution and track settlement",
+    "toastGoExecute": "Submit & track →"
   },
   "history": {
     "title": "Payment history",

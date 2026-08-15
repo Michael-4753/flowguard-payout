@@ -177,11 +177,11 @@ function ReviewCard({
       });
       toast.success(
         approve
-          ? t("review.toastApproved", { name: record.supplierName })
+          ? t("review.toastApprovedNext")
           : t("review.toastReturned", { name: record.supplierName }),
         {
           action: {
-            label: t("review.toastViewInHistory"),
+            label: approve ? t("review.toastGoExecute") : t("review.toastViewInHistory"),
             onClick: () => router.push(`/history?focus=${record.id}`),
           },
         },
