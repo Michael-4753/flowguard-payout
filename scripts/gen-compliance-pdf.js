@@ -3,10 +3,15 @@ const path = require("path");
 const PDFDocument = require("pdfkit");
 
 const ROOT = "/home/user/flowguard-payout";
-const md = fs.readFileSync(path.join(ROOT, "COMPLIANCE_REVIEW.md"), "utf8");
+// Generic Markdown -> styled PDF renderer.
+// Usage: node scripts/gen-compliance-pdf.js <input.md> <output.pdf> [footer label]
+const IN = process.argv[2] || path.join(ROOT, "COMPLIANCE_REVIEW.md");
+const OUT_NAME = process.argv[3] || "FlowGuard-Compliance-Review.pdf";
+const FOOTER_LABEL = process.argv[4] || "FlowGuard · Compliance Wording Review";
+const md = fs.readFileSync(path.isAbsolute(IN) ? IN : path.join(ROOT, IN), "utf8");
 const OUT_DIR = path.join(ROOT, "public");
 fs.mkdirSync(OUT_DIR, { recursive: true });
-const OUT = path.join(OUT_DIR, "FlowGuard-Compliance-Review.pdf");
+const OUT = path.isAbsolute(OUT_NAME) ? OUT_NAME : path.join(OUT_DIR, OUT_NAME);
 
 const REG = "/tmp/NotoSansSC.ttf";
 const BOLD = "/tmp/NotoSansSC-Bold.ttf";
