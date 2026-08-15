@@ -170,7 +170,7 @@ bullets_grid(s, [
 ])
 
 # ---------- 5/6/7 features ----------
-def feature(eb, tt, st, items, shot=None):
+def feature(eb, tt, st, items, shot=None, video=None):
     s = prs.slides.add_slide(BLANK); bg(s, WHITE)
     eyebrow(s, eb); title(s, tt, size=30)
     add_text(s, Inches(0.9), Inches(1.7), Inches(7.7), Inches(0.7), st, 14, MUT)
@@ -180,20 +180,27 @@ def feature(eb, tt, st, items, shot=None):
         rect(s, Inches(0.9), y, Inches(lw), Inches(ch), CARDBG)
         add_text(s, Inches(1.1), y + Inches(0.12), Inches(lw - 0.4), Inches(0.4), f"{idx+1}. {head}", 15, INK, bold=True)
         add_text(s, Inches(1.1), y + Inches(0.5), Inches(lw - 0.4), Inches(0.5), body, 11.5, MUT)
-    # Screenshot intentionally removed — keep an empty placeholder box (same
-    # region/size) so the layout stays intact and screenshots can be pasted in
-    # manually later. `shot` arg is kept for signature compatibility.
-    rect(s, Inches(8.9), Inches(1.65), Inches(3.55), Inches(5.4), RGBColor(0xF1, 0xF5, 0xF9))
-    add_text(s, Inches(8.9), Inches(4.15), Inches(3.55), Inches(0.4), "在此处粘贴截图", 11, MUT, align=PP_ALIGN.CENTER)
-    add_text(s, Inches(8.9), Inches(7.12), Inches(3.55), Inches(0.3), "产品界面（现场可实测）", 9, MUT, align=PP_ALIGN.CENTER)
+    # Right column: embed a pre-recorded demo video when provided; otherwise keep
+    # an empty placeholder box (same region/size) so the layout stays intact and
+    # a screenshot/video can be added manually later. `shot` kept for compat.
+    if video and os.path.exists(video):
+        rect(s, Inches(8.9), Inches(1.65), Inches(3.55), Inches(5.4), RGBColor(0xF1, 0xF5, 0xF9))
+        s.shapes.add_movie(video, Inches(8.98), Inches(1.75), Inches(3.4), Inches(5.2),
+                           mime_type="video/mp4")
+        add_text(s, Inches(8.9), Inches(7.12), Inches(3.55), Inches(0.3), "Demo 视频（点击播放）", 9, MUT, align=PP_ALIGN.CENTER)
+    else:
+        rect(s, Inches(8.9), Inches(1.65), Inches(3.55), Inches(5.4), RGBColor(0xF1, 0xF5, 0xF9))
+        add_text(s, Inches(8.9), Inches(4.15), Inches(3.55), Inches(0.4), "在此处粘贴截图", 11, MUT, align=PP_ALIGN.CENTER)
+        add_text(s, Inches(8.9), Inches(7.12), Inches(3.55), Inches(0.3), "产品界面（现场可实测）", 9, MUT, align=PP_ALIGN.CENTER)
     return s
 SHOTS = "/home/user/flowguard-payout/public/pitch-shots"
+FEAT1_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_0oyps7645nfy4jjj-dac41ff6e4-feat-precheck-demo.mp4"
 feature("核心功能① · AI 为何必要","收款方信息预检-AI Agent","收款账户信息智能校验、国别规则适配、退回风险评分、合规风险提示报告。",
         [("账户信息智能校验","收款名/SWIFT/IBAN 一致性与账户状态校验，先拦截而非先失败。"),
          ("国别规则适配","按收款人国家/币种自动适配该走廊的结算要求，省去每次重新摸规则。"),
          ("退回风险评分","确定性规则引擎给出退回概率与命中因子；AI 补充语义/情境风险，只加警示、不降评分。"),
          ("合规风险提示报告","把检查项翻译成通俗解释与修复步骤，并可一键生成供应商核实工单。")],
-        shot=f"{SHOTS}/feat-precheck.png")
+        shot=f"{SHOTS}/feat-precheck.png", video=FEAT1_VIDEO)
 feature("核心功能② · AI 为何必要","多路径智能路由推荐引擎","统一池管理多类持牌结算通道，输出最优路径对比建议——平台不执行付款。",
         [("统一通道池","传统电汇、跨境人民币、第三方跨境支付通道；境外主体可选通道含境外持牌结算服务商方案。"),
          ("多维度比价","按费用、时效、退回率对各持牌通道自动排序，给出可解释的最优路径。"),
