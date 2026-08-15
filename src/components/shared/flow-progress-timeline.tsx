@@ -6,7 +6,7 @@ import { deriveFlowProgress } from "@/lib/analytics";
 import type { FlowHop, PaymentRecord } from "@/lib/engine/types";
 import { formatMinutes, formatUsd } from "@/lib/format";
 import { cn } from "@/utils/utils";
-import { hopBank } from "@/lib/i18n-labels";
+import { hopBank, flowCaption } from "@/lib/i18n-labels";
 import { AiInsightCard } from "@/components/ai/ai-insight-card";
 
 /**
@@ -46,7 +46,7 @@ export function FlowProgressTimeline({ record }: { record: PaymentRecord }) {
                 : "text-foreground",
           )}
         >
-          {caption}
+          {flowCaption(t, caption)}
         </span>
       </div>
 

@@ -7,7 +7,7 @@ import { deriveFlowProgress } from "@/lib/analytics";
 import type { PaymentRecord } from "@/lib/engine/types";
 import { formatUsd } from "@/lib/format";
 import { cn } from "@/utils/utils";
-import { hopBank } from "@/lib/i18n-labels";
+import { hopBank, flowCaption } from "@/lib/i18n-labels";
 
 /**
  * Home-screen signature: a compact money-flow narrative strip. Picks the most
@@ -39,7 +39,7 @@ export function HeroFlowStrip({
       {/* header row */}
       <div className="flex items-center justify-between gap-2">
         <span className="min-w-0 truncate text-[11px] font-medium text-muted-foreground">
-          <span className="text-foreground">{record.supplierName}</span> · {caption}
+          <span className="text-foreground">{record.supplierName}</span> · {flowCaption(t, caption)}
         </span>
         <span className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-primary">
           {t("flow.track")} <ArrowRight className="h-3 w-3" aria-hidden />
