@@ -1,0 +1,217 @@
+#!/usr/bin/env python3
+# Generates FlowGuard-Hackathon-Pitch.pptx (16:9, Chinese) into public/.
+# Uses python-pptx; embeds the demo illustration; CJK-safe via East-Asian font.
+import os
+from pptx import Presentation
+from pptx.util import Inches, Pt, Emu
+from pptx.dml.color import RGBColor
+from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pptx.oxml.ns import qn
+
+ROOT = "/home/user/flowguard-payout"
+OUT = os.path.join(ROOT, "public", "FlowGuard-Hackathon-Pitch.pptx")
+DEMO = os.path.join(ROOT, "public", "pitch-shots", "demo.png")
+CN = "Noto Sans CJK SC"
+
+TEAL = RGBColor(0x0F, 0x76, 0x6E)
+INK = RGBColor(0x0F, 0x17, 0x2A)
+MUT = RGBColor(0x64, 0x74, 0x8B)
+WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+CARDBG = RGBColor(0xF1, 0xF5, 0xF9)
+RED = RGBColor(0x99, 0x1B, 0x1B)
+REDBG = RGBColor(0xB9, 0x1B, 0x1B)
+
+prs = Presentation()
+prs.slide_width = Inches(13.333)
+prs.slide_height = Inches(7.5)
+SW, SH = prs.slide_width, prs.slide_height
+BLANK = prs.slide_layouts[6]
+
+def set_cn(run, bold=False):
+    run.font.name = CN
+    r = run._r
+    rpr = r.get_or_add_rPr()
+    for tag in ("a:latin", "a:ea", "a:cs"):
+        e = rpr.find(qn(tag))
+        if e is None:
+            e = rpr.makeelement(qn(tag), {}); rpr.append(e)
+        e.set("typeface", CN)
+    run.font.bold = bold
+
+def add_text(slide, x, y, w, h, text, size, color, bold=False, align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.TOP):
+    tb = slide.shapes.add_textbox(x, y, w, h)
+    tf = tb.text_frame; tf.word_wrap = True
+    tf.vertical_anchor = anchor
+    p = tf.paragraphs[0]; p.alignment = align
+    run = p.add_run(); run.text = text
+    run.font.size = Pt(size); run.font.color.rgb = color
+    set_cn(run, bold)
+    return tb
+
+def rect(slide, x, y, w, h, fill, line=None):
+    from pptx.enum.shapes import MSO_SHAPE
+    sp = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h)
+    sp.fill.solid(); sp.fill.fore_color.rgb = fill
+    if line is None:
+        sp.line.fill.background()
+    else:
+        sp.line.color.rgb = line; sp.line.width = Pt(1)
+    sp.shadow.inherit = False
+    return sp
+
+def bg(slide, color):
+    slide.background.fill.solid()
+    slide.background.fill.fore_color.rgb = color
+
+def eyebrow(slide, text, color=TEAL):
+    add_text(slide, Inches(0.9), Inches(0.55), Inches(11.5), Inches(0.4), text, 14, color, bold=True)
+
+def title(slide, text, color=INK, size=36):
+    add_text(slide, Inches(0.9), Inches(0.95), Inches(11.5), Inches(1.0), text, size, color, bold=True)
+
+def subtitle(slide, text, color=MUT):
+    add_text(slide, Inches(0.9), Inches(1.95), Inches(11.5), Inches(0.8), text, 16, color)
+
+def bullets_grid(slide, items, top=2.7, card_fill=CARDBG, head_color=INK, body_color=MUT, cols=2):
+    gap = 0.25
+    total_w = 11.5
+    cw = (total_w - gap * (cols - 1)) / cols
+    ch = 1.25
+    for idx, (head, body) in enumerate(items):
+        r = idx // cols; c = idx % cols
+        x = Inches(0.9 + c * (cw + gap)); y = Inches(top + r * (ch + gap))
+        rect(slide, x, y, Inches(cw), Inches(ch), card_fill)
+        add_text(slide, x + Inches(0.2), y + Inches(0.12), Inches(cw - 0.4), Inches(0.4), head, 16, head_color, bold=True)
+        add_text(slide, x + Inches(0.2), y + Inches(0.55), Inches(cw - 0.4), Inches(0.6), body, 12.5, body_color)
+
+def footnote(slide, text, color=MUT):
+    add_text(slide, Inches(0.9), Inches(6.9), Inches(11.5), Inches(0.4), text, 11, color)
+
+# ---------- 1 cover ----------
+s = prs.slides.add_slide(BLANK); bg(s, TEAL)
+add_text(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(0.5),
+         "2026 创青春 AI 黑客松 · 顺德行 · 自由创新赛道", 15, RGBColor(0xCC,0xEE,0xEA), bold=True, align=PP_ALIGN.CENTER)
+add_text(s, Inches(0.9), Inches(2.2), Inches(11.5), Inches(1.4), "FlowGuard", 72, WHITE, bold=True, align=PP_ALIGN.CENTER)
+add_text(s, Inches(1.4), Inches(3.9), Inches(10.5), Inches(1.0),
+         "把 AI 带进真实场景：跨境付款「先核查，再付款」的风控控制台", 22, RGBColor(0xEA,0xF7,0xF5), align=PP_ALIGN.CENTER)
+add_text(s, Inches(0.9), Inches(6.4), Inches(11.5), Inches(0.5),
+         "一人团队 · 负责 App 全部内容 · 5 分钟路演", 13, RGBColor(0xBF,0xE4,0xE0), align=PP_ALIGN.CENTER)
+
+# ---------- 2 toc ----------
+s = prs.slides.add_slide(BLANK); bg(s, WHITE)
+eyebrow(s, "目录"); title(s, "今天用 5 分钟讲清 9 件事")
+toc = ["真实问题：谁在痛、痛在哪","产品介绍：FlowGuard 是什么","核心功能①：付款前退回风险预检",
+       "核心功能②：AI 补充风险信号+合规简报","核心功能③：双人审批+生成付款指令","现场 Demo：你能看到什么",
+       "技术架构：怎么实现的","合规边界：我们不碰什么（关键）","总结与可继续方向"]
+for idx, item in enumerate(toc):
+    c = idx % 3; r = idx // 3
+    x = Inches(0.9 + c*3.95); y = Inches(2.55 + r*1.35)
+    rect(s, x, y, Inches(3.75), Inches(1.15), CARDBG)
+    add_text(s, x+Inches(0.15), y+Inches(0.12), Inches(0.5), Inches(0.5), str(idx+1), 18, TEAL, bold=True)
+    add_text(s, x+Inches(0.7), y+Inches(0.2), Inches(2.9), Inches(0.8), item, 13, INK, bold=True)
+
+# ---------- 3 problem ----------
+s = prs.slides.add_slide(BLANK); bg(s, WHITE)
+eyebrow(s, "真实问题 · 谁会使用"); title(s, "跨境 B2B 付款，至今仍是「盲发」")
+subtitle(s, "使用者：外贸企业出纳/财务、跨境电商、做海外供应商结算的中小企业。")
+bullets_grid(s, [
+    ("先发后祈祷","钱汇出去才知道会被退回——资金冻结数日，业务停摆、供应商催货。"),
+    ("退回原因藏在细节","收款人信息一个字段不符、通道选错，就整笔退回，出纳无从预判。"),
+    ("选错通道白花钱","稳定币直连 vs 本地法币凭感觉选，费用更高、失败率更高。"),
+    ("缺少双人控制","一个人又发起又确认，填错没有第二道拦截，直接造成损失。"),
+])
+footnote(s, "真实、高频、可被验证的痛点——不是未来概念。")
+
+# ---------- 4 product ----------
+s = prs.slides.add_slide(BLANK); bg(s, WHITE)
+eyebrow(s, "产品介绍 · 解决什么"); title(s, "付款前的「退回风险 + 合规」控制台")
+subtitle(s, "一句话：在把付款指令提交给持牌机构之前，先预检退回风险、比价选路、双人放行。")
+bullets_grid(s, [
+    ("全链路闭环","预检→供应商核实→双人审批→生成付款指令(提交持牌机构)→到账确认→自动对账。"),
+    ("双通道比价","稳定币直连 vs 本地法币，按费用/时效/退回率自动排序，给出可解释推荐。"),
+    ("面向真实用户","为中小外贸出纳设计，移动端优先，几步走完一笔高风险付款的完整控制。"),
+    ("产出是指令","批准即生成付款指令，交由持牌机构划付——平台不经手资金。"),
+])
+
+# ---------- 5/6/7 features ----------
+def feature(eb, tt, st, items):
+    s = prs.slides.add_slide(BLANK); bg(s, WHITE)
+    eyebrow(s, eb); title(s, tt); subtitle(s, st)
+    bullets_grid(s, items)
+    return s
+feature("核心功能① · AI 为何必要","付款前退回风险预检","确定性规则引擎：给出退回概率、命中风险因子、最可能的卡点。",
+        [("先拦截，而非先失败","竞品在失败后对账；我们在提交前给出退回概率并指出卡点。"),
+         ("可解释","每个风险因子都能展开，告诉出纳为什么会被退、该补什么。"),
+         ("一键转核实","数据质量类因子可一键生成供应商核实工单，核实后自动清除/软化。"),
+         ("为高风险把关","超大额、受限地区、休眠账户等自动进入高风险通道。")])
+feature("核心功能② · AI 为何必要","AI 补充风险信号 + 合规简报","规则覆盖不了的语义与情境风险，交给 AI（DeepSeek）。",
+        [("抓规则抓不到的","语义矛盾、与历史失败的相似度、可能缺失的单据——只加警示，绝不降低评分。"),
+         ("合规简报","把一堆检查项，翻译成出纳看得懂的通俗解释与修复步骤。"),
+         ("AI 起草核实消息","自动向供应商起草精准、具体的求证消息，省去反复沟通。"),
+         ("为什么必须有 AI","退回原因高度非结构化、随通道与国家变化；规则是骨架，AI 是识别隐藏风险的关键。")])
+feature("核心功能③ · 成果可演示","双人审批 + 生成付款指令","Maker-Checker 职责分离，服务端硬性禁止自我批准。",
+        [("第二签才放行","出纳(Maker)提交，复核人(Checker)第二签批准；高风险进第二签通道。"),
+         ("全程审计留痕","每次批准/退回都记录签批人与时间，写入历史。"),
+         ("产出是指令","批准=生成付款指令，交由持牌机构划付——平台不经手资金。"),
+         ("防错防内控","把关键控制点前置，减少人为疏漏造成的资金损失。")])
+
+# ---------- 8 demo ----------
+s = prs.slides.add_slide(BLANK); bg(s, WHITE)
+eyebrow(s, "现场可以看到什么"); title(s, "现场 Demo：一笔高风险付款的完整拦截", size=32)
+add_text(s, Inches(0.9), Inches(1.85), Inches(11.5), Inches(0.6),
+         "现场可运行：新建付款→预检亮红→AI 信号→核实清除→双人放行→生成指令。", 15, MUT)
+if os.path.exists(DEMO):
+    s.shapes.add_picture(DEMO, Inches(1.35), Inches(2.5), width=Inches(10.6))
+footnote(s, "现场可运行、可演示核心功能——不是 PPT 概念。可扫码访问在线应用实测。")
+
+# ---------- 9 architecture ----------
+s = prs.slides.add_slide(BLANK); bg(s, WHITE)
+eyebrow(s, "过程可说明 · 技术架构"); title(s, "怎么实现的")
+subtitle(s, "Next.js(App Router)+TypeScript+Tailwind；确定性规则引擎+DeepSeek AI；双语 i18n。")
+bullets_grid(s, [
+    ("前端 / 应用","Next.js 15 + React + Tailwind，移动端优先；react-i18next 中英双语。"),
+    ("风控内核","确定性退回风险规则引擎(可解释、可复现) + DeepSeek 作为补充语义信号层。"),
+    ("数据与流转","付款指令/收款人台账/工单/到账确认/对账 全链路数据模型。"),
+    ("工程质量","全站 TypeScript 0 error、双语键 386/386 对齐、关键路由端到端可跑。"),
+])
+
+# ---------- 10 compliance ----------
+s = prs.slides.add_slide(BLANK); bg(s, RED)
+add_text(s, Inches(0.9), Inches(0.55), Inches(11.5), Inches(0.4), "合规边界 · 打消最大顾虑", 14, RGBColor(0xFE,0xCA,0xCA), bold=True)
+add_text(s, Inches(0.9), Inches(0.95), Inches(11.5), Inches(1.0), "我们「不碰」什么", 40, WHITE, bold=True)
+add_text(s, Inches(0.9), Inches(1.95), Inches(11.5), Inches(0.7),
+         "FlowGuard 是纯软件决策支持工具——这是产品的底线，也是可持续的前提。", 16, RGBColor(0xFE,0xE2,0xE2))
+comp = [("✕ 不持牌","不持有任何支付/金融牌照，不以金融机构身份展业。"),
+        ("✕ 不经手资金","不收款、不放款、不托管资金；任何环节都不流经资金。"),
+        ("✕ 不做加密兑换/转账","不提供稳定币/加密货币的兑换、托管或转账服务。"),
+        ("✕ 由持牌机构结算","资金结算均由持牌金融机构完成；平台只做风控、选路、生成指令与追踪。")]
+gap=0.25; cw=(11.5-gap)/2; ch=1.3
+for idx,(head,body) in enumerate(comp):
+    c=idx%2; r=idx//2
+    x=Inches(0.9+c*(cw+gap)); y=Inches(2.75+r*(ch+gap))
+    rect(s,x,y,Inches(cw),Inches(ch),REDBG)
+    add_text(s,x+Inches(0.2),y+Inches(0.12),Inches(cw-0.4),Inches(0.4),head,17,WHITE,bold=True)
+    add_text(s,x+Inches(0.2),y+Inches(0.58),Inches(cw-0.4),Inches(0.6),body,13,RGBColor(0xFE,0xE2,0xE2))
+add_text(s, Inches(0.9), Inches(6.85), Inches(11.5), Inches(0.4),
+         "全站措辞已按此口径统一，并附双语《合规审查报告》PDF。", 11, RGBColor(0xFE,0xCA,0xCA))
+
+# ---------- 11 summary ----------
+s = prs.slides.add_slide(BLANK); bg(s, TEAL)
+add_text(s, Inches(0.9), Inches(1.0), Inches(11.5), Inches(0.4), "总结 · 方向可继续", 14, RGBColor(0xCC,0xEE,0xEA), bold=True, align=PP_ALIGN.CENTER)
+add_text(s, Inches(0.9), Inches(1.5), Inches(11.5), Inches(1.0), "真实问题 · AI 必要 · 现场可演示 · 边界清晰", 34, WHITE, bold=True, align=PP_ALIGN.CENTER)
+add_text(s, Inches(1.4), Inches(2.7), Inches(10.5), Inches(0.7),
+         "一人团队，独立完成 App 全部内容：产品、风控逻辑、AI 集成、双语、合规措辞与文档。", 16, RGBColor(0xEA,0xF7,0xF5), align=PP_ALIGN.CENTER)
+cards=[("已验证","完整闭环可现场跑通；工程质量与合规口径均已落地。"),
+       ("可继续","接入更多真实持牌通道、只读 ERP 对账、案例库随使用增长。"),
+       ("一句话","让每一笔跨境付款，在提交给持牌机构之前，先被 AI 与规则一起看一眼。")]
+cw=3.7; gap=0.3
+for idx,(h,b) in enumerate(cards):
+    x=Inches(0.9+idx*(cw+gap)); y=Inches(3.9)
+    rect(s,x,y,Inches(cw),Inches(1.9),RGBColor(0x11,0x5E,0x59))
+    add_text(s,x+Inches(0.2),y+Inches(0.15),Inches(cw-0.4),Inches(0.4),h,17,WHITE,bold=True)
+    add_text(s,x+Inches(0.2),y+Inches(0.65),Inches(cw-0.4),Inches(1.1),b,13,RGBColor(0xDF,0xF1,0xEF))
+add_text(s, Inches(0.9), Inches(6.7), Inches(11.5), Inches(0.4),
+         "FlowGuard · 2026 创青春 AI 黑客松 · 自由创新赛道", 12, RGBColor(0xBF,0xE4,0xE0), align=PP_ALIGN.CENTER)
+
+prs.save(OUT)
+print("PPTX written:", OUT, os.path.getsize(OUT), "bytes | slides:", len(prs.slides._sldIdLst))
