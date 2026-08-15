@@ -404,19 +404,20 @@
     "generatedBy": "由 DeepSeek 生成 · 发送前请核实"
   },
   "publicReceipt": {
-    "header": "FlowGuard · 收款回执",
+    "header": "FlowGuard · 到账确认",
     "loading": "加载中…",
-    "notFoundTitle": "未找到回执链接",
+    "notFoundTitle": "未找到确认链接",
     "notFoundDesc": "此链接可能无效或已过期。请联系发送方。",
-    "incomingFrom": "来款方",
-    "confirmedOn": "已于 {{date}} 确认收款。谢谢——发送方已收到通知。",
-    "confirmedNoDate": "已确认收款。谢谢——发送方已收到通知。",
-    "confirmPrompt": "资金到账后，请在下方确认收款。这将为发送方记录到账凭证。",
+    "incomingFrom": "付款方（付款发起人）",
+    "confirmedOn": "已于 {{date}} 确认到账。谢谢——发起方已收到通知。",
+    "confirmedNoDate": "已确认到账。谢谢——发起方已收到通知。",
+    "confirmPrompt": "资金到账后，请在下方确认。这仅用于为发起方记录到账凭证。",
     "notePlaceholder": "可选备注（如实收金额、说明）",
     "error": "无法确认，请重试。",
     "confirming": "确认中…",
-    "confirmReceived": "确认已收到资金",
-    "secured": "通过不可猜测的链接保护 · 无需登录"
+    "confirmReceived": "确认已到账",
+    "secured": "通过不可猜测的链接保护 · 无需登录",
+    "complianceNote": "FlowGuard 为软件工具，不经手、不托管资金；款项由持牌金融机构划付。本页仅供你确认资金是否到账。"
   },
   "publicCase": {
     "loading": "正在加载共享工单…",
