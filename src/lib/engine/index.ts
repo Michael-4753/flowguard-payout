@@ -451,7 +451,7 @@ export const CHANNELS: ChannelSpec[] = [
   {
     id: "stablecoin-direct",
     channelClass: "stablecoin-direct",
-    name: "Licensed Digital Settlement",
+    name: "Licensed Overseas Settlement",
     baseFeeRate: 0.0026,
     fixedFeeUsd: 5,
     baseMinutes: 150,

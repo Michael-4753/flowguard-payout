@@ -18,7 +18,7 @@ export type PaymentStatus =
 export type ChannelClass = "stablecoin-direct" | "local-fiat";
 
 export const CHANNEL_CLASS_LABEL: Record<ChannelClass, string> = {
-  "stablecoin-direct": "Licensed Digital Settlement",
+  "stablecoin-direct": "Licensed Overseas Settlement",
   "local-fiat": "Local Fiat Payout",
 };
 
