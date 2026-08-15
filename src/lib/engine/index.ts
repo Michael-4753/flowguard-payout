@@ -60,6 +60,7 @@ function amountTierFor(amountUsd: number): {
   points: number;
   severity: Severity;
   description: string;
+  tier: "small" | "mid" | "large" | "huge";
   forceHigh: boolean;
 } {
   if (amountUsd >= 1_000_000) {
@@ -68,6 +69,7 @@ function amountTierFor(amountUsd: number): {
       severity: "critical",
       description:
         "Very large payout (≥ $1M) — routed through the high-risk approval lane and requires a second-signature review.",
+      tier: "huge",
       forceHigh: true,
     };
   }
@@ -76,6 +78,7 @@ function amountTierFor(amountUsd: number): {
       points: 18,
       severity: "warn",
       description: "Large payout ($100k–$1M) — elevated scrutiny before approval.",
+      tier: "large",
       forceHigh: false,
     };
   }
@@ -84,6 +87,7 @@ function amountTierFor(amountUsd: number): {
       points: 8,
       severity: "warn",
       description: "Mid-size payout ($10k–$100k) — moderate additional scrutiny.",
+      tier: "mid",
       forceHigh: false,
     };
   }
@@ -91,6 +95,7 @@ function amountTierFor(amountUsd: number): {
     points: 0,
     severity: "info",
     description: "Small payout (< $10k) — no amount-based risk added.",
+    tier: "small",
     forceHigh: false,
   };
 }
@@ -221,6 +226,7 @@ export function assessRisk(supplier: Supplier, amountUsd = 0): RiskAssessment {
     remediation: "Attach an invoice + business purpose; consider a licensed local PSP corridor.",
     hit: controlled,
     category: "structural",
+    meta: { currency: supplier.currency },
   });
 
   // 8. Payment amount tier — larger payouts warrant stricter scrutiny.
@@ -235,6 +241,7 @@ export function assessRisk(supplier: Supplier, amountUsd = 0): RiskAssessment {
       "Larger payouts warrant extra scrutiny — verify the invoice, business purpose and beneficiary before approval.",
     hit: amountTier.points > 0,
     category: "structural",
+    meta: { tier: amountTier.tier },
   });
 
   const rawScore = factors.reduce((s, f) => s + f.points, 0);
