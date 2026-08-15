@@ -41,7 +41,7 @@
     "emptyDesc": "Run a return-risk pre-check and route your first payment — it will show up here."
   },
   "build": {
-    "title": "New payment",
+    "title": "New payment instruction",
     "subtitle": "Pick a payee and amount to run the return-risk pre-check.",
     "payee": "Payee",
     "amount": "Amount",
