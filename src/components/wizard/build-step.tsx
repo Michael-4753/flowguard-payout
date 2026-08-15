@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { ArrowRight, Check, Globe2 } from "lucide-react";
 import type { ChannelClass, Currency, Supplier } from "@/lib/engine/types";
-import { CHANNEL_CLASS_LABEL, RISK_LEVEL_LABEL } from "@/lib/engine/types";
+import { channelLabel, riskLabel } from "@/lib/i18n-labels";
 import { cn } from "@/utils/utils";
 
 const CHANNELS: (ChannelClass | "auto")[] = ["auto", "stablecoin-direct", "local-fiat"];
@@ -94,7 +94,7 @@ export function BuildStep({
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <span className="text-[10px] text-muted-foreground">{RISK_LEVEL_LABEL[s.riskTag]}</span>
+              <span className="text-[10px] text-muted-foreground">{riskLabel(t, s.riskTag)}</span>
               {supplierId === s.id && <Check className="h-4 w-4 text-primary" />}
             </div>
           </button>
@@ -165,7 +165,7 @@ export function BuildStep({
                 : "border-border text-muted-foreground",
             )}
           >
-            {c === "auto" ? t("build.auto") : CHANNEL_CLASS_LABEL[c]}
+            {c === "auto" ? t("build.auto") : channelLabel(t, c)}
           </button>
         ))}
       </div>
@@ -194,7 +194,7 @@ export function BuildStep({
         )}
         data-el="wizard-run-precheck"
       >
-        Run pre-check <ArrowRight className="h-4 w-4" />
+        {t("build.runPrecheck")} <ArrowRight className="h-4 w-4" />
       </button>
       {!canSubmit && (
         <p className="mt-2 text-center text-[11px] text-muted-foreground" data-el="wizard-run-hint">
