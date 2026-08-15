@@ -159,6 +159,9 @@ export function PublicReceiptScreen({ token }: { token: string }) {
         </div>
       )}
 
+      <p className="mt-1 text-center text-[10px] leading-relaxed text-muted-foreground" data-el="receipt-compliance">
+        {t("publicReceipt.complianceNote")}
+      </p>
       <p className="text-center text-[10px] text-muted-foreground">
         {t("publicReceipt.secured")}
       </p>
