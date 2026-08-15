@@ -272,10 +272,27 @@ add_text(s, Inches(0.9), Inches(6.95), Inches(11.5), Inches(0.4),
 # ---------- 9 demo ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
 eyebrow(s, "预录 Demo 视频 · 逐页展示"); title(s, "Demo：逐页看每个页面在做什么", size=32)
-# Demo video not yet placed — keep an empty placeholder box (same region) so the
-# slide layout stays intact and a demo video can be placed in manually later.
-rect(s, Inches(1.35), Inches(2.5), Inches(10.6), Inches(4.3), RGBColor(0xF1, 0xF5, 0xF9))
-add_text(s, Inches(1.35), Inches(4.5), Inches(10.6), Inches(0.5), "在此处放入 Demo 视频", 14, MUT, align=PP_ALIGN.CENTER)
+# Two columns: LEFT = what each app page does; RIGHT = demo video placeholder.
+DEMO_PAGES = [
+    ("首页 · 概览", "待办付款、进行中笔数与整体退回风险一屏概览，作为进入各流程的入口。"),
+    ("付款向导 · 退回预检", "规则引擎给出退回概率与命中因子，AI 补充语义风险，先拦截而非先失败。"),
+    ("付款向导 · 比价选路", "多持牌通道按费用/时效/退回率排序，AI 解释为什么推荐这条路径。"),
+    ("结算对账看板", "逐跳追踪中间行、标注黑箱卡点，聚合进度凭证，自动核销并导出对账单。"),
+    ("双人放行审批", "大额进入双人/多级复核，指令生成前留痕，责任可追溯——平台不经手资金。"),
+    ("AI 核实工单 / 案例", "检查结论转通俗说明与修复步骤，一键生成核实工单，沉淀为可复用案例。"),
+]
+ROW_H, ROW_GAP = 0.72, 0.12
+LX, LY, LW = 0.9, 2.35, 7.4
+for i, (nm, body) in enumerate(DEMO_PAGES):
+    ry = LY + i * (ROW_H + ROW_GAP)
+    rect(s, Inches(LX), Inches(ry), Inches(LW), Inches(ROW_H), RGBColor(0xF1, 0xF5, 0xF9))
+    rect(s, Inches(LX + 0.14), Inches(ry + 0.14), Inches(0.4), Inches(0.4), TEAL)
+    add_text(s, Inches(LX + 0.14), Inches(ry + 0.15), Inches(0.4), Inches(0.38), str(i + 1), 12, WHITE, bold=True, align=PP_ALIGN.CENTER)
+    add_text(s, Inches(LX + 0.66), Inches(ry + 0.08), Inches(LW - 0.8), Inches(0.32), nm, 12, INK, bold=True)
+    add_text(s, Inches(LX + 0.66), Inches(ry + 0.38), Inches(LW - 0.8), Inches(0.3), body, 9.5, MUT)
+# Right column: demo video placeholder (vertical 9:16-ish box).
+rect(s, Inches(8.65), Inches(2.35), Inches(3.75), Inches(4.72), RGBColor(0xF1, 0xF5, 0xF9))
+add_text(s, Inches(8.65), Inches(4.55), Inches(3.75), Inches(0.5), "在此处放入 Demo 视频", 13, MUT, align=PP_ALIGN.CENTER)
 footnote(s, "预录 Demo 视频、逐页展示各功能页面——不是 PPT 概念。可扫码访问在线应用实测。")
 
 # ---------- 9 architecture ----------
