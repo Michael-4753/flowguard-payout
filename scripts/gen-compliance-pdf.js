@@ -21,14 +21,19 @@ const stream = fs.createWriteStream(OUT);
 doc.pipe(stream);
 
 // draw footer immediately when a page is added (no buffering, no extra pages)
+let inFooter = false;
 doc.on("pageAdded", () => {
+  if (inFooter) return; // guard against re-entry if footer text ever overflows
+  inFooter = true;
   pageNo += 1;
   const n = pageNo;
-  const savedY = doc.y;
   doc.fillColor("#64748b").font("reg").fontSize(8)
-    .text(`FlowGuard · 合规措辞审查报告 / Compliance Wording Review · 第 ${n} 页`,
-      M, doc.page.height - M - 8, { width: doc.page.width - M * 2, align: "center" });
-  doc.y = savedY; // restore so body continues from top margin
+    .text(`FlowGuard · Compliance Wording Review · 第 ${n} 页`,
+      M, doc.page.height - M - 8,
+      { width: doc.page.width - M * 2, align: "center", lineBreak: false });
+  doc.x = M;
+  doc.y = M; // body starts at top margin
+  inFooter = false;
 });
 doc.addPage();
 
