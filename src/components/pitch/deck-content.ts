@@ -44,7 +44,7 @@ export const DECK_ZH: DeckSlide[] = [
       { head: "AI + 金额分档预检", body: "DeepSeek AI 与确定性引擎评估退回概率;金额分档升级审查,≥ 100 万美元强制进入高风险车道。" },
       { head: "先向供应商核查", body: "数据质量问题(公司名 / IBAN / SWIFT / 账户)必须先作为 Case 同步给收款人 —— 未核实或未显式豁免前,审批被拦截。" },
       { head: "强制经办—审批分离", body: "以「经办」提交,以「审批」批准,自审在前后端双重硬拦截。当前为单账户演示(切换身份展示机制),生产环境为两个独立账户。" },
-      { head: "双通道 + 双币种", body: "境外持牌数字结算与本地法币按风险和成本自动排序;每笔付款展示 结算币种 → 收款人本地币种。" },
+      { head: "双通道 + 双币种", body: "境外持牌结算服务商与本地法币按风险和成本自动排序;每笔付款展示 结算币种 → 收款人本地币种。" },
     ],
   },
   {
@@ -67,7 +67,7 @@ export const DECK_ZH: DeckSlide[] = [
     subtitle: "事前风险 + 先核查 + 强制双人控制,集于一个控制台。",
     bullets: [
       { head: "事前拦截,而非事后补救", body: "同类产品在失败后才对账。我们先拦住失败 —— 并通过向供应商核查来清除它。" },
-      { head: "两条通道,一次决策", body: "境外持牌数字结算与本地法币在同一流程中比较,并带结算 / 到账双币种。" },
+      { head: "两条通道,一次决策", body: "境外持牌结算服务商与本地法币在同一流程中比较,并带结算 / 到账双币种。" },
       { head: "合规是原生的", body: "金额分档车道、强制经办—审批、完整审计轨迹是核心 —— 而非附加功能。" },
     ],
   },
@@ -121,7 +121,7 @@ export const DECK_EN: DeckSlide[] = [
       { head: "Send-and-pray wires", body: "You only learn a payment will bounce after it leaves — funds frozen for days while returns settle." },
       { head: "Dirty beneficiary data", body: "Wrong company name, bad IBAN, dormant accounts. Banks silently return the wire; reconciliation is manual." },
       { head: "No dual control", body: "A single cashier can push a large payout alone — real compliance and fraud exposure." },
-      { head: "Wrong rail = wasted money", body: "Licensed Digital Settlement vs local fiat picked by gut feel means higher fees and higher failure rates." },
+      { head: "Wrong rail = wasted money", body: "Licensed Overseas Settlement vs local fiat picked by gut feel means higher fees and higher failure rates." },
     ],
   },
   {
@@ -133,7 +133,7 @@ export const DECK_EN: DeckSlide[] = [
       { head: "AI + amount-tier precheck", body: "DeepSeek AI and a deterministic engine score return probability; amount tiers escalate scrutiny, and payouts ≥ $1M are forced into the high-risk lane." },
       { head: "Verify-first with the supplier", body: "Data-quality problems (name / IBAN / SWIFT / account) must be synced to the payee as a Case first — approval is gated until verified or explicitly overridden." },
       { head: "Maker-checker, enforced", body: "Submit as Maker, approve as Checker; self-approval is hard-blocked front-end and server-side. Shown here in single-account demo mode; production uses two separate accounts." },
-      { head: "Dual-route + dual currency", body: "Licensed Digital Settlement vs Local Fiat auto-ranked by risk and cost; each payout shows settlement currency → payee's local currency." },
+      { head: "Dual-route + dual currency", body: "Licensed Overseas Settlement vs Local Fiat auto-ranked by risk and cost; each payout shows settlement currency → payee's local currency." },
     ],
   },
   {
@@ -156,7 +156,7 @@ export const DECK_EN: DeckSlide[] = [
     subtitle: "Pre-send risk + verify-first + enforced dual control, in one console.",
     bullets: [
       { head: "Pre-send, not post-hoc", body: "Competitors reconcile after failure. We block it first — and clear it by verifying with the supplier." },
-      { head: "Two rails, one decision", body: "Licensed digital settlement and local fiat compared in the same flow, with dual settlement / payee currency." },
+      { head: "Two rails, one decision", body: "Licensed overseas settlement and local fiat compared in the same flow, with dual settlement / payee currency." },
       { head: "Compliance is native", body: "Amount-tier lanes, enforced maker-checker, and a full audit trail are core — not a bolt-on." },
     ],
   },
