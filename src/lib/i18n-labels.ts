@@ -94,6 +94,25 @@ export function hopBank(t: TFunction, hop: { id: string; bankName: string }): st
 }
 
 /**
+ * Localized predicted return-reason title / source. Reasons carry stable ids
+ * (swift / iban / currency-control / amount-tier …) mapping to a risk factor;
+ * translate on id, falling back to the English string the engine produced.
+ */
+export function returnReasonTitle(
+  t: TFunction,
+  r: { id: string; title: string },
+): string {
+  return t(`returnReason.${r.id}.title`, { defaultValue: r.title });
+}
+
+export function returnReasonSource(
+  t: TFunction,
+  r: { id: string; source: string },
+): string {
+  return t(`returnReason.${r.id}.source`, { defaultValue: r.source });
+}
+
+/**
  * Localized money-flow status caption. Takes the structured caption from
  * `deriveFlowProgress` ({ key, hopId?, bankName? }) and renders it, translating
  * the referenced bank name too. Empty key → empty string.
