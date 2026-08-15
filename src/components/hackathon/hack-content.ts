@@ -126,6 +126,7 @@ export const HACK_DECK: HackSlide[] = [
       { head: "为什么要 AI", body: "通道规则随国别/币种/额度多变，AI 帮助在多变约束下给出可解释的路径推荐。" },
     ],
     shot: "/pitch-shots/feat-route.png",
+    video: "/eazo-assets/att_385lhafcz161fcq3-190894a7b5-feat-route-demo.mp4",
   },
   {
     id: "f3",
