@@ -126,6 +126,7 @@ export const HACK_DECK: HackSlide[] = [
       { head: "为什么要 AI", body: "规则引擎决定选哪条路径，AI 只负责用自然语言把「为什么推荐这条、它比其他通道好在哪」讲清楚——可解释、可复核。" },
     ],
     shot: "/pitch-shots/feat-route.png",
+    video: "/eazo-assets/att_3puez7yyd5h6in45ypp-feat-route-demo-v2.mp4",
   },
   {
     id: "f3",
