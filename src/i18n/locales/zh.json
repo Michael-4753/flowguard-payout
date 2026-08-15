@@ -47,7 +47,6 @@
     "pay": "付款",
     "payees": "收款人",
     "review": "审批",
-    "milestones": "里程碑",
     "cases": "工单",
     "history": "历史",
     "awaitingReply": "{{count}} 条待回复"
@@ -478,34 +477,5 @@
     "prevSlide": "上一页",
     "nextSlide": "下一页",
     "goToSlide": "跳到第 {{n}} 页"
-  },
-  "milestones": {
-    "title": "里程碑工作台",
-    "subtitle": "管理外包/项目付款里程碑及其放款条件。纯软件的条件与提醒工具——不托管、不放款；付款指令在「付款」中生成，由持牌机构完成结算。",
-    "complianceNote": "仅做条件结算管理 · 不托管、不自动放款 · 付款指令在「付款」生成、由持牌机构结算。",
-    "emptyTitle": "还没有里程碑项目",
-    "emptyDesc": "添加一个项目及其里程碑，开始跟踪放款条件。",
-    "progress": "已校验 {{done}} / {{total}}",
-    "released": "已生成指令 {{released}} / {{total}} USD",
-    "condition": "放款条件",
-    "amount": "金额（USD）",
-    "statusPending": "待开始",
-    "statusInProgress": "进行中",
-    "statusAwaiting": "待校验",
-    "statusVerified": "已校验 · 提醒就绪",
-    "statusInstructed": "已生成指令",
-    "start": "标记进行中",
-    "submitCheck": "提交校验",
-    "verify": "校验通过 · 清除条件",
-    "verifyTitle": "条件已满足——校验通过后开启放款提醒。",
-    "evidencePlaceholder": "可选：校验凭证备注（如验收单、报告）",
-    "reminderTitle": "放款提醒",
-    "reminderBody": "条件已校验通过。生成付款指令——将提交给持牌机构。",
-    "generateInstruction": "生成付款指令",
-    "markInstructed": "标记已生成指令",
-    "reset": "重置演示数据",
-    "resetConfirm": "重置里程碑演示数据？种子项目会自动恢复。"
   }
 }
-
-

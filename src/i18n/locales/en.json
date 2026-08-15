@@ -47,7 +47,6 @@
     "pay": "Pay",
     "payees": "Payees",
     "review": "Review",
-    "milestones": "Milestones",
     "cases": "Cases",
     "history": "History",
     "awaitingReply": "{{count}} awaiting reply"
@@ -478,34 +477,5 @@
     "prevSlide": "Previous slide",
     "nextSlide": "Next slide",
     "goToSlide": "Go to slide {{n}}"
-  },
-  "milestones": {
-    "title": "Milestone workbench",
-    "subtitle": "Manage outsourcing / project payment milestones and their release conditions. A software-only condition & reminder tool — it holds no funds and never releases; the payout is generated in Pay and settled by a licensed institution.",
-    "complianceNote": "Condition-settlement management only · no custody, no auto-release · payout generated in Pay and settled by a licensed institution.",
-    "emptyTitle": "No milestone programs",
-    "emptyDesc": "Add a project and its milestones to start tracking release conditions.",
-    "progress": "{{done}} / {{total}} verified",
-    "released": "Instruction generated {{released}} / {{total}} USD",
-    "condition": "Release condition",
-    "amount": "Amount (USD)",
-    "statusPending": "Pending",
-    "statusInProgress": "In progress",
-    "statusAwaiting": "Awaiting check",
-    "statusVerified": "Verified · reminder ready",
-    "statusInstructed": "Instruction generated",
-    "start": "Mark in progress",
-    "submitCheck": "Submit for check",
-    "verify": "Verify · clear condition",
-    "verifyTitle": "Condition met — verify to enable the release reminder.",
-    "evidencePlaceholder": "Optional evidence note (e.g. acceptance doc, report)",
-    "reminderTitle": "Release reminder",
-    "reminderBody": "Condition verified. Generate the payout instruction — it will be submitted to a licensed institution.",
-    "generateInstruction": "Generate payout instruction",
-    "markInstructed": "Mark instruction generated",
-    "reset": "Reset demo data",
-    "resetConfirm": "Reset milestone demo data? Seed programs will be restored."
   }
 }
-
-
