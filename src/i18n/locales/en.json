@@ -396,7 +396,15 @@
     "aiCta": "Explain this flow with AI",
     "aiHint": "Ask DeepSeek where the funds are, why they may be held, and what to do next — based on the hops above.",
     "aiLoading": "Tracing the corridor…",
-    "aiActions": "What you can do"
+    "aiActions": "What you can do",
+    "blackboxClear": "Traceable",
+    "blackboxPartial": "Partial visibility",
+    "blackboxOpaque": "Black box",
+    "blockingRisks": "{{count}} blocking risk(s): ",
+    "intermediaryHops": "{{count}} intermediary hop(s)",
+    "corridorAvg": "corridor avg {{count}}",
+    "blackBoxHops": "{{count}} black-box hop(s)",
+    "fullyTraceable": "fully traceable"
   },
   "payout": {
     "summary": "Approved · {{amount}} {{settle}} settled{{creditNote}}. Submit this instruction to the {{institution}}, then record its settlement reference below. The licensed institution completes the settlement — this platform does not move funds.",

@@ -396,7 +396,15 @@
     "aiCta": "让 AI 解释这条资金流",
     "aiHint": "根据上方各跳，问 DeepSeek 资金现在在哪、为何可能被卡住、下一步该怎么做。",
     "aiLoading": "正在追踪通道…",
-    "aiActions": "你可以做什么"
+    "aiActions": "你可以做什么",
+    "blackboxClear": "可追踪",
+    "blackboxPartial": "部分可见",
+    "blackboxOpaque": "黑箱",
+    "blockingRisks": "{{count}} 项阻断性风险：",
+    "intermediaryHops": "{{count}} 个中间行节点",
+    "corridorAvg": "走廊平均 {{count}}",
+    "blackBoxHops": "{{count}} 个黑箱节点",
+    "fullyTraceable": "全程可追踪"
   },
   "payout": {
     "summary": "已批准 · 以 {{amount}} {{settle}} 结算{{creditNote}}。将此指令提交给{{institution}}，然后在下方记录其结算凭证号。持牌机构完成结算——本平台不经手资金。",
