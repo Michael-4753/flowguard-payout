@@ -180,10 +180,12 @@ def feature(eb, tt, st, items, shot=None):
         rect(s, Inches(0.9), y, Inches(lw), Inches(ch), CARDBG)
         add_text(s, Inches(1.1), y + Inches(0.12), Inches(lw - 0.4), Inches(0.4), f"{idx+1}. {head}", 15, INK, bold=True)
         add_text(s, Inches(1.1), y + Inches(0.5), Inches(lw - 0.4), Inches(0.5), body, 11.5, MUT)
-    if shot and os.path.exists(shot):
-        rect(s, Inches(8.9), Inches(1.65), Inches(3.55), Inches(5.4), RGBColor(0xF1, 0xF5, 0xF9))
-        s.shapes.add_picture(shot, Inches(9.05), Inches(1.8), height=Inches(5.1))
-        add_text(s, Inches(8.9), Inches(7.12), Inches(3.55), Inches(0.3), "产品界面（现场可实测）", 9, MUT, align=PP_ALIGN.CENTER)
+    # Screenshot intentionally removed — keep an empty placeholder box (same
+    # region/size) so the layout stays intact and screenshots can be pasted in
+    # manually later. `shot` arg is kept for signature compatibility.
+    rect(s, Inches(8.9), Inches(1.65), Inches(3.55), Inches(5.4), RGBColor(0xF1, 0xF5, 0xF9))
+    add_text(s, Inches(8.9), Inches(4.15), Inches(3.55), Inches(0.4), "在此处粘贴截图", 11, MUT, align=PP_ALIGN.CENTER)
+    add_text(s, Inches(8.9), Inches(7.12), Inches(3.55), Inches(0.3), "产品界面（现场可实测）", 9, MUT, align=PP_ALIGN.CENTER)
     return s
 SHOTS = "/home/user/flowguard-payout/public/pitch-shots"
 feature("核心功能① · AI 为何必要","收款方信息预检-AI Agent","收款账户信息智能校验、国别规则适配、退回风险评分、合规风险提示报告。",
