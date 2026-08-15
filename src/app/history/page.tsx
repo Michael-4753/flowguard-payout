@@ -108,14 +108,14 @@ function HistoryBody() {
         <FilterRow label={t("history.filterRisk")}>
           {LEVELS.map((l) => (
             <Chip key={l} active={level === l} onClick={() => setLevel(l)}>
-              {l === "all" ? t("history.all") : RISK_LEVEL_LABEL[l]}
+              {l === "all" ? t("history.all") : riskLabel(t, l)}
             </Chip>
           ))}
         </FilterRow>
         <FilterRow label={t("history.filterStatus")}>
           {STATUSES.map((s) => (
             <Chip key={s} active={status === s} onClick={() => setStatus(s)}>
-              {s === "all" ? t("history.all") : STATUS_LABEL[s]}
+              {s === "all" ? t("history.all") : statusLabel(t, s)}
             </Chip>
           ))}
         </FilterRow>
@@ -179,7 +179,7 @@ function HistoryBody() {
 
               <div className="mt-3 grid grid-cols-3 gap-2 font-mono text-[11px]">
                 <Cell label={t("history.amount", { currency: p.settleCurrency })} value={p.amountUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
-                <Cell label={t("history.channel")} value={CHANNEL_CLASS_LABEL[p.route.channelClass]} />
+                <Cell label={t("history.channel")} value={channelLabel(t, p.route.channelClass)} />
                 <Cell label={t("history.returnProb")} value={formatPercent(eff.returnProbability, 0)} />
               </div>
               {p.currency !== p.settleCurrency && (
