@@ -5,7 +5,7 @@
 
 export type HackSlideKind =
   | "cover" | "toc" | "problem" | "product"
-  | "feature" | "demo" | "architecture" | "compliance" | "summary";
+  | "feature" | "aitable" | "demo" | "architecture" | "compliance" | "summary";
 
 export interface HackSlide {
   id: string;
@@ -16,6 +16,7 @@ export interface HackSlide {
   bullets?: { head: string; body: string }[];
   toc?: string[];
   shot?: string;        // screenshot path for demo slide
+  aiRows?: { pain: string; entry: string; call: string; does: string }[];
   footnote?: string;
 }
 
