@@ -92,7 +92,7 @@ add_text(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(0.5),
          "2026 创青春 AI 黑客松 · 顺德行 · 自由创新赛道", 15, RGBColor(0xCC,0xEE,0xEA), bold=True, align=PP_ALIGN.CENTER)
 add_text(s, Inches(0.9), Inches(2.2), Inches(11.5), Inches(1.4), "FlowGuard", 72, WHITE, bold=True, align=PP_ALIGN.CENTER)
 add_text(s, Inches(1.4), Inches(3.9), Inches(10.5), Inches(1.0),
-         "把 AI 带进真实场景：跨境付款「先核查，再付款」的风控控制台", 22, RGBColor(0xEA,0xF7,0xF5), align=PP_ALIGN.CENTER)
+         "事前防退回，事中破黑箱，事后好对账", 26, RGBColor(0xEA,0xF7,0xF5), align=PP_ALIGN.CENTER)
 add_text(s, Inches(0.9), Inches(6.4), Inches(11.5), Inches(0.5),
          "一人团队 · 负责 App 全部内容 · 5 分钟路演", 13, RGBColor(0xBF,0xE4,0xE0), align=PP_ALIGN.CENTER)
 
