@@ -29,10 +29,6 @@ export type PayoutInstruction =
       channel: "stablecoin-direct";
       title: string;
       fields: InstructionField[];
-      /** Destination wallet — encoded into the QR. */
-      walletAddress: string;
-      /** Human amount label, e.g. "1,250.00 USDC". */
-      amountLabel: string;
       copyText: string;
     };
 
