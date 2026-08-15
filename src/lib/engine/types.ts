@@ -96,6 +96,13 @@ export interface RiskFactor {
    * blacklisted bank) are jurisdiction-level and can only be avoided via routing.
    */
   category: "data-quality" | "structural";
+  /**
+   * Optional dynamic values for localized rendering (UI translates by `id`).
+   * Engine still fills `title`/`description`/`remediation` in English as a
+   * machine-readable fallback (e.g. for the AI prompt); the UI prefers the
+   * `t()` translation keyed by `id`, interpolating these values.
+   */
+  meta?: { currency?: string; tier?: "small" | "mid" | "large" | "huge" };
 }
 
 /** A predicted return reason (module 1 — "why it might bounce"). */
