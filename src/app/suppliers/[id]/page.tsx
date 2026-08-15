@@ -13,7 +13,7 @@ import { RiskBadge } from "@/components/shared/badges";
 import { fetchSupplier } from "@/lib/api";
 import { corridorRequirements } from "@/lib/engine";
 import { formatPercent, formatHours } from "@/lib/format";
-import { channelLabel } from "@/lib/i18n-labels";
+import { channelLabel, countryLabel } from "@/lib/i18n-labels";
 import type { PaymentRecord, Supplier } from "@/lib/engine/types";
 
 export default function SupplierDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -94,7 +94,7 @@ function SupplierDetailBody({ id }: { id: string }) {
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h1 className="text-xl font-bold tracking-tight">{supplier.name}</h1>
-            <p className="mt-1 font-mono text-[11px] text-muted-foreground">{supplier.country}</p>
+            <p className="mt-1 font-mono text-[11px] text-muted-foreground">{countryLabel(t, supplier)}</p>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1.5">
             <RiskBadge level={supplier.riskTag} />
