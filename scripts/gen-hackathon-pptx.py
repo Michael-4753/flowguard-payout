@@ -101,7 +101,7 @@ s = prs.slides.add_slide(BLANK); bg(s, WHITE)
 eyebrow(s, "目录"); title(s, "今天用 5 分钟讲清这几件事")
 toc = ["真实案例：一笔货款怎么踩坑","真实问题：谁在痛、痛在哪","产品介绍：FlowGuard 是什么",
        "三大核心功能：预检 · 智能路由 · 对账看板",
-       "AI 覆盖一览：四痛点→四能力","Demo 视频：你能看到什么","技术架构：怎么实现的","合规边界：我们不碰什么（关键）","总结与可继续方向"]
+       "AI 覆盖一览：四痛点→四能力","Demo 视频：逐页看页面功能","技术架构：怎么实现的","合规边界：我们不碰什么（关键）","总结与可继续方向"]
 for idx, item in enumerate(toc):
     c = idx % 3; r = idx // 3
     x = Inches(0.9 + c*3.95); y = Inches(2.55 + r*1.35)
@@ -271,14 +271,14 @@ add_text(s, Inches(0.9), Inches(6.95), Inches(11.5), Inches(0.4),
 
 # ---------- 9 demo ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
-eyebrow(s, "预录 Demo 视频"); title(s, "Demo 视频：一笔高风险付款的完整拦截", size=32)
+eyebrow(s, "预录 Demo 视频 · 逐页展示"); title(s, "Demo 视频：逐页看每个页面在做什么", size=32)
 add_text(s, Inches(0.9), Inches(1.85), Inches(11.5), Inches(0.6),
-         "播放预录 Demo 视频：新建付款→预检亮红→AI 信号→核实清除→双人放行→生成指令。", 15, MUT)
+         "依次走过每个页面：首页概览 → 退回风险预检 → 多通道比价选路 → 结算对账看板 → 双人放行审批 → AI 核实工单。", 15, MUT)
 # Screenshot removed — keep an empty placeholder box (same region) so the slide
 # layout stays intact and a demo video can be placed in manually later.
 rect(s, Inches(1.35), Inches(2.5), Inches(10.6), Inches(4.3), RGBColor(0xF1, 0xF5, 0xF9))
 add_text(s, Inches(1.35), Inches(4.5), Inches(10.6), Inches(0.5), "在此处放入 Demo 视频", 14, MUT, align=PP_ALIGN.CENTER)
-footnote(s, "预录 Demo 视频、可完整演示核心功能——不是 PPT 概念。可扫码访问在线应用实测。")
+footnote(s, "预录 Demo 视频、逐页展示各功能页面——不是 PPT 概念。可扫码访问在线应用实测。")
 
 # ---------- 9 architecture ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
