@@ -108,32 +108,34 @@ export function deriveFlowProgress(record: PaymentRecord): FlowProgress {
   switch (record.status) {
     case "draft":
     case "initiated":
-      return { hops, currentIndex: 0, done: false, returned: false, caption: "Initiated at origin" };
+      return { hops, currentIndex: 0, done: false, returned: false, caption: { key: "flow.caption.initiated" } };
     case "settling": {
       const idx = chokeIdx >= 0 ? chokeIdx : Math.max(1, Math.floor(last / 2));
+      const h = hops[idx];
       return {
         hops,
         currentIndex: idx,
         done: false,
         returned: false,
-        caption: hops[idx]?.chokepoint
-          ? `Held at ${hops[idx].bankName}`
-          : `In transit via ${hops[idx]?.bankName ?? "intermediary"}`,
+        caption: h?.chokepoint
+          ? { key: "flow.caption.heldAt", hopId: h.id, bankName: h.bankName }
+          : { key: "flow.caption.inTransit", hopId: h?.id, bankName: h?.bankName },
       };
     }
     case "arrived":
-      return { hops, currentIndex: last, done: true, returned: false, caption: "Arrived at beneficiary" };
+      return { hops, currentIndex: last, done: true, returned: false, caption: { key: "flow.caption.arrived" } };
     case "returned": {
       const idx = chokeIdx >= 0 ? chokeIdx : Math.max(1, Math.floor(last / 2));
+      const h = hops[idx];
       return {
         hops,
         currentIndex: idx,
         done: false,
         returned: true,
-        caption: `Returned from ${hops[idx]?.bankName ?? "intermediary"}`,
+        caption: { key: "flow.caption.returnedFrom", hopId: h?.id, bankName: h?.bankName },
       };
     }
     default:
-      return { hops, currentIndex: 0, done: false, returned: false, caption: "" };
+      return { hops, currentIndex: 0, done: false, returned: false, caption: { key: "" } };
   }
 }
