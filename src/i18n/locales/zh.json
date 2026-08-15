@@ -404,7 +404,8 @@
     "corridorAvg": "走廊平均 {{count}}",
     "blackBoxHops": "{{count}} 个黑箱节点",
     "fullyTraceable": "全程可追踪",
-    "chokepoint": "卡点"
+    "chokepoint": "卡点",
+    "track": "追踪"
   },
   "payout": {
     "summary": "已批准 · 以 {{amount}} {{settle}} 结算{{creditNote}}。将此指令提交给{{institution}}，然后在下方记录其结算凭证号。持牌机构完成结算——本平台不经手资金。",

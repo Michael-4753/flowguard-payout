@@ -404,7 +404,8 @@
     "corridorAvg": "corridor avg {{count}}",
     "blackBoxHops": "{{count}} black-box hop(s)",
     "fullyTraceable": "fully traceable",
-    "chokepoint": "Chokepoint"
+    "chokepoint": "Chokepoint",
+    "track": "Track"
   },
   "payout": {
     "summary": "Approved · {{amount}} {{settle}} settled{{creditNote}}. Submit this instruction to the {{institution}}, then record its settlement reference below. The licensed institution completes the settlement — this platform does not move funds.",
