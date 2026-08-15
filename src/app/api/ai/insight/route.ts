@@ -118,7 +118,9 @@ CRITICAL RULES:
 - Ground every item in the snapshot; never invent SWIFT codes, cases, or facts.
 - Return STRICT JSON only, no markdown fences, shape:
   {"contradictions": string[], "similarCases": [{"case": string, "why": string}], "missingDocs": string[]}
-- Keep each string to one short sentence.`.trim(),
+- Keep each string to one short sentence.
+- LANGUAGE: write EVERY string value in the target language given by the user
+  message — Simplified Chinese for zh (no leftover English), English for en.`.trim(),
 };
 
 /** Kinds that need a larger token budget for structured multi-section output. */
@@ -128,6 +130,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const kind = body?.kind as Kind | undefined;
   const snapshot = body?.snapshot;
+  const lang = body?.lang;
   if (!kind || !(kind in PROMPTS)) {
     return Response.json({ error: "Unknown insight kind" }, { status: 400 });
   }
@@ -142,7 +145,7 @@ export async function POST(request: NextRequest) {
         { role: "system", content: PROMPTS[kind] },
         {
           role: "user",
-          content: `Snapshot (JSON):\n${JSON.stringify(snapshot).slice(0, 4000)}\n\nProduce the insight JSON.`,
+          content: `${languageDirective(lang)}\n\nSnapshot (JSON):\n${JSON.stringify(snapshot).slice(0, 4000)}\n\nProduce the insight JSON in the target language.`,
         },
       ],
       params: { temperature: 0.3, max_tokens: WIDE_KINDS.has(kind) ? 1100 : 800 },
