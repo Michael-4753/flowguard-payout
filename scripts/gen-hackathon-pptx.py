@@ -262,14 +262,14 @@ add_text(s, Inches(0.9), Inches(6.95), Inches(11.5), Inches(0.4),
 
 # ---------- 9 demo ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
-eyebrow(s, "现场可以看到什么"); title(s, "现场 Demo：一笔高风险付款的完整拦截", size=32)
+eyebrow(s, "预录 Demo 视频"); title(s, "Demo 视频：一笔高风险付款的完整拦截", size=32)
 add_text(s, Inches(0.9), Inches(1.85), Inches(11.5), Inches(0.6),
-         "现场可运行：新建付款→预检亮红→AI 信号→核实清除→双人放行→生成指令。", 15, MUT)
+         "播放预录 Demo 视频：新建付款→预检亮红→AI 信号→核实清除→双人放行→生成指令。", 15, MUT)
 # Screenshot removed — keep an empty placeholder box (same region) so the slide
-# layout stays intact and a screenshot can be pasted in manually later.
+# layout stays intact and a demo video can be placed in manually later.
 rect(s, Inches(1.35), Inches(2.5), Inches(10.6), Inches(4.3), RGBColor(0xF1, 0xF5, 0xF9))
-add_text(s, Inches(1.35), Inches(4.5), Inches(10.6), Inches(0.5), "在此处粘贴截图", 14, MUT, align=PP_ALIGN.CENTER)
-footnote(s, "现场可运行、可演示核心功能——不是 PPT 概念。可扫码访问在线应用实测。")
+add_text(s, Inches(1.35), Inches(4.5), Inches(10.6), Inches(0.5), "在此处放入 Demo 视频", 14, MUT, align=PP_ALIGN.CENTER)
+footnote(s, "预录 Demo 视频、可完整演示核心功能——不是 PPT 概念。可扫码访问在线应用实测。")
 
 # ---------- 9 architecture ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
