@@ -482,5 +482,57 @@
     "prevSlide": "Previous slide",
     "nextSlide": "Next slide",
     "goToSlide": "Go to slide {{n}}"
+  },
+  "factor": {
+    "swift": {
+      "title": "SWIFT / BIC validation",
+      "hit": "The beneficiary SWIFT/BIC code is malformed — the wire will bounce at the routing bank.",
+      "ok": "SWIFT/BIC code format is valid.",
+      "remediation": "Confirm the 8 or 11-character SWIFT/BIC with the beneficiary bank."
+    },
+    "iban": {
+      "title": "IBAN validation",
+      "hit": "The IBAN fails structural validation — high chance of an invalid-account return.",
+      "ok": "IBAN structure is valid.",
+      "remediation": "Re-collect the IBAN and verify the country + check digits."
+    },
+    "company-name": {
+      "title": "Company name & suffix",
+      "hit": "Beneficiary name has spacing/suffix issues that can trip name-screening at the beneficiary bank.",
+      "ok": "Beneficiary legal name looks well-formed.",
+      "remediation": "Match the name exactly to the bank record, including the legal suffix."
+    },
+    "account-status": {
+      "title": "Account dormancy risk",
+      "hit": "The beneficiary account is dormant/unverified — dormant accounts frequently reject inbound wires.",
+      "ok": "Beneficiary account is active.",
+      "remediation": "Ask the beneficiary to confirm the account is active before sending."
+    },
+    "sanction": {
+      "title": "Sanctions & high-risk region",
+      "hit": "Beneficiary is in a sanctioned/high-risk jurisdiction — likely compliance hold or return.",
+      "ok": "Region hits no sanctions or high-risk list.",
+      "remediation": "Route through a compliance review; keep due-diligence records on file."
+    },
+    "bank-blacklist": {
+      "title": "Beneficiary bank blacklist",
+      "hit": "The beneficiary bank is on the internal risk blacklist — elevated interception and return risk.",
+      "ok": "Beneficiary bank is not blacklisted.",
+      "remediation": "Request an alternate beneficiary bank or use a licensed PSP corridor."
+    },
+    "currency-control": {
+      "title": "Currency control & interception",
+      "hit": "Destination currency ({{currency}}) is under FX control — cross-border interception probability is elevated.",
+      "ok": "Destination currency has no significant FX-control interception risk.",
+      "remediation": "Attach an invoice + business purpose; consider a licensed local PSP corridor."
+    },
+    "amount-tier": {
+      "title": "Payment amount tier",
+      "small": "Small payout (< $10k) — no amount-based risk added.",
+      "mid": "Mid-size payout ($10k–$100k) — moderate additional scrutiny.",
+      "large": "Large payout ($100k–$1M) — elevated scrutiny before approval.",
+      "huge": "Very large payout (≥ $1M) — routed through the high-risk approval lane and requires a second-signature review.",
+      "remediation": "Larger payouts warrant extra scrutiny — verify the invoice, business purpose and beneficiary before approval."
+    }
   }
 }
