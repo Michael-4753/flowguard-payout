@@ -21,6 +21,11 @@
       "settling": "结算中",
       "arrived": "已到账",
       "returned": "被退回"
+    },
+    "verification": {
+      "open": "等待回复",
+      "verified": "已核实",
+      "clarified": "已澄清"
     }
   },
   "nav": {

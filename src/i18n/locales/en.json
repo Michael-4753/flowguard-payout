@@ -21,6 +21,11 @@
       "settling": "Settling",
       "arrived": "Arrived",
       "returned": "Returned"
+    },
+    "verification": {
+      "open": "Awaiting reply",
+      "verified": "Verified",
+      "clarified": "Clarified"
     }
   },
   "nav": {

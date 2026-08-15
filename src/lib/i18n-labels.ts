@@ -15,3 +15,7 @@ export function riskLabel(t: TFunction, key: RiskLevel): string {
 export function statusLabel(t: TFunction, key: PaymentStatus): string {
   return t(`enum.status.${key}`);
 }
+
+export function verificationStatusLabel(t: TFunction, key: "open" | "verified" | "clarified"): string {
+  return t(`enum.verification.${key}`);
+}
