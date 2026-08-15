@@ -403,7 +403,8 @@
     "intermediaryHops": "{{count}} 个中间行节点",
     "corridorAvg": "走廊平均 {{count}}",
     "blackBoxHops": "{{count}} 个黑箱节点",
-    "fullyTraceable": "全程可追踪"
+    "fullyTraceable": "全程可追踪",
+    "chokepoint": "卡点"
   },
   "payout": {
     "summary": "已批准 · 以 {{amount}} {{settle}} 结算{{creditNote}}。将此指令提交给{{institution}}，然后在下方记录其结算凭证号。持牌机构完成结算——本平台不经手资金。",
@@ -584,6 +585,36 @@
       "reason": "SWIFT/BIC 格式有误——在路由行被退回",
       "failedAt": "中转行（中间行）",
       "remediation": "向收款行核对 8/11 位 SWIFT/BIC 后重新提交。"
+    }
+  },
+  "hop": {
+    "stablecoin-direct-hop-0": {
+      "label": "入金（USDC）",
+      "bank": "合规入金通道（USDC）"
+    },
+    "stablecoin-direct-hop-1": {
+      "label": "链上结算",
+      "bank": "公链结算（链上）"
+    },
+    "stablecoin-direct-hop-2": {
+      "label": "本地出金",
+      "bank": "持牌本地出金机构"
+    },
+    "local-fiat-hop-0": {
+      "label": "PSP 收款",
+      "bank": "持牌 PSP 收款账户"
+    },
+    "local-fiat-hop-1": {
+      "label": "中转行",
+      "bank": "Citibank N.A. (New York)"
+    },
+    "local-fiat-hop-2": {
+      "label": "PSP 净额中心",
+      "bank": "PSP 网内净额中心"
+    },
+    "local-fiat-hop-3": {
+      "label": "本地入账行",
+      "bank": "当地入账合作行"
     }
   }
 }

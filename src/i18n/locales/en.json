@@ -403,7 +403,8 @@
     "intermediaryHops": "{{count}} intermediary hop(s)",
     "corridorAvg": "corridor avg {{count}}",
     "blackBoxHops": "{{count}} black-box hop(s)",
-    "fullyTraceable": "fully traceable"
+    "fullyTraceable": "fully traceable",
+    "chokepoint": "Chokepoint"
   },
   "payout": {
     "summary": "Approved · {{amount}} {{settle}} settled{{creditNote}}. Submit this instruction to the {{institution}}, then record its settlement reference below. The licensed institution completes the settlement — this platform does not move funds.",
@@ -584,6 +585,36 @@
       "reason": "Malformed SWIFT/BIC — bounced at routing bank",
       "failedAt": "Correspondent (intermediary)",
       "remediation": "Verify the 8/11-character SWIFT/BIC with the beneficiary bank and re-submit."
+    }
+  },
+  "hop": {
+    "stablecoin-direct-hop-0": {
+      "label": "On-ramp (USDC)",
+      "bank": "Regulated on-ramp (USDC)"
+    },
+    "stablecoin-direct-hop-1": {
+      "label": "Chain settlement",
+      "bank": "Public-chain settlement (on-chain)"
+    },
+    "stablecoin-direct-hop-2": {
+      "label": "Local off-ramp",
+      "bank": "Licensed local off-ramp"
+    },
+    "local-fiat-hop-0": {
+      "label": "PSP collection",
+      "bank": "Licensed PSP collection account"
+    },
+    "local-fiat-hop-1": {
+      "label": "Correspondent bank",
+      "bank": "Citibank N.A. (New York)"
+    },
+    "local-fiat-hop-2": {
+      "label": "PSP netting hub",
+      "bank": "PSP in-network netting hub"
+    },
+    "local-fiat-hop-3": {
+      "label": "Local payout bank",
+      "bank": "In-country payout partner bank"
     }
   }
 }
