@@ -53,6 +53,7 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
           )}
           <h1 className="text-5xl font-black tracking-tight drop-shadow-sm sm:text-7xl">{slide.title}</h1>
           {slide.subtitle && <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/90 sm:text-xl">{slide.subtitle}</p>}
+          {slide.lead && <p className="mx-auto mt-4 max-w-3xl text-sm leading-relaxed text-white/75 sm:text-base">{slide.lead}</p>}
           {slide.bullets && (
             <div className="mx-auto mt-9 grid max-w-3xl gap-3 sm:grid-cols-3">
               {slide.bullets.map((b) => (
