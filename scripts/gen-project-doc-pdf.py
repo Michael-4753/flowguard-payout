@@ -30,17 +30,17 @@ MUT = colors.HexColor("#475569")
 SOFT = colors.HexColor("#F1F5F9")
 
 def ps(name, **kw):
-    kw.setdefault("fontName", "CJK")
+    kw.setdefault("fontName", _CJK)
     kw.setdefault("textColor", INK)
     kw.setdefault("alignment", TA_LEFT)
     return ParagraphStyle(name, **kw)
 
-H1 = ps("H1", fontName="CJK-B", fontSize=22, leading=28, textColor=TEAL, spaceAfter=2)
+H1 = ps("H1", fontName=_CJK, fontSize=22, leading=28, textColor=TEAL, spaceAfter=2)
 SUB = ps("SUB", fontSize=11, leading=16, textColor=MUT, spaceAfter=10)
-H2 = ps("H2", fontName="CJK-B", fontSize=14, leading=20, textColor=INK, spaceBefore=12, spaceAfter=6)
+H2 = ps("H2", fontName=_CJK, fontSize=14, leading=20, textColor=INK, spaceBefore=12, spaceAfter=6)
 BODY = ps("BODY", fontSize=10.5, leading=17, textColor=INK, spaceAfter=5)
 SMALL = ps("SMALL", fontSize=9, leading=14, textColor=MUT)
-CARD_H = ps("CARD_H", fontName="CJK-B", fontSize=10.5, leading=15, textColor=INK)
+CARD_H = ps("CARD_H", fontName=_CJK, fontSize=10.5, leading=15, textColor=INK)
 CARD_B = ps("CARD_B", fontSize=9.5, leading=14, textColor=MUT)
 
 story = []
