@@ -145,6 +145,47 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
     );
   }
 
+  /* ---------- case story : left timeline / right pits ---------- */
+  if (slide.kind === "case") {
+    return (
+      <section className="relative flex h-full w-full flex-col justify-center overflow-hidden bg-background px-6 py-8 sm:px-12">
+        <Blobs />
+        <div className="relative">
+          <SlideHeader eyebrow={slide.eyebrow} title={slide.title} subtitle={slide.subtitle} />
+          <div className="mt-6 grid gap-4 sm:ml-4 lg:grid-cols-2">
+            {/* left — one-week timeline */}
+            <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+              <p className="text-sm font-bold text-[color:var(--primary)]">一周时间线</p>
+              <ol className="mt-4 space-y-3.5">
+                {slide.timeline?.map((ev) => (
+                  <li key={ev.when} className="flex gap-3">
+                    <span className="mt-0.5 w-12 shrink-0 text-sm font-bold text-foreground">{ev.when}</span>
+                    <span className="text-sm leading-relaxed text-muted-foreground">{ev.what}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            {/* right — four pits → four pain points */}
+            <div className="rounded-2xl border border-[#c03a2b]/30 bg-[#c03a2b]/5 p-5 shadow-sm">
+              <p className="text-sm font-bold text-[#c03a2b]">四个坑，四个痛点</p>
+              <ul className="mt-4 space-y-3.5">
+                {slide.pits?.map((p) => (
+                  <li key={p.head}>
+                    <p className="text-sm font-bold text-[#c03a2b]">{p.head}</p>
+                    <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          {slide.footnote && (
+            <p className="mt-5 inline-block rounded-full bg-[color:var(--fg-soft)] px-4 py-1.5 text-xs text-muted-foreground sm:ml-4">{slide.footnote}</p>
+          )}
+        </div>
+      </section>
+    );
+  }
+
   /* ---------- demo ---------- */
   if (slide.kind === "demo") {
     return (
