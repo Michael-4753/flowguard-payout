@@ -4,7 +4,7 @@ import { AlertTriangle, ArrowDown, Clock, TrendingDown, Eye, EyeOff, Building2 }
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils/utils";
 import type { FlowHop, RiskFactor, RouteOption } from "@/lib/engine/types";
-import { channelLabel } from "@/lib/i18n-labels";
+import { channelLabel, factorTitle } from "@/lib/i18n-labels";
 import { formatMinutes, formatUsdCents } from "@/lib/format";
 
 const BLACKBOX_META: Record<
@@ -90,7 +90,7 @@ export function FlowNarrativeStage({
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--danger)]" aria-hidden />
           <div className="min-w-0 text-[11px] leading-relaxed text-[color:var(--danger)]">
             <span className="font-semibold">{criticalHits.length} blocking risk(s): </span>
-            {criticalHits.map((f) => f.title).join(" · ")}
+            {criticalHits.map((f) => factorTitle(t, f)).join(" · ")}
           </div>
         </div>
       )}

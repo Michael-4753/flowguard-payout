@@ -19,7 +19,7 @@ import {
   type PaymentStatus,
   type RiskLevel,
 } from "@/lib/engine/types";
-import { channelLabel, riskLabel, statusLabel } from "@/lib/i18n-labels";
+import { channelLabel, riskLabel, statusLabel, factorTitle } from "@/lib/i18n-labels";
 import { cn } from "@/utils/utils";
 
 const LEVELS: (RiskLevel | "all")[] = ["all", "low", "medium", "high"];
@@ -317,7 +317,7 @@ function ClarifiedChips({
           key={f.id}
           className="inline-flex items-center gap-1 rounded-full border border-[color:var(--success)]/40 bg-[color:var(--success)]/12 px-2 py-0.5 text-[10px] font-semibold text-[color:var(--success)]"
         >
-          <ShieldCheck className="h-3 w-3" aria-hidden /> {f.title} ·{" "}
+          <ShieldCheck className="h-3 w-3" aria-hidden /> {factorTitle(t, f)} ·{" "}
           {clarified.get(f.id) === "verified" ? t("history.verified") : t("history.clarified")}
         </span>
       ))}

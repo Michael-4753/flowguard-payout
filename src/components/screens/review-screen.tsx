@@ -13,7 +13,7 @@ import { RiskBadge } from "@/components/shared/badges";
 import { reviewPayment } from "@/lib/api";
 import { formatDate, formatPercent } from "@/lib/format";
 import { type PaymentRecord } from "@/lib/engine/types";
-import { channelLabel } from "@/lib/i18n-labels";
+import { channelLabel, factorTitle } from "@/lib/i18n-labels";
 import type { EffectiveRisk } from "@/lib/verification";
 import { MAKER_LABEL } from "@/lib/review";
 import { cn } from "@/utils/utils";
@@ -263,7 +263,7 @@ function ReviewCard({
           <span>
             {clarifiedHits.length === 1
               ? t("review.softenedOne", {
-                  title: clarifiedHits[0].title,
+                  title: factorTitle(t, clarifiedHits[0]),
                   from: record.riskScore,
                   to: eff.riskScore,
                   levelNote: record.riskLevel !== eff.riskLevel ? t("review.levelDowngraded", { from: record.riskLevel, to: eff.riskLevel }) : "",
