@@ -2,7 +2,7 @@
 
 _2026 创青春 AI 黑客松 · 顺德行 · 自由创新赛道 · 一人团队独立完成_
 
-FlowGuard 是一款面向中小外贸出纳的**跨境付款「先核查、再付款」风控控制台**。它在把付款指令提交给持牌机构之前，先做退回风险预检、通道比价选路、双人审批与里程碑条件结算。本文说明其技术架构、核心工作流程与制作过程。
+FlowGuard 是一款面向中小外贸出纳的**跨境付款「先核查、再付款」风控控制台**。它在把付款指令提交给持牌机构之前，先做退回风险预检、通道比价选路与双人审批。本文说明其技术架构、核心工作流程与制作过程。
 
 > 合规底线：FlowGuard 是纯软件决策支持工具——不持牌、不经手资金、不做加密兑换/转账，所有资金结算均由持牌金融机构完成。本文所述「生成付款指令」均指生成可交由持牌机构执行的指令文件，平台任何环节都不流经资金。
 
@@ -48,15 +48,15 @@ FlowGuard 从上到下分为四层，数据单向下沉、结果单向上浮：
 | 层 | 职责 | 关键位置 |
 | --- | --- | --- |
 | 表现层 | 移动端界面、向导步骤、路演/文档页 | src/app/**、src/components/screens、src/components/wizard |
-| 应用层 | 客户端 API 封装、状态与数据提供者、里程碑 store | src/lib/api、src/components/shell/data-provider、src/lib/milestones |
+| 应用层 | 客户端 API 封装、状态与数据提供者 | src/lib/api、src/components/shell/data-provider |
 | 服务层 | Route Handlers：付款/供应商/审批/AI/公开收据/MCP | src/app/api/** |
 | 领域层 | 确定性风控引擎、失败案例库、供应商输入建模、分析 | src/lib/engine、src/lib/verification、src/lib/analytics |
 
 ### 目录结构（关键）
 
-- `src/app/` — 页面路由（首页、pay、review、milestones、cases、history、reconcile、suppliers、公开 receipt/case、hackathon 路演）与 `api/` 服务端路由。
+- `src/app/` — 页面路由（首页、pay、review、cases、history、reconcile、suppliers、公开 receipt/case、hackathon 路演）与 `api/` 服务端路由。
 - `src/components/` — `screens/`（各页面主体）、`wizard/`（付款向导：build/precheck/route 步骤）、`ai/`（AI 信号与简报卡）、`shell/`（应用外壳、导航、数据提供者）、`hackathon/`（路演内容与幻灯片）。
-- `src/lib/` — `engine/`（风控内核）、`api/`（前端请求封装）、`db/`（drizzle schema、queries、seed）、`milestones/`（里程碑 store）、`verification.ts`、`analytics.ts`、`i18n/`。
+- `src/lib/` — `engine/`（风控内核）、`api/`（前端请求封装）、`db/`（drizzle schema、queries、seed）、`verification.ts`、`analytics.ts`、`i18n/`。
 - `scripts/` — 文档 PDF 生成器、PPTX 生成器、真实页面截图脚本（Playwright）。
 - `public/` — 生成的交付物（PDF、PPTX、截图）。
 
@@ -73,7 +73,6 @@ FlowGuard 从上到下分为四层，数据单向下沉、结果单向上浮：
 | RiskAssessment（风险评估） | 评分、退回概率、命中因子、退回成本 | 规则引擎的确定性输出 |
 | RoutingResult（选路结果） | 多类持牌结算通道的费用/时效/退回率排序 | 可解释的最优路径推荐 |
 | VerificationCase（核实工单） | 供应商、命中因子、状态、公开 token | 数据质量类风险的闭环 |
-| Milestone/Program（里程碑） | 项目、条件、金额、状态流转、证据 | 条件结算工作台 |
 | Receipt（到账确认） | 公开 token、二维码 | 供收款方查看的到账确认页 |
 
 数据库通过 drizzle-orm 定义 schema（`src/lib/db/schema`），以类型化查询访问（`src/lib/db/queries`），`DATABASE_URL` 仅存于服务端。访客模式（Guest）下，用户自己发起的付款仅存于本设备 localStorage，离开访客模式即清除。
@@ -82,7 +81,7 @@ FlowGuard 从上到下分为四层，数据单向下沉、结果单向上浮：
 
 ## 四、核心功能与工作流程
 
-FlowGuard 由四大核心能力构成，从「先核查」到「透明追踪」形成闭环：
+FlowGuard 由三大核心能力构成，从「先核查」到「透明追踪」形成闭环：
 
 ### 4.1 收款方信息预检-AI Agent（功能①）
 
@@ -104,17 +103,7 @@ FlowGuard 由四大核心能力构成，从「先核查」到「透明追踪」�
 3. **多维度比价**：按费用、时效、退回率对各持牌通道自动排序，给出可解释的最优路径推荐。
 4. **只建议、不执行**：平台仅输出最优路径对比建议，实际付款由银行 / 持牌机构执行——平台不经手资金。
 
-### 4.3 分阶段里程碑付款工作台（条件结算管理，功能③）
-
-外包 / 项目付款节点台账管理，按里程碑进度设置付款触发条件。
-
-1. 在 `/milestones` 按项目管理付款里程碑及其触发条件（外包 / 项目场景）。
-2. **节点台账管理**：付款节点集中管理，进度与金额一目了然。
-3. **里程碑触发条件**：状态流转 待开始 → 进行中 → 待校验 → 已校验；里程碑状态存于客户端 store（`useSyncExternalStore` + localStorage，已做快照缓存避免无限渲染）。
-4. **完成校验 → 放款提醒**：校验通过后向财务推送放款提醒，**深链跳转 `/pay`** 并预填供应商与金额，仍走完整预检与选路。
-5. **合规边界**：仅做条件与提醒管理，实际放款操作全部在银行 / 持牌结算机构完成——平台**不托管、不放款**。
-
-### 4.4 统一结算状态与对账看板（功能④）
+### 4.3 统一结算状态与对账看板（功能③）
 
 聚合各通道汇款进度、中转链路信息、交易凭证，实现多笔跨国付款台账可视化与自动对账核销。
 
@@ -123,7 +112,7 @@ FlowGuard 由四大核心能力构成，从「先核查」到「透明追踪」�
 3. **自动对账核销**：应收 vs 实收、费用与汇兑损失自动匹配核销，并可导出对账单（CSV）。
 4. **结算链路透明**：结算全程可追踪；平台只做透明化追踪，不经手资金。
 
-> 说明：Maker-Checker 双人审批作为底层内控贯穿①—③（付款指令在 `/review` 需第二签放行、服务端硬性禁止自我批准），是四大功能之下的通用控制点。双人放行为下限；大额付款可按额度阈值升级为多级/多签审批（即使在企业内部）。
+> 说明：Maker-Checker 双人审批作为底层内控贯穿①—②（付款指令在 `/review` 需第二签放行、服务端硬性禁止自我批准），是三大功能之下的通用控制点。双人放行为下限；大额付款可按额度阈值升级为多级/多签审批（即使在企业内部）。
 
 ---
 
@@ -172,7 +161,7 @@ FlowGuard 由四大核心能力构成，从「先核查」到「透明追踪」�
 | --- | --- | --- |
 | 本技术文档 PDF | scripts/gen-compliance-pdf.js | 通用 Markdown→PDF 渲染器，支持标题/列表/引用/表格 |
 | 合规审查报告 / 用户指南 PDF | scripts/gen-compliance-pdf.js | 同一渲染器，传入不同 Markdown 与页脚 |
-| 黑客松路演 PPTX | scripts/gen-hackathon-pptx.py | python-pptx 构建 13 页；功能页左文右图内嵌真实截图 |
+| 黑客松路演 PPTX | scripts/gen-hackathon-pptx.py | python-pptx 构建 12 页；功能页左文右图内嵌真实截图 |
 | 功能页面真实截图 | scripts/shoot-feature-pages.js | Playwright 无头 Chromium 驱动真实页面截图 |
 
 ### 7.3 PDF 渲染要点
@@ -186,13 +175,12 @@ FlowGuard 由四大核心能力构成，从「先核查」到「透明追踪」�
 - 以移动端视口（402×1180、2x）启动无头浏览器，先通过访客门、切换中文界面。
 - 驱动 `/pay` 向导（高风险供应商）到预检结果，截取预检与 AI 信号卡。
 - 端到端提交一笔低风险付款作为种子数据，使 `/review` 出现待批指令后再整页截图。
-- `/milestones` 直接整页截图（其状态 store 已做快照缓存，避免无限渲染）。
 
 ### 7.5 工程质量
 
 - 全站 TypeScript strict，`tsc --noEmit` 零错误；ESLint 零告警。
-- 双语键 en-US / zh-CN 结构 100% 对齐，用户可见文案不硬编码、统一经 `t()`。
-- 关键路由（pay / review / milestones / cases / history / 公开收据）端到端可跑通。
+- 双语键 en-US / zh-CN 结构 100% 对齐（411/411），用户可见文案不硬编码、统一经 `t()`。
+- 关键路由（pay / review / cases / history / reconcile / 公开收据）端到端可跑通。
 
 ---
 
@@ -204,7 +192,6 @@ FlowGuard 由四大核心能力构成，从「先核查」到「透明追踪」�
 | 付款向导 | src/components/wizard/build-step.tsx、precheck-step.tsx、route-step.tsx |
 | AI 信号与简报 | src/components/ai/ai-risk-signals.tsx、ai-insight-card.tsx |
 | 审批与历史 | src/components/screens/review-screen.tsx、history 相关屏 |
-| 里程碑工作台 | src/lib/milestones/milestone-store.ts、src/components/screens/milestones-screen.tsx |
 | 数据库 | src/lib/db/schema、src/lib/db/queries、src/lib/db/seed-suppliers.ts |
 | 国际化 | src/i18n/locales/en.json、zh.json |
 | 路演与文档 | src/components/hackathon/*、scripts/gen-hackathon-pptx.py、scripts/gen-compliance-pdf.js |
