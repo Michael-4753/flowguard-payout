@@ -107,7 +107,7 @@ const DECK_EN = [
       ["Send-and-pray wires", "You only learn a payment will bounce after it leaves — funds frozen for days while returns settle."],
       ["Dirty beneficiary data", "Wrong company name, bad IBAN, dormant accounts. Banks silently return the wire; reconciliation is manual."],
       ["No dual control", "A single cashier can push a large payout alone — real compliance and fraud exposure."],
-      ["Wrong rail = wasted money", "Stablecoin direct vs local fiat picked by gut feel means higher fees and higher failure rates."],
+      ["Wrong rail = wasted money", "Licensed overseas settlement vs local fiat picked by gut feel means higher fees and higher failure rates."],
     ],
   },
   {
@@ -118,7 +118,7 @@ const DECK_EN = [
       ["AI + amount-tier precheck", "DeepSeek AI and a deterministic engine score return probability; amount tiers escalate scrutiny, and payouts ≥ $1M are forced into the high-risk lane."],
       ["Verify-first with the supplier", "Data-quality problems (name / IBAN / SWIFT / account) must be synced to the payee as a Case first — approval is gated until verified or explicitly overridden."],
       ["Maker-checker, enforced", "Submit as Maker, approve as Checker; self-approval is hard-blocked front-end and server-side. Shown here in single-account demo mode; production uses two separate accounts."],
-      ["Dual-route + dual currency", "Stablecoin Direct vs Local Fiat auto-ranked by risk and cost; each payout shows settlement currency → payee's local currency."],
+      ["Dual-route + dual currency", "Licensed Overseas Settlement vs Local Fiat auto-ranked by risk and cost; each payout shows settlement currency → payee's local currency."],
     ],
   },
   {

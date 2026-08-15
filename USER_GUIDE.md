@@ -24,7 +24,7 @@
 
 ### 2.1 新建付款指令 / New payment instruction
 - 首页点击「**新建付款指令 / New payment instruction**」。/ Tap **New payment instruction** on Home.
-- 选择**收款人**、填写**金额**与**结算币种**；可设**通道偏好**(自动推荐 / 稳定币直连 / 本地法币)。/ Pick a **payee**, enter **amount** and **settlement currency**; optionally set a **channel preference** (Auto / Stablecoin Direct / Local Fiat).
+- 选择**收款人**、填写**金额**与**结算币种**；可设**通道偏好**(自动推荐 / 境外持牌结算 / 本地法币)。/ Pick a **payee**, enter **amount** and **settlement currency**; optionally set a **channel preference** (Auto / Licensed Overseas Settlement / Local Fiat).
 - 点击「**运行预检 / Run pre-check**」。/ Tap **Run pre-check**.
 
 ### 2.2 退回风险预检 / Return-risk pre-check
@@ -33,7 +33,7 @@
 - 数据质量类风险因子可一键「**生成核实请求**」，进入工单。/ Data-quality factors can be turned into a **verification request** (a Case) in one click.
 
 ### 2.3 选路 / Route
-- 对比**稳定币直连 vs 本地法币**两条通道的费用、时效与退回率，选择结算路径。/ Compare **Stablecoin Direct vs Local Fiat** on fees, ETA and return rate, then choose the route.
+- 对比**境外持牌结算 vs 本地法币**两条通道的费用、时效与退回率，选择结算路径。/ Compare **Licensed Overseas Settlement vs Local Fiat** on fees, ETA and return rate, then choose the route.
 - 境外结算由**境外持牌机构**完成并为收款人入账；平台仅比价与选路。/ Overseas settlement is completed by an **overseas licensed institution**; the platform only compares and routes.
 - 确认后提交审批。/ Submit for approval.
 
