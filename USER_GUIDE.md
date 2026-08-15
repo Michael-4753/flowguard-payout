@@ -34,7 +34,7 @@
 
 ### 2.3 选路 / Route
 - 对比**稳定币直连 vs 本地法币**两条通道的费用、时效与退回率，选择结算路径。/ Compare **Stablecoin Direct vs Local Fiat** on fees, ETA and return rate, then choose the route.
-- 数字资产结算由**境外持牌机构**完成并为收款人入账；平台仅比价与选路。/ Digital-asset settlement is completed by an **overseas licensed institution**; the platform only compares and routes.
+- 境外结算由**境外持牌机构**完成并为收款人入账；平台仅比价与选路。/ Overseas settlement is completed by an **overseas licensed institution**; the platform only compares and routes.
 - 确认后提交审批。/ Submit for approval.
 
 ### 2.4 双人审批(Maker-Checker) / Dual approval
