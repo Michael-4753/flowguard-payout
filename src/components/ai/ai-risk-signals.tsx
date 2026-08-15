@@ -51,7 +51,7 @@ function parseSignals(text: string): Signals | null {
 export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<string, unknown> }) {
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [signals, setSignals] = useState<Signals | null>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   async function run() {
     setState("loading");
@@ -60,7 +60,7 @@ export function AiRiskSignals({ buildSnapshot }: { buildSnapshot: () => Record<s
       const res = await request("/api/ai/insight", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind: "risk-signals", snapshot: buildSnapshot() }),
+        body: JSON.stringify({ kind: "risk-signals", snapshot: buildSnapshot(), lang: i18n.language?.startsWith("zh") ? "zh" : "en" }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
