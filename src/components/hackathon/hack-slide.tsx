@@ -212,10 +212,20 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
               </div>
             )}
             {/* Right column: demo video (placeholder until a video is added) */}
-            {slide.shot && (
-              <div className="mx-auto flex aspect-[9/16] w-full max-w-[300px] max-h-[52vh] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl">
-                在此处放入 Demo 视频
-              </div>
+            {/* Right column: demo video (falls back to placeholder). */}
+            {slide.video ? (
+              <video
+                src={slide.video}
+                controls
+                playsInline
+                className="mx-auto aspect-[9/16] w-full max-w-[300px] max-h-[52vh] rounded-2xl border border-border bg-black object-contain shadow-xl"
+              />
+            ) : (
+              slide.shot && (
+                <div className="mx-auto flex aspect-[9/16] w-full max-w-[300px] max-h-[52vh] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl">
+                  在此处放入 Demo 视频
+                </div>
+              )
             )}
           </div>
           {slide.footnote && (
