@@ -49,14 +49,16 @@ async function run() {
 
   // ---- Feature ③ : dual approval queue ----
   await page.goto(`${BASE}/review`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: `${OUT}/feat-review.png` });
+  await passAuthGate();
+  await page.waitForTimeout(2500);
+  await page.screenshot({ path: `${OUT}/feat-review.png`, fullPage: true });
   console.log("saved feat-review.png (full page)");
 
   // ---- Feature ④ : milestones workbench ----
   await page.goto(`${BASE}/milestones`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(2000);
-  await page.screenshot({ path: `${OUT}/feat-milestones.png` });
+  await passAuthGate();
+  await page.waitForTimeout(2500);
+  await page.screenshot({ path: `${OUT}/feat-milestones.png`, fullPage: true });
   console.log("saved feat-milestones.png (full page)");
 
   await browser.close();
