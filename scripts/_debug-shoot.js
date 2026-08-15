@@ -7,6 +7,8 @@ const BASE = process.env.BASE || "http://localhost:3000";
   p.on("console", m => { if (m.type() === "error") errs.push(m.text()); });
   await p.goto(`${BASE}/pay?supplier=meridian-freight&amount=42000`, { waitUntil: "networkidle" });
   await p.waitForTimeout(2500);
+  const guest = await p.$('[data-el="auth-guest"]');
+  if (guest) { await guest.click(); await p.waitForTimeout(2000); }
   const els = await p.$$eval("[data-el]", ns => ns.map(n => n.getAttribute("data-el")));
   console.log("DATA_EL:", JSON.stringify([...new Set(els)]));
   const bodyText = (await p.textContent("body") || "").replace(/\s+/g, " ").slice(0, 400);
