@@ -64,6 +64,12 @@ function HistoryBody() {
     const el = itemRefs.current[focusId];
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "center" });
+    // If we were deep-linked here right after approval, the payment is
+    // `initiated` and its next action is to submit the instruction to the
+    // licensed institution. Auto-open the execution panel so the reviewer lands
+    // directly on the actionable step instead of hunting for a button.
+    const target = payments.find((p) => p.id === focusId);
+    if (target?.status === "initiated") setExecId(focusId);
     const t = setTimeout(() => setFocusId(null), 2600);
     return () => clearTimeout(t);
   }, [focusId, payments]);
