@@ -190,8 +190,11 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
           </div>
           {withShot && (
             <div className="flex shrink-0 flex-col items-center gap-2">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={slide.shot} alt={slide.title} className="max-h-[62vh] w-auto rounded-2xl border border-border object-contain shadow-xl" />
+              {/* Screenshot removed — keep an equally-sized empty placeholder box
+                  so the layout stays intact and a screenshot can be pasted in. */}
+              <div className="flex aspect-[9/16] max-h-[62vh] w-[min(280px,60vw)] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl">
+                在此处粘贴截图
+              </div>
               <span className="text-xs text-muted-foreground">产品界面（现场可实测）</span>
             </div>
           )}
