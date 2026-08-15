@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { ArrowRight } from "lucide-react";
 import { deriveFlowProgress } from "@/lib/analytics";
 import type { PaymentRecord } from "@/lib/engine/types";
 import { formatUsd } from "@/lib/format";
 import { cn } from "@/utils/utils";
+import { hopBank } from "@/lib/i18n-labels";
 
 /**
  * Home-screen signature: a compact money-flow narrative strip. Picks the most
@@ -21,6 +23,7 @@ export function HeroFlowStrip({
   onOpen: () => void;
 }) {
   const record = useMemo(() => pickNarrativePayment(payments), [payments]);
+  const { t } = useTranslation();
   if (!record) return null;
 
   const { hops, currentIndex, done, returned, caption } = deriveFlowProgress(record);
@@ -39,7 +42,7 @@ export function HeroFlowStrip({
           <span className="text-foreground">{record.supplierName}</span> · {caption}
         </span>
         <span className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-primary">
-          Track <ArrowRight className="h-3 w-3" aria-hidden />
+          {t("flow.track")} <ArrowRight className="h-3 w-3" aria-hidden />
         </span>
       </div>
 
@@ -66,8 +69,8 @@ export function HeroFlowStrip({
                 )}
                 data-active={reached || current || done ? "true" : "false"}
                 style={{ color, border: `1.5px solid ${color}` }}
-                title={hop.bankName}
-                aria-label={hop.bankName}
+                title={hopBank(t, hop)}
+                aria-label={hopBank(t, hop)}
               >
                 {hop.role === "origin" ? "•" : hop.role === "beneficiary" ? "★" : isDanger ? "!" : i}
               </span>
