@@ -18,15 +18,11 @@ from reportlab.lib.enums import TA_LEFT
 ROOT = "/home/user/flowguard-payout"
 OUT = os.path.join(ROOT, "public", "FlowGuard-项目说明.pdf")
 
-# ---- Fonts: Noto Sans CJK SC (TTC needs subfontIndex) ----
-SANS = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
-BOLD = "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
-# SC is index 2 in these Noto CJK TTC files.
-pdfmetrics.registerFont(TTFont("CJK", SANS, subfontIndex=2))
-try:
-    pdfmetrics.registerFont(TTFont("CJK-B", BOLD, subfontIndex=2))
-except Exception:
-    pdfmetrics.registerFont(TTFont("CJK-B", SANS, subfontIndex=2))
+# ---- Fonts: use reportlab's built-in Adobe CJK CID font (no external file). ----
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
+pdfmetrics.registerFont(UnicodeCIDFont("STSong-Light"))
+# STSong-Light has no separate bold face; reuse it and rely on size/color for emphasis.
+_CJK = "STSong-Light"
 
 TEAL = colors.HexColor("#0F766E")
 INK = colors.HexColor("#0F172A")
