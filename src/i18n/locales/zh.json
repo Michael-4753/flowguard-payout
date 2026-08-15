@@ -209,7 +209,6 @@
     "switchToApprove": "切换到复核人角色以批准",
     "working": "处理中…",
     "approveGenerate": "批准并生成指令",
-    "toastApproved": "已批准 · {{name}} 已记录在 History",
     "toastReturned": "已返回给发起人 · {{name}} 已记录在 History",
     "toastViewInHistory": "在 History 中查看",
     "toastApprovedNext": "已批准 · 下一步：向持牌机构提交付款指令并追踪到账",
