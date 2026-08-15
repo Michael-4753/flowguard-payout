@@ -15,13 +15,11 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/errors/error-state";
 import { formatDate, formatPercent } from "@/lib/format";
 import {
-  CHANNEL_CLASS_LABEL,
-  RISK_LEVEL_LABEL,
-  STATUS_LABEL,
   type PaymentRecord,
   type PaymentStatus,
   type RiskLevel,
 } from "@/lib/engine/types";
+import { channelLabel, riskLabel, statusLabel } from "@/lib/i18n-labels";
 import { cn } from "@/utils/utils";
 
 const LEVELS: (RiskLevel | "all")[] = ["all", "low", "medium", "high"];
