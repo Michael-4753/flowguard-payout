@@ -141,5 +141,17 @@ while (i < lines.length) {
   i++;
 }
 
+// footers via buffered pages; set bottom margin 0 so drawing in the footer band
+// does NOT trigger auto-pagination (which previously produced blank pages).
+const range = doc.bufferedPageRange();
+for (let p = 0; p < range.count; p++) {
+  doc.switchToPage(p);
+  doc.page.margins.bottom = 0;
+  doc.fillColor(MUTED).font("reg").fontSize(8)
+    .text(`FlowGuard · Compliance Wording Review · 第 ${p + 1} 页 / 共 ${range.count} 页`,
+      M, doc.page.height - M - 8,
+      { width: CONTENT_W(), align: "center", lineBreak: false });
+}
+
 doc.end();
-stream.on("finish", () => console.log("PDF written:", OUT, fs.statSync(OUT).size, "bytes", "| pages:", pageNo));
+stream.on("finish", () => console.log("PDF written:", OUT, fs.statSync(OUT).size, "bytes", "| pages:", range.count));
