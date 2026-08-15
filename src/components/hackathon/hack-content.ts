@@ -4,7 +4,7 @@
 // Brand name "FlowGuard" stays Latin.
 
 export type HackSlideKind =
-  | "cover" | "toc" | "problem" | "product"
+  | "cover" | "toc" | "case" | "problem" | "product"
   | "feature" | "aitable" | "demo" | "architecture" | "compliance" | "summary";
 
 export interface HackSlide {
@@ -17,6 +17,10 @@ export interface HackSlide {
   toc?: string[];
   shot?: string;        // screenshot path for demo slide
   aiRows?: { pain: string; entry: string; call: string; does: string }[];
+  /** case slide: left-column one-week timeline (when → what). */
+  timeline?: { when: string; what: string }[];
+  /** case slide: right-column four pits, each previewing a pain point. */
+  pits?: { head: string; body: string }[];
   footnote?: string;
 }
 
