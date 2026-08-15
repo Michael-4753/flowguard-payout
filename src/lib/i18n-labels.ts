@@ -43,8 +43,6 @@ export function countryCodeLabel(t: TFunction, group: { countryCode?: string; co
  * `hit` state and optional `meta` (currency / amount tier). English engine
  * strings are used as `defaultValue` so nothing ever renders blank.
  */
-import type { RiskFactor } from "@/lib/engine/types";
-
 export function factorTitle(t: TFunction, f: Pick<RiskFactor, "id" | "title">): string {
   return t(`factor.${f.id}.title`, { defaultValue: f.title });
 }
