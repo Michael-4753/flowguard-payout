@@ -45,8 +45,13 @@ export function BuildStep({
   const amountInvalid = amount.trim() !== "" && liveAmountError !== null;
   const canSubmit = Boolean(supplierId) && amount.trim() !== "" && liveAmountError === null;
   const selected = suppliers.find((s) => s.id === supplierId);
+  // Settlement currency is fixed by the contract: it is the selected payee's
+  // bound currency and is NOT chosen at payout time. No payee selected yet → no
+  // currency to show.
+  const settleCurrency = selected?.currency;
 
   function proceed() {
+    if (!settleCurrency) return;
     onSubmit({
       supplierId,
       amountUsd: Number(amount),
