@@ -61,7 +61,7 @@
   },
   "home": {
     "title": "Payout console",
-    "subtitle": "Prevent returns before, de-blackbox in transit, reconcile cleanly after",
+    "subtitle": "Pre-check return risk and route every cross-border payment before its instruction is submitted to a licensed institution.",
     "newPayment": "New payment instruction",
     "stats": {
       "payments": "Payments",
