@@ -33,6 +33,13 @@
       "sahana-design": "印度 · 班加罗尔",
       "meridian-freight": "高风险地区 · 审查中",
       "atlas-domestic": "美国 · 芝加哥"
+    },
+    "countryCode": {
+      "VN": "越南 · 胡志明市",
+      "EE": "爱沙尼亚 · 塔林",
+      "IN": "印度 · 班加罗尔",
+      "XX": "高风险地区 · 审查中",
+      "US": "美国 · 芝加哥"
     }
   },
   "nav": {

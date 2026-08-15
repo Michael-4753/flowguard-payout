@@ -28,3 +28,11 @@ export function verificationStatusLabel(t: TFunction, key: "open" | "verified" |
 export function countryLabel(t: TFunction, supplier: { id: string; country: string }): string {
   return t(`enum.country.${supplier.id}`, { defaultValue: supplier.country });
 }
+
+/** Localized country/region for grouped views keyed by ISO-ish country code. */
+export function countryCodeLabel(t: TFunction, group: { countryCode?: string; country: string }): string {
+  if (group.countryCode) {
+    return t(`enum.countryCode.${group.countryCode}`, { defaultValue: group.country });
+  }
+  return group.country;
+}

@@ -33,6 +33,13 @@
       "sahana-design": "India · Bengaluru",
       "meridian-freight": "High-risk region · under review",
       "atlas-domestic": "United States · Chicago"
+    },
+    "countryCode": {
+      "VN": "Vietnam · Ho Chi Minh City",
+      "EE": "Estonia · Tallinn",
+      "IN": "India · Bengaluru",
+      "XX": "High-risk region · under review",
+      "US": "United States · Chicago"
     }
   },
   "nav": {
