@@ -86,8 +86,12 @@ export interface FlowProgress {
   /** Whether the payment is done (arrived) or dead (returned). */
   done: boolean;
   returned: boolean;
-  /** Short status caption. */
-  caption: string;
+  /**
+   * Structured status caption for localized rendering. `key` is an i18n key
+   * under `flow.caption.*`; when the caption references an intermediary bank,
+   * `hopId` + `bankName` let the UI translate the bank name too.
+   */
+  caption: { key: string; hopId?: string; bankName?: string };
 }
 
 /**
