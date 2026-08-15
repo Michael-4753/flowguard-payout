@@ -119,6 +119,7 @@ function HopNode({
   done: boolean;
   returned: boolean;
 }) {
+  const { t } = useTranslation();
   const reached = index < currentIndex || (done && index <= currentIndex);
   const current = index === currentIndex && !done;
   const isDanger = hop.chokepoint && (current || returned);
@@ -151,8 +152,8 @@ function HopNode({
           )}
           data-active={reached || current || (done && index === currentIndex) ? "true" : "false"}
           style={{ color: nodeColor, border: `1.5px solid ${nodeColor}` }}
-          title={hop.bankName}
-          aria-label={`${hop.bankName}${hop.chokepoint ? " · chokepoint" : ""}`}
+          title={hopBank(t, hop)}
+          aria-label={`${hopBank(t, hop)}${hop.chokepoint ? " · chokepoint" : ""}`}
         >
           {isDanger ? "!" : glyph}
         </span>
@@ -166,9 +167,9 @@ function HopNode({
       {/* bank label */}
       <p
         className="mt-1.5 max-w-[86px] truncate text-center text-[10px] font-medium text-foreground"
-        title={hop.bankName}
+        title={hopBank(t, hop)}
       >
-        {hop.bankName}
+        {hopBank(t, hop)}
       </p>
 
       {/* per-hop annotations: time · fee · remaining */}
