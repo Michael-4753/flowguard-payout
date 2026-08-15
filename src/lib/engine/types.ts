@@ -18,7 +18,7 @@ export type PaymentStatus =
 export type ChannelClass = "stablecoin-direct" | "local-fiat";
 
 export const CHANNEL_CLASS_LABEL: Record<ChannelClass, string> = {
-  "stablecoin-direct": "Stablecoin Direct",
+  "stablecoin-direct": "Licensed Digital Settlement",
   "local-fiat": "Local Fiat Payout",
 };
 
@@ -374,7 +374,7 @@ export interface FailureCase {
 export const RISK_LEVEL_LABEL: Record<RiskLevel, string> = {
   low: "Low risk",
   medium: "Medium — needs docs",
-  high: "High — do not send",
+  high: "High — hold & review",
 };
 
 export const STATUS_LABEL: Record<PaymentStatus, string> = {
