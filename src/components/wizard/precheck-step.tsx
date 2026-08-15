@@ -431,10 +431,24 @@ export function PrecheckStep({
               ]}
             />
           </p>
+          <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground" data-el="wizard-track-case-hint">
+            {t("precheck.trackCaseHint")}
+          </p>
+          {/* Recommended path: don't force a lone "override & continue" — the
+              verification case already exists, so steer the cashier to track it
+              first. Acknowledging the risk is the secondary, deliberate action. */}
+          <button
+            type="button"
+            onClick={() => router.push("/cases")}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-bold text-primary-foreground shadow-[var(--fg-shadow-sm)] transition-transform active:scale-[0.99]"
+            data-el="wizard-track-case"
+          >
+            <FileCheck2 className="h-4 w-4" /> {t("precheck.trackCaseCta")}
+          </button>
           <button
             type="button"
             onClick={() => setAcknowledged(true)}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-[color:var(--danger)]/60 bg-[color:var(--danger)]/15 px-4 py-3 text-sm font-semibold text-[color:var(--danger)] transition-transform active:scale-[0.99]"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-full border border-[color:var(--danger)]/60 bg-transparent px-4 py-3 text-sm font-semibold text-[color:var(--danger)] transition-transform active:scale-[0.99]"
             data-el="wizard-acknowledge"
           >
             {t("precheck.acknowledgeContinue")}
