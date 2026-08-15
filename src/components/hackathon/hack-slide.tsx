@@ -194,16 +194,19 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
         <div className="relative">
           <SlideHeader eyebrow={slide.eyebrow} title={slide.title} subtitle={slide.subtitle} />
           <div className="mt-6 grid w-full gap-6 lg:grid-cols-[1.55fr_1fr] lg:items-start">
-            {/* Left column: what each app page does — 2 rows × 3 cols grid */}
+            {/* Left column: what each app page does — 2 rows × 3 cols grid,
+                styled identically to the feature-slide bullet cards. */}
             {slide.pages && (
-              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
                 {slide.pages.map((p, i) => (
-                  <div key={p.name} className="rounded-2xl border border-border bg-[color:var(--fg-soft)] p-3.5">
-                    <div className="flex items-center gap-2">
-                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-bold text-primary-foreground">{i + 1}</span>
-                      <h3 className="text-sm font-semibold leading-tight">{p.name}</h3>
+                  <div key={p.name} className="group flex gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--primary)]/40 hover:shadow-md">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0f766e] to-[#0e7490] text-xs font-bold text-white shadow">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <p className="text-base font-bold text-foreground">{p.name}</p>
+                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
                     </div>
-                    <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{p.body}</p>
                   </div>
                 ))}
               </div>
