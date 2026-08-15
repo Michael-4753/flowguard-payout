@@ -70,6 +70,16 @@ async function run() {
   console.log("saved feat-milestones.png (full page)");
 
   // ---- Feature ④ : 统一结算状态与对账看板 ----
+  // Seed one payment end-to-end first so the reconcile board shows real rows.
+  await page.goto(`${BASE}/pay?supplier=nordwind-dev&amount=6400`, { waitUntil: "networkidle" });
+  await page.waitForTimeout(1200);
+  await page.waitForSelector('[data-el="wizard-run-precheck"]', { timeout: 15000 });
+  await (await page.$('[data-el="wizard-run-precheck"]')).click();
+  await page.waitForSelector('[data-el="wizard-precheck"]', { timeout: 20000 });
+  await (await page.waitForSelector('[data-el="wizard-to-route"]:not([disabled])', { timeout: 15000 })).click();
+  await (await page.waitForSelector('[data-el="wizard-confirm"]', { timeout: 15000 })).click();
+  await page.waitForTimeout(2500);
+
   await page.goto(`${BASE}/reconcile`, { waitUntil: "networkidle" });
   await page.waitForTimeout(2500);
   await page.screenshot({ path: `${OUT}/feat-reconcile.png`, fullPage: true });
