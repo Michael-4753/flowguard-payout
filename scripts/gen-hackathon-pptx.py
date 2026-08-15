@@ -109,7 +109,44 @@ for idx, item in enumerate(toc):
     add_text(s, x+Inches(0.15), y+Inches(0.12), Inches(0.5), Inches(0.5), str(idx+1), 18, TEAL, bold=True)
     add_text(s, x+Inches(0.7), y+Inches(0.2), Inches(2.9), Inches(0.8), item, 13, INK, bold=True)
 
-# ---------- 3 problem ----------
+# ---------- 3 case ----------
+s = prs.slides.add_slide(BLANK); bg(s, WHITE)
+eyebrow(s, "先看一笔真实的付款")
+title(s, "一笔 $48,000 越南货款，是怎么踩进坑里的", size=30)
+subtitle(s, "周一，出纳给越南供应商汇一笔货款。看似普通的一笔电汇，一周内连踩四个坑——每个坑，正是下一页要讲的痛点。")
+
+# 左：时间线叙事
+rect(s, Inches(0.9), Inches(2.75), Inches(5.55), Inches(3.95), CARDBG)
+add_text(s, Inches(1.15), Inches(2.9), Inches(5.1), Inches(0.4), "一周时间线", 15, TEAL, bold=True)
+timeline = [
+    ("周一", "出纳发起 $48,000 电汇，钱汇出，开始等待。"),
+    ("第 3 天", "供应商说没收到。问银行，只答「在途」，卡在哪家中间行没人说得清。"),
+    ("第 6 天", "银行退回：收款公司名与账户不符（一个字母之差）。$133 手续费打水漂、货期延误。"),
+    ("第 7 天", "想改走别的通道，却不清楚越南走廊要哪些材料；对账时退回款/手续费/二次汇款三笔对不上。"),
+]
+ty = 3.35
+for when, what in timeline:
+    add_text(s, Inches(1.15), Inches(ty), Inches(1.1), Inches(0.4), when, 12.5, INK, bold=True)
+    add_text(s, Inches(2.3), Inches(ty), Inches(3.95), Inches(0.8), what, 11.5, MUT)
+    ty += 0.83
+
+# 右：四个踩坑点 → 预告四痛点
+rect(s, Inches(6.7), Inches(2.75), Inches(5.7), Inches(3.95), RGBColor(0xFB,0xEC,0xEC))
+add_text(s, Inches(6.95), Inches(2.9), Inches(5.2), Inches(0.4), "四个坑，四个痛点", 15, RGBColor(0xC0,0x3A,0x2B), bold=True)
+pits = [
+    ("看不到钱卡在哪", "全程黑箱，只能干等 → 痛点①"),
+    ("发出后才知会被退", "收款信息问题事后才暴露 → 痛点②"),
+    ("走廊规则要重新摸", "每国每行要求都不同 → 痛点③"),
+    ("三笔款对不上账", "退回/手续费/重汇难核销 → 痛点④"),
+]
+py = 3.35
+for head, body in pits:
+    add_text(s, Inches(6.95), Inches(py), Inches(5.2), Inches(0.35), head, 13, RGBColor(0xC0,0x3A,0x2B), bold=True)
+    add_text(s, Inches(6.95), Inches(py+0.35), Inches(5.2), Inches(0.4), body, 11.5, MUT)
+    py += 0.83
+footnote(s, "这不是虚构极端案例，而是外贸出纳每周都在经历的常态。下一页，把它拆成四个可被验证的痛点。")
+
+# ---------- 4 problem ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
 eyebrow(s, "真实问题 · 谁会使用"); title(s, "跨境 B2B 付款，至今仍是「盲发」")
 subtitle(s, "使用者：外贸企业出纳/财务、跨境电商、做海外供应商结算的中小企业。下面四痛点，正好对应后面四个 AI 能力。")
