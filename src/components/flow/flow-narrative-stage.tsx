@@ -1,9 +1,10 @@
 "use client";
 
 import { AlertTriangle, ArrowDown, Clock, TrendingDown, Eye, EyeOff, Building2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/utils/utils";
 import type { FlowHop, RiskFactor, RouteOption } from "@/lib/engine/types";
-import { CHANNEL_CLASS_LABEL } from "@/lib/engine/types";
+import { channelLabel } from "@/lib/i18n-labels";
 import { formatMinutes, formatUsdCents } from "@/lib/format";
 
 const BLACKBOX_META: Record<
@@ -35,6 +36,7 @@ export function FlowNarrativeStage({
   avgHops?: number;
 }) {
   const selected = options.find((o) => o.id === selectedId) ?? options[0];
+  const { t } = useTranslation();
   const criticalHits = riskHits.filter((f) => f.hit && f.severity === "critical");
   const intermediaries = selected.hops.filter((h) => h.role === "intermediary").length;
   const opaque = selected.hops.filter((h) => h.blackboxLevel === "opaque").length;
