@@ -18,13 +18,13 @@
   },
   "common": {
     "viewAll": "View all",
-    "newPayment": "New payment",
+    "newPayment": "New payment instruction",
     "retry": "Retry"
   },
   "home": {
     "title": "Payout console",
     "subtitle": "Pre-check return risk and route every cross-border payment before it leaves.",
-    "newPayment": "New payment",
+    "newPayment": "New payment instruction",
     "stats": {
       "payments": "Payments",
       "volume": "Volume",
@@ -182,7 +182,7 @@
     "emptyNoMatchTitle": "No payments match these filters",
     "emptyNoneDesc": "Once you route a payment, it appears here with its pre-check snapshot.",
     "emptyNoMatchDesc": "Try resetting the risk or status filter above.",
-    "newPayment": "New payment",
+    "newPayment": "New payment instruction",
     "amount": "Amount ({{currency}})",
     "channel": "Channel",
     "returnProb": "Return prob.",
@@ -319,7 +319,7 @@
     "recentPayments": "Recent payments",
     "emptyTitle": "No payments to this payee yet",
     "emptyDesc": "Route a payment to this payee and it will appear here with its pre-check snapshot.",
-    "newPayment": "New payment"
+    "newPayment": "New payment instruction"
   },
   "addPayee": {
     "title": "Add payee",
