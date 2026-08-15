@@ -1,8 +1,8 @@
 {
   "route": "escrow",
-  "name": "Escrow",
-  "nav_type": "tab",
-  "order_index": 5,
+  "name": "Redirect",
+  "nav_type": "none",
+  "order_index": 99,
   "icon": "lock",
-  "summary": "Milestone escrow: fund, split milestones, release on completion"
+  "summary": "Deprecated route. The milestone-escrow module was removed for compliance (this platform holds no funds and provides no custody/escrow); any old /escrow link now redirects to the dashboard."
 }
