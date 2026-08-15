@@ -1,0 +1,8 @@
+{
+  "route": "milestones",
+  "name": "Milestones",
+  "nav_type": "tab",
+  "order_index": 4,
+  "icon": "flag",
+  "summary": "Milestone condition-settlement workbench. Software-only: manages project payment milestones, release conditions and reminders; holds no funds and never releases — the payout is generated in Pay and settled by a licensed institution."
+}
