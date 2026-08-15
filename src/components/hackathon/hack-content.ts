@@ -56,7 +56,7 @@ export const HACK_DECK: HackSlide[] = [
     subtitle: "使用者：外贸企业出纳/财务、跨境电商、做海外供应商结算的中小企业。下面四痛点，正好对应后面四个 AI 能力。",
     bullets: [
       { head: "① 中间行黑箱，钱卡哪看不见", body: "作为付款方，你根本看不到钱走了哪条路、卡在哪个中间行，只能干等——对应「AI: where is my money?」。" },
-      { head: "② 莫名被退，发起时才知道", body: "退回多是收款信息/合规校验问题，却在发起后才发现，代价是几天甚至一周——对应「AI: draft the follow-up」。" },
+      { head: "② 莫名被退，发起时才知道", body: "被退回的以转账（尤其打款给个人收款人）最为常见；退回多是收款信息/合规校验问题，却在发起后才发现，代价是几天甚至一周——对应「AI: draft the follow-up」。" },
       { head: "③ 多国供应商，重复适应银行", body: "多个国家的多个供应商，每次结算都要重新适应不同银行的要求，效率极低——对应「AI: what this corridor requires」。" },
       { head: "④ 财务对账，凭证对不上", body: "对账时链上/链下凭证对不上，多笔跨国付款时尤其头疼——对应「AI: why don't these match?」。" },
     ],
