@@ -1,13 +1,13 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { cn } from "@/utils/utils";
 import {
-  RISK_LEVEL_LABEL,
-  STATUS_LABEL,
   type PaymentStatus,
   type RiskLevel,
   type Severity,
 } from "@/lib/engine/types";
+import { riskLabel, statusLabel } from "@/lib/i18n-labels";
 
 const RISK_STYLES: Record<RiskLevel, string> = {
   low: "bg-[color:var(--success)]/15 text-[color:var(--success)] border-[color:var(--success)]/30",
@@ -16,6 +16,7 @@ const RISK_STYLES: Record<RiskLevel, string> = {
 };
 
 export function RiskBadge({ level, className }: { level: RiskLevel; className?: string }) {
+  const { t } = useTranslation();
   return (
     <span
       className={cn(
@@ -25,7 +26,7 @@ export function RiskBadge({ level, className }: { level: RiskLevel; className?: 
       )}
       data-el="risk-badge"
     >
-      {RISK_LEVEL_LABEL[level]}
+      {riskLabel(t, level)}
     </span>
   );
 }
@@ -41,6 +42,7 @@ const STATUS_STYLES: Record<PaymentStatus, string> = {
 };
 
 export function StatusPill({ status, className }: { status: PaymentStatus; className?: string }) {
+  const { t } = useTranslation();
   return (
     <span
       className={cn(
@@ -62,7 +64,7 @@ export function StatusPill({ status, className }: { status: PaymentStatus; class
           status === "returned" && "bg-[color:var(--danger)]",
         )}
       />
-      {STATUS_LABEL[status]}
+      {statusLabel(t, status)}
     </span>
   );
 }
