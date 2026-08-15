@@ -158,7 +158,7 @@ for (let p = 0; p < range.count; p++) {
   doc.switchToPage(p);
   doc.page.margins.bottom = 0;
   doc.fillColor(MUTED).font("reg").fontSize(8)
-    .text(`FlowGuard · Compliance Wording Review · 第 ${p + 1} 页 / 共 ${range.count} 页`,
+    .text(`${FOOTER_LABEL} · 第 ${p + 1} 页 / 共 ${range.count} 页`,
       M, doc.page.height - M - 8,
       { width: CONTENT_W(), align: "center", lineBreak: false });
 }
