@@ -2,7 +2,7 @@
 // labels must be translated so Chinese mode shows Chinese. Pass a `t` from
 // useTranslation (component) — keeps callers simple and SSR-safe.
 import type { TFunction } from "i18next";
-import type { ChannelClass, RiskLevel, PaymentStatus } from "@/lib/engine/types";
+import type { ChannelClass, RiskLevel, PaymentStatus, RiskFactor } from "@/lib/engine/types";
 
 export function channelLabel(t: TFunction, key: ChannelClass): string {
   return t(`enum.channel.${key}`);
@@ -35,4 +35,36 @@ export function countryCodeLabel(t: TFunction, group: { countryCode?: string; co
     return t(`enum.countryCode.${group.countryCode}`, { defaultValue: group.country });
   }
   return group.country;
+}
+
+/**
+ * Localized risk-factor text. The engine stores stable factor ids and English
+ * fallbacks; the UI renders Chinese (or any locale) by translating on `id`,
+ * `hit` state and optional `meta` (currency / amount tier). English engine
+ * strings are used as `defaultValue` so nothing ever renders blank.
+ */
+import type { RiskFactor } from "@/lib/engine/types";
+
+export function factorTitle(t: TFunction, f: Pick<RiskFactor, "id" | "title">): string {
+  return t(`factor.${f.id}.title`, { defaultValue: f.title });
+}
+
+export function factorDescription(
+  t: TFunction,
+  f: Pick<RiskFactor, "id" | "hit" | "description" | "meta">,
+): string {
+  // amount-tier has no simple hit/ok split — its copy depends on the tier band.
+  if (f.id === "amount-tier") {
+    const tier = f.meta?.tier ?? (f.hit ? "mid" : "small");
+    return t(`factor.amount-tier.${tier}`, { defaultValue: f.description });
+  }
+  const state = f.hit ? "hit" : "ok";
+  return t(`factor.${f.id}.${state}`, {
+    defaultValue: f.description,
+    currency: f.meta?.currency ?? "",
+  });
+}
+
+export function factorRemediation(t: TFunction, f: Pick<RiskFactor, "id" | "remediation">): string {
+  return t(`factor.${f.id}.remediation`, { defaultValue: f.remediation });
 }
