@@ -293,9 +293,11 @@ for i, (nm, body) in enumerate(DEMO_PAGES):
     add_text(s, Inches(cx + 0.16), Inches(cy + 0.17), Inches(0.38), Inches(0.36), str(i + 1), 12, WHITE, bold=True, align=PP_ALIGN.CENTER)
     add_text(s, Inches(cx + 0.62), Inches(cy + 0.16), Inches(CW - 0.76), Inches(0.4), nm, 11, INK, bold=True)
     add_text(s, Inches(cx + 0.18), Inches(cy + 0.66), Inches(CW - 0.36), Inches(1.2), body, 9, MUT)
-# Right column: demo video placeholder (vertical 9:16-ish box).
-rect(s, Inches(8.65), Inches(2.35), Inches(3.75), Inches(4.72), RGBColor(0xF1, 0xF5, 0xF9))
-add_text(s, Inches(8.65), Inches(4.55), Inches(3.75), Inches(0.5), "在此处放入 Demo 视频", 13, MUT, align=PP_ALIGN.CENTER)
+# Right column: demo video placeholder — aligned to the feature slides'
+# right-column box (x=8.9, y=1.65, w=3.55, h=5.4) for a consistent look.
+rect(s, Inches(8.9), Inches(1.65), Inches(3.55), Inches(5.4), CARDBG)
+add_text(s, Inches(8.9), Inches(4.15), Inches(3.55), Inches(0.4), "在此处放入 Demo 视频", 11, MUT, align=PP_ALIGN.CENTER)
+add_text(s, Inches(8.9), Inches(7.12), Inches(3.55), Inches(0.3), "Demo 视频（点击播放）", 9, MUT, align=PP_ALIGN.CENTER)
 footnote(s, "预录 Demo 视频、逐页展示各功能页面——不是 PPT 概念。可扫码访问在线应用实测。")
 
 # ---------- 9 architecture ----------
