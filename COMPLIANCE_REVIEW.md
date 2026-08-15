@@ -4,7 +4,7 @@
 >
 > FlowGuard is a **software-only decision-support tool**. It **holds no licence, never touches or custodies funds, and performs no stablecoin exchange, custody or transfer**. All settlement is performed by **licensed financial institutions**.
 
-审查日期 / Date: 2026-08-15 · 语言 / Locales: `en-US`, `zh-CN`(键对齐 386/386)
+审查日期 / Date: 2026-08-15 · 语言 / Locales: `en-US`, `zh-CN`(键对齐 411/411)
 
 ---
 
@@ -53,7 +53,7 @@ Ensure every customer-, guest-, and investor-facing string aligns to the softwar
 
 ## 5. 验证 / Verification
 
-- 双语键对齐 / Locale parity: **386 / 386**，零缺失。
+- 双语键对齐 / Locale parity: **411 / 411**，零缺失。
 - 类型检查 / `tsc --noEmit`: **0 error**。
 - 关键路由 / Routes: `/`, `/review`, `/history`, `/reconcile`, `/cases`, `/receipt/:token`, `/pitch` 均 **HTTP 200**；`/escrow` **307** 重定向。
 
