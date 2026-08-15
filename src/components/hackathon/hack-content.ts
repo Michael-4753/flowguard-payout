@@ -16,6 +16,7 @@ export interface HackSlide {
   bullets?: { head: string; body: string }[];
   toc?: string[];
   shot?: string;        // screenshot path for demo slide
+  video?: string;       // pre-recorded demo video path (feature slide right column)
   aiRows?: { pain: string; entry: string; call: string; does: string }[];
   /** case slide: left-column one-week timeline (when → what). */
   timeline?: { when: string; what: string }[];
