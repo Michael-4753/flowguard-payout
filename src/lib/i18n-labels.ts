@@ -19,3 +19,12 @@ export function statusLabel(t: TFunction, key: PaymentStatus): string {
 export function verificationStatusLabel(t: TFunction, key: "open" | "verified" | "clarified"): string {
   return t(`enum.verification.${key}`);
 }
+
+/**
+ * Localized display for a supplier's country/region. Seed suppliers have a
+ * translation keyed by their stable id; user-added suppliers (free text) fall
+ * back to the raw stored value so their input is preserved verbatim.
+ */
+export function countryLabel(t: TFunction, supplier: { id: string; country: string }): string {
+  return t(`enum.country.${supplier.id}`, { defaultValue: supplier.country });
+}
