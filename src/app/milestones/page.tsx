@@ -1,14 +1,9 @@
-import { AppShell } from "@/components/shell/app-shell";
-import { MilestonesScreen } from "@/components/screens/milestones-screen";
+import { redirect } from "next/navigation";
 
-export const metadata = {
-  title: "FlowGuard — Milestone workbench",
-};
-
+// The milestone workbench was removed: milestone / outsourcing tracking is a
+// business-team concern, not part of the cashier's payout control console, and
+// it was disconnected from the actual payout flow (payout instructions are
+// created in /pay). Any old link to /milestones now redirects home.
 export default function MilestonesPage() {
-  return (
-    <AppShell>
-      <MilestonesScreen />
-    </AppShell>
-  );
+  redirect("/");
 }
