@@ -18,13 +18,13 @@
   },
   "common": {
     "viewAll": "查看全部",
-    "newPayment": "新建付款",
+    "newPayment": "新建付款指令",
     "retry": "重试"
   },
   "home": {
     "title": "付款控制台",
     "subtitle": "每一笔跨境付款发起前，先预检退回风险并选好结算路径。",
-    "newPayment": "新建付款",
+    "newPayment": "新建付款指令",
     "stats": {
       "payments": "付款笔数",
       "volume": "总额",
@@ -182,7 +182,7 @@
     "emptyNoMatchTitle": "没有符合筛选条件的付款",
     "emptyNoneDesc": "选路一笔付款后，它会连同预检快照显示在这里。",
     "emptyNoMatchDesc": "试着重置上方的风险或状态筛选。",
-    "newPayment": "新建付款",
+    "newPayment": "新建付款指令",
     "amount": "金额（{{currency}}）",
     "channel": "通道",
     "returnProb": "退回概率",
@@ -319,7 +319,7 @@
     "recentPayments": "最近付款",
     "emptyTitle": "还没有对该收款人的付款",
     "emptyDesc": "向该收款人选路一笔付款后，它会连同预检快照显示在这里。",
-    "newPayment": "新建付款"
+    "newPayment": "新建付款指令"
   },
   "addPayee": {
     "title": "添加收款人",
