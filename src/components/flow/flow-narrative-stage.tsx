@@ -4,7 +4,7 @@ import { AlertTriangle, ArrowDown, Clock, TrendingDown, Eye, EyeOff, Building2 }
 import { useTranslation } from "react-i18next";
 import { cn } from "@/utils/utils";
 import type { FlowHop, RiskFactor, RouteOption } from "@/lib/engine/types";
-import { channelLabel, factorTitle } from "@/lib/i18n-labels";
+import { channelLabel, factorTitle, hopLabel, hopBank } from "@/lib/i18n-labels";
 import { formatMinutes, formatUsdCents } from "@/lib/format";
 
 const BLACKBOX_META: Record<
@@ -190,10 +190,10 @@ function HopNode({ hop, index, last }: { hop: FlowHop; index: number; last: bool
         )}
       >
         <div className="flex items-center justify-between gap-2">
-          <span className="truncate text-sm font-semibold">{hop.label}</span>
+          <span className="truncate text-sm font-semibold">{hopLabel(t, hop)}</span>
           {hop.chokepoint && (
             <span className="shrink-0 rounded-full bg-[color:var(--danger)]/20 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[color:var(--danger)]">
-              Chokepoint
+              {t("flow.chokepoint")}
             </span>
           )}
         </div>
@@ -201,7 +201,7 @@ function HopNode({ hop, index, last }: { hop: FlowHop; index: number; last: bool
         <div className="mt-1 flex items-center justify-between gap-2">
           <span className="inline-flex min-w-0 items-center gap-1 text-[11px] text-muted-foreground">
             <Building2 className="h-3 w-3 shrink-0" aria-hidden />
-            <span className="truncate">{hop.bankName}</span>
+            <span className="truncate">{hopBank(t, hop)}</span>
           </span>
           <span
             className={cn(
