@@ -26,8 +26,10 @@ Corridor / compliance rules of thumb:
 - Dormant / unverified beneficiary accounts frequently reject inbound wires.
 - Blacklisted beneficiary banks are intercepted; suggest an alternate bank or a
   licensed local-fiat PSP corridor.
-- Two payout paths exist: "Stablecoin Direct" (USDC, overseas entities only,
-  on-chain traceable) and "Local Fiat Payout" (PSP + correspondent bank rail).
+- Two payout paths exist: "Licensed Digital Settlement" (licensed overseas
+  digital-settlement institution, overseas entities only, on-chain traceable —
+  the platform never touches funds or performs any crypto conversion) and
+  "Local Fiat Payout" (PSP + correspondent bank rail).
 
 Output rules:
 - Return STRICT JSON only, no markdown fences.
@@ -35,7 +37,18 @@ Output rules:
 - "summary": 1-2 sentences on the overall return risk and the single biggest
   driver.
 - "actions": 2-4 short imperative remediation steps, most important first.
+- LANGUAGE: Write EVERY user-visible string ("summary" and each "actions" item)
+  in the target language given by the user message. When the target is Chinese
+  (zh), the entire output must be natural Simplified Chinese — do not leave any
+  English words, labels, or phrases. When it is English (en), write in English.
 `.trim();
+
+/** Map an app language code to an explicit instruction the model can follow. */
+function languageDirective(lang: unknown): string {
+  return lang === "zh"
+    ? 'Target language: Chinese (zh). Respond ONLY in Simplified Chinese.'
+    : 'Target language: English (en). Respond ONLY in English.';
+}
 
 export async function POST(request: NextRequest) {
   // Open to guests: this endpoint only turns an already-computed deterministic
