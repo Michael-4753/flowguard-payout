@@ -164,11 +164,11 @@ export const HACK_DECK: HackSlide[] = [
   {
     id: "demo",
     kind: "demo",
-    eyebrow: "预录 Demo 视频",
-    title: "Demo 视频：一笔高风险付款的完整拦截",
-    subtitle: "播放预录 Demo 视频：新建付款→预检亮红→AI 信号→核实清除→双人放行→生成指令。",
+    eyebrow: "预录 Demo 视频 · 逐页展示",
+    title: "Demo 视频：逐页看每个页面在做什么",
+    subtitle: "依次走过每个页面：首页概览 → 退回风险预检 → 多通道比价选路 → 结算对账看板 → 双人放行审批 → AI 核实工单。",
     shot: "/pitch-shots/demo.png",
-    footnote: "预录 Demo 视频、可完整演示核心功能——不是 PPT 概念。可扫码访问在线应用实测。",
+    footnote: "预录 Demo 视频、逐页展示各功能页面——不是 PPT 概念。可扫码访问在线应用实测。",
   },
   {
     id: "arch",
