@@ -101,7 +101,7 @@ export const HACK_DECK: HackSlide[] = [
   {
     id: "f1",
     kind: "feature",
-    eyebrow: "核心功能① · AI 为何必要",
+    eyebrow: "核心功能① · 事前防退回",
     title: "收款方信息预检-AI Agent",
     subtitle: "收款账户信息智能校验、国别规则适配、退回风险评分、合规风险提示报告。",
     bullets: [
@@ -130,7 +130,7 @@ export const HACK_DECK: HackSlide[] = [
   {
     id: "f3",
     kind: "feature",
-    eyebrow: "核心功能③ · 成果可演示",
+    eyebrow: "核心功能③ · 事后好对账",
     title: "统一结算状态与对账看板",
     subtitle: "聚合各通道汇款进度、中转链路信息、交易凭证，实现多笔跨国付款台账可视化与自动对账核销。",
     bullets: [
