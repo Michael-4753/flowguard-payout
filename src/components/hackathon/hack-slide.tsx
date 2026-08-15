@@ -193,7 +193,7 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
         <Blobs />
         <div className="relative">
           <SlideHeader eyebrow={slide.eyebrow} title={slide.title} subtitle={slide.subtitle} />
-          <div className="mt-6 grid w-full gap-6 lg:grid-cols-[1.55fr_1fr] lg:items-start">
+          <div className="mt-6 grid w-full gap-6 lg:grid-cols-[1.55fr_1fr] lg:items-center">
             {/* Left column: what each app page does — 2 rows × 3 cols grid,
                 styled identically to the feature-slide bullet cards. */}
             {slide.pages && (
@@ -213,7 +213,7 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
             )}
             {/* Right column: demo video (placeholder until a video is added) */}
             {slide.shot && (
-              <div className="flex aspect-[9/16] w-full max-h-[64vh] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl lg:sticky lg:top-0">
+              <div className="mx-auto flex aspect-[9/16] w-full max-w-[300px] max-h-[52vh] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl">
                 在此处放入 Demo 视频
               </div>
             )}
