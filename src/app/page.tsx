@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 import { ArrowRight, Coins, Timer, ShieldAlert, Send, Globe, AlertTriangle, Scale } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { PaymentRow } from "@/components/shared/payment-row";
+import { HeroFlowStrip } from "@/components/shared/hero-flow-strip";
+import { countryCodeLabel } from "@/lib/i18n-labels";
 import { useFlowGuardData } from "@/components/shell/data-provider";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -108,7 +110,7 @@ function DashboardBody() {
                 data-el="country-card"
               >
                 <div className="flex items-center gap-1.5">
-                  <span className="truncate text-[13px] font-semibold">{g.country}</span>
+                  <span className="truncate text-[13px] font-semibold">{countryCodeLabel(t, g)}</span>
                   {g.restricted && (
                     <AlertTriangle
                       className="h-3 w-3 shrink-0 text-[color:var(--danger)]"

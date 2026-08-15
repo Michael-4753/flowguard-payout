@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, MapPin, AlertTriangle, Plus } from "lucide-react";
 import { AppShell } from "@/components/shell/app-shell";
 import { useFlowGuardData } from "@/components/shell/data-provider";
+import { countryCodeLabel } from "@/lib/i18n-labels";
 import { LoadingBlock } from "@/components/shared/loading-block";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/errors/error-state";
@@ -104,7 +105,7 @@ function SuppliersBody() {
               <div className="mb-2 flex items-center justify-between gap-2 px-1">
                 <div className="flex min-w-0 items-center gap-2">
                   <MapPin className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden />
-                  <span className="truncate text-sm font-semibold">{g.country}</span>
+                  <span className="truncate text-sm font-semibold">{countryCodeLabel(t, g)}</span>
                   {g.restricted && (
                     <AlertTriangle
                       className="h-3.5 w-3.5 shrink-0 text-[color:var(--danger)]"
