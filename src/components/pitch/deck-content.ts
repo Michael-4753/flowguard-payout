@@ -67,7 +67,7 @@ export const DECK_ZH: DeckSlide[] = [
     subtitle: "事前风险 + 先核查 + 强制双人控制,集于一个控制台。",
     bullets: [
       { head: "事前拦截,而非事后补救", body: "同类产品在失败后才对账。我们先拦住失败 —— 并通过向供应商核查来清除它。" },
-      { head: "两条通道,一次决策", body: "稳定币与本地法币在同一流程中比较,并带结算 / 到账双币种。" },
+      { head: "两条通道,一次决策", body: "境外持牌数字结算与本地法币在同一流程中比较,并带结算 / 到账双币种。" },
       { head: "合规是原生的", body: "金额分档车道、强制经办—审批、完整审计轨迹是核心 —— 而非附加功能。" },
     ],
   },
@@ -133,7 +133,7 @@ export const DECK_EN: DeckSlide[] = [
       { head: "AI + amount-tier precheck", body: "DeepSeek AI and a deterministic engine score return probability; amount tiers escalate scrutiny, and payouts ≥ $1M are forced into the high-risk lane." },
       { head: "Verify-first with the supplier", body: "Data-quality problems (name / IBAN / SWIFT / account) must be synced to the payee as a Case first — approval is gated until verified or explicitly overridden." },
       { head: "Maker-checker, enforced", body: "Submit as Maker, approve as Checker; self-approval is hard-blocked front-end and server-side. Shown here in single-account demo mode; production uses two separate accounts." },
-      { head: "Dual-route + dual currency", body: "Stablecoin Direct vs Local Fiat auto-ranked by risk and cost; each payout shows settlement currency → payee's local currency." },
+      { head: "Dual-route + dual currency", body: "Licensed Digital Settlement vs Local Fiat auto-ranked by risk and cost; each payout shows settlement currency → payee's local currency." },
     ],
   },
   {
@@ -156,7 +156,7 @@ export const DECK_EN: DeckSlide[] = [
     subtitle: "Pre-send risk + verify-first + enforced dual control, in one console.",
     bullets: [
       { head: "Pre-send, not post-hoc", body: "Competitors reconcile after failure. We block it first — and clear it by verifying with the supplier." },
-      { head: "Two rails, one decision", body: "Stablecoin and local fiat compared in the same flow, with dual settlement / payee currency." },
+      { head: "Two rails, one decision", body: "Licensed digital settlement and local fiat compared in the same flow, with dual settlement / payee currency." },
       { head: "Compliance is native", body: "Amount-tier lanes, enforced maker-checker, and a full audit trail are core — not a bolt-on." },
     ],
   },
