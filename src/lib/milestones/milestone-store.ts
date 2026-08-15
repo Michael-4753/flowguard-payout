@@ -185,7 +185,7 @@ function subscribe(listener: () => void): () => void {
 
 /** Reactive hook: re-renders on any milestone change. */
 export function useMilestonePrograms(): MilestoneProgram[] {
-  return useSyncExternalStore(subscribe, readPrograms, () => []);
+  return useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);
 }
 
 /* ---------- derived helpers ---------- */
