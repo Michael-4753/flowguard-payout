@@ -35,39 +35,22 @@ async function run() {
     } catch { /* ignore */ }
   }
 
-  // ---- Feature ①/② : drive the /pay wizard to the precheck result ----
+  // ---- Feature ① : 收款方信息预检-AI Agent (drive /pay to precheck) ----
   await page.goto(`${BASE}/pay?supplier=meridian-freight&amount=42000`, { waitUntil: "networkidle" });
   await page.waitForTimeout(1500);
   await passAuthGate();
   await switchToZh();
   await page.waitForSelector('[data-el="wizard-build"]', { timeout: 15000 });
-  // ensure a payee is selected (prefill picks meridian-freight; click the last/high-risk option as fallback)
   const opts = await page.$$('[data-el="wizard-supplier-option"]');
   if (opts.length) { await opts[opts.length - 1].click(); await page.waitForTimeout(400); }
-  // submit the draft step to run the precheck
   const runBtn = await page.waitForSelector('[data-el="wizard-run-precheck"]', { timeout: 15000 });
   await runBtn.click();
-  // precheck panel appears
   await page.waitForSelector('[data-el="wizard-precheck"]', { timeout: 20000 });
   await page.waitForTimeout(1500);
-
-  // ① precheck: capture the risk factors block (top of the precheck panel)
   await shootElement(page, '[data-el="wizard-precheck"]', "feat-precheck.png");
 
-  // ② AI signals: this card is on-demand — click "scan", wait for the AI result,
-  // then screenshot it. If App AI is unavailable it returns to idle; we still
-  // capture the compliance-briefing region as a fallback so the slide is real.
-  try {
-    const runAi = await page.$('[data-el="ai-risk-signals-run"]');
-    if (runAi) { await runAi.click(); }
-    // wait for the scan to resolve (retry button appears when done/error)
-    await page.waitForSelector('[data-el="ai-risk-signals-retry"]', { timeout: 20000 });
-    await page.waitForTimeout(800);
-  } catch { /* AI may be slow/unavailable; capture whatever is there */ }
-  await shootElement(page, '[data-el="ai-risk-signals"]', "feat-ai.png");
-
-  // ---- Seed the review queue: submit ONE low-risk payment end-to-end ----
-  // A low-risk payee has no blocker/verify gate, so we can go straight to route + confirm.
+  // ---- Feature ② : 多路径智能路由推荐引擎 (route step) ----
+  // Use a low-risk payee so precheck has no blocker/verify gate → straight to route.
   await page.goto(`${BASE}/pay?supplier=nordwind-dev&amount=6400`, { waitUntil: "networkidle" });
   await page.waitForTimeout(1200);
   await page.waitForSelector('[data-el="wizard-build"]', { timeout: 15000 });
@@ -76,22 +59,21 @@ async function run() {
   await page.waitForSelector('[data-el="wizard-precheck"]', { timeout: 20000 });
   const toRoute = await page.waitForSelector('[data-el="wizard-to-route"]:not([disabled])', { timeout: 15000 });
   await toRoute.click();
-  const confirm = await page.waitForSelector('[data-el="wizard-confirm"]', { timeout: 15000 });
-  await confirm.click();
-  // handleConfirm redirects to /review after ~900ms
-  await page.waitForTimeout(2500);
+  await page.waitForSelector('[data-el="wizard-route"]', { timeout: 15000 });
+  await page.waitForTimeout(1200);
+  await shootElement(page, '[data-el="wizard-route"]', "feat-route.png");
 
-  // ---- Feature ③ : dual approval queue (now has a pending instruction) ----
-  await page.goto(`${BASE}/review`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(2500);
-  await page.screenshot({ path: `${OUT}/feat-review.png`, fullPage: true });
-  console.log("saved feat-review.png (full page)");
-
-  // ---- Feature ④ : milestones workbench ----
+  // ---- Feature ③ : 分阶段里程碑付款工作台 ----
   await page.goto(`${BASE}/milestones`, { waitUntil: "networkidle" });
   await page.waitForTimeout(2500);
   await page.screenshot({ path: `${OUT}/feat-milestones.png`, fullPage: true });
   console.log("saved feat-milestones.png (full page)");
+
+  // ---- Feature ④ : 统一结算状态与对账看板 ----
+  await page.goto(`${BASE}/reconcile`, { waitUntil: "networkidle" });
+  await page.waitForTimeout(2500);
+  await page.screenshot({ path: `${OUT}/feat-reconcile.png`, fullPage: true });
+  console.log("saved feat-reconcile.png (full page)");
 
   await browser.close();
 }
