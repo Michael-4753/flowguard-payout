@@ -77,7 +77,7 @@
     "riskFactorsHit": "命中 {{count}} 项风险因子",
     "returnProbability": "退回概率",
     "likelyChokepoint": "可能的卡点",
-    "doNotSend": "暂缓发送",
+    "doNotSend": "暂缓提交",
     "doNotSendDesc": "检测到严重阻断项。请先解决，或确认承担风险后继续提交审批。",
     "detailsNeedVerification": "收款人信息需核实",
     "detailsNeedVerificationDesc": "本笔付款被标记为高风险，主要是因为收款人基础信息存在问题。应先与供应商核实并登记为工单——而不是直接确认风险后进入审批。下方 {{count}} 项可一键同步给供应商：",

@@ -77,7 +77,7 @@
     "riskFactorsHit": "{{count}} risk factor(s) hit",
     "returnProbability": "Return probability",
     "likelyChokepoint": "Likely chokepoint",
-    "doNotSend": "Do not send yet",
+    "doNotSend": "Do not submit yet",
     "doNotSendDesc": "A critical blocker was detected. Resolve it, or acknowledge the risk to continue for review.",
     "detailsNeedVerification": "Supplier details need verification",
     "detailsNeedVerificationDesc": "This payment is flagged high-risk mainly because of issues in the payee's basic details. These should first be verified with the supplier and logged as a case — rather than acknowledging the risk and going straight to approval. The {{count}} item(s) below can be synced to the supplier in one click:",
