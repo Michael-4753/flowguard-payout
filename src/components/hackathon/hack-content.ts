@@ -106,20 +106,6 @@ export const HACK_DECK: HackSlide[] = [
     id: "f3",
     kind: "feature",
     eyebrow: "核心功能③ · 成果可演示",
-    title: "分阶段里程碑付款工作台",
-    subtitle: "外包/项目付款节点台账管理，按里程碑进度设置触发条件；条件结算管理。",
-    bullets: [
-      { head: "节点台账管理", body: "外包/项目付款节点集中管理，进度与金额一目了然。" },
-      { head: "里程碑触发条件", body: "按里程碑进度设置付款触发条件：待开始→进行中→待校验→已校验。" },
-      { head: "完成校验→放款提醒", body: "校验通过后向财务推送放款提醒，一键深链跳转付款流程。" },
-      { head: "合规边界", body: "实际放款操作全部在银行/持牌结算机构完成——平台不托管、不放款。" },
-    ],
-    shot: "/pitch-shots/feat-milestones.png",
-  },
-  {
-    id: "f4",
-    kind: "feature",
-    eyebrow: "核心功能④ · 成果可演示",
     title: "统一结算状态与对账看板",
     subtitle: "聚合各通道汇款进度、中转链路信息、交易凭证，实现多笔跨国付款台账可视化与自动对账核销。",
     bullets: [
