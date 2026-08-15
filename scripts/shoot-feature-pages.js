@@ -20,8 +20,14 @@ async function run() {
   const ctx = await browser.newContext({ viewport: VIEW, locale: "zh-CN" });
   const page = await ctx.newPage();
 
+  async function passAuthGate() {
+    const guest = await page.$('[data-el="auth-guest"]');
+    if (guest) { await guest.click(); await page.waitForTimeout(1200); }
+  }
+
   // ---- Feature ①/② : drive the /pay wizard to the precheck result ----
   await page.goto(`${BASE}/pay?supplier=meridian-freight&amount=42000`, { waitUntil: "networkidle" });
+  await passAuthGate();
   // submit the draft step to run the precheck
   const runBtn = await page.waitForSelector('[data-el="wizard-run-precheck"]', { timeout: 15000 });
   await runBtn.click();
