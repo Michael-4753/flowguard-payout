@@ -1,14 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { ChevronRight } from "lucide-react";
 import type { PaymentRecord } from "@/lib/engine/types";
-import { CHANNEL_CLASS_LABEL } from "@/lib/engine/types";
+import { channelLabel } from "@/lib/i18n-labels";
 import { RiskBadge, StatusPill } from "@/components/shared/badges";
 import { formatUsd, formatDate } from "@/lib/format";
 
 export function PaymentRow({ record }: { record: PaymentRecord }) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <button
@@ -23,7 +25,7 @@ export function PaymentRow({ record }: { record: PaymentRecord }) {
           <span className="shrink-0"><RiskBadge level={record.riskLevel} /></span>
         </div>
         <div className="mt-1 flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
-          <span className="truncate">{CHANNEL_CLASS_LABEL[record.route.channelClass]}</span>
+          <span className="truncate">{channelLabel(t, record.route.channelClass)}</span>
           <span>·</span>
           <span className="shrink-0">{formatDate(record.createdAt)}</span>
         </div>
