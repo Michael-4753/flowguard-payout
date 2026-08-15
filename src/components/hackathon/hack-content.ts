@@ -31,7 +31,7 @@ export const HACK_DECK: HackSlide[] = [
     kind: "cover",
     eyebrow: "2026 创青春 AI 黑客松 · 顺德行 · 自由创新赛道",
     title: "FlowGuard",
-    subtitle: "把 AI 带进真实场景：跨境付款「先核查，再付款」的风控控制台",
+    subtitle: "事前防退回，事中破黑箱，事后好对账",
     footnote: "一人团队 · 负责 App 全部内容 · 5 分钟路演",
   },
   {
