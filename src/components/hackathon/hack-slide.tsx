@@ -153,8 +153,11 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
         <div className="relative">
           <SlideHeader eyebrow={slide.eyebrow} title={slide.title} subtitle={slide.subtitle} />
           {slide.shot && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={slide.shot} alt={slide.title} className="mx-auto mt-5 max-h-[56vh] w-full max-w-5xl rounded-2xl border border-border object-contain shadow-xl" />
+            // Screenshot removed — keep an equally-sized empty placeholder box so
+            // the layout stays intact and a screenshot can be pasted in manually.
+            <div className="mx-auto mt-5 flex aspect-[16/9] w-full max-w-5xl max-h-[56vh] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl">
+              在此处粘贴截图
+            </div>
           )}
           {slide.footnote && (
             <p className="mt-4 inline-block rounded-full bg-[color:var(--fg-soft)] px-4 py-1.5 text-xs text-muted-foreground sm:ml-4">{slide.footnote}</p>
