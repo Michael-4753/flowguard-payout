@@ -272,8 +272,6 @@ add_text(s, Inches(0.9), Inches(6.95), Inches(11.5), Inches(0.4),
 # ---------- 9 demo ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
 eyebrow(s, "预录 Demo 视频 · 逐页展示"); title(s, "Demo：逐页看每个页面在做什么", size=32)
-add_text(s, Inches(0.9), Inches(1.85), Inches(11.5), Inches(0.6),
-         "一条真实付款主线，逐页走过 App 的每个页面，展示它在做什么。", 15, MUT)
 # Demo video not yet placed — keep an empty placeholder box (same region) so the
 # slide layout stays intact and a demo video can be placed in manually later.
 rect(s, Inches(1.35), Inches(2.5), Inches(10.6), Inches(4.3), RGBColor(0xF1, 0xF5, 0xF9))
