@@ -5,7 +5,7 @@
   },
   "enum": {
     "channel": {
-      "stablecoin-direct": "境外持牌数字结算",
+      "stablecoin-direct": "境外持牌结算服务商",
       "local-fiat": "本地法币通道"
     },
     "risk": {
@@ -88,7 +88,7 @@
     "settlementCurrency": "结算币种",
     "channelPreference": "通道偏好",
     "auto": "自动（推荐）",
-    "digitalAssetHint": "数字资产结算由境外持牌机构完成并为收款人入账。本平台仅做比价与选路——不经手资金，不做任何加密货币兑换、托管或转账。",
+    "digitalAssetHint": "该通道由境外持牌机构完成结算并为收款人入账。本平台仅做比价与选路——不经手资金，不做任何加密货币兑换、托管或转账。",
     "runPrecheck": "运行预检",
     "hintSelectPayee": "请先在上方选择收款人。",
     "hintEnterAmount": "输入金额以运行预检。",
@@ -153,7 +153,8 @@
     "generateVerification": "生成核实请求",
     "generateFailed": "无法生成请求，请重试。",
     "trackCaseCta": "去工单跟踪核实（推荐）",
-    "trackCaseHint": "已生成核实工单。建议先去工单跟踪供应商回复、待问题澄清后再放行；确认承担风险仅用于确实无法核实且必须带险发出的情况。"
+    "trackCaseHint": "已生成核实工单。建议先去工单跟踪供应商回复、待问题澄清后再放行；确认承担风险仅用于确实无法核实且必须带险发出的情况。",
+    "stablecoinHint": "该通道由境外持牌机构完成结算。本平台仅做比价与选路；不经手资金，不做任何加密货币转账。"
   },
   "route": {
     "highRiskBanner": "<0>高风险付款（{{score}}/100，约 {{prob}} 退回概率）。</0> 你已确认承担风险并选择继续。高风险付款仍可进行，但会生成合规审计记录——你需承担合规与损失责任。",
