@@ -22,7 +22,7 @@ import {
   type VerificationCase,
   type VerificationStatus,
 } from "@/lib/engine/types";
-import { channelLabel, verificationStatusLabel } from "@/lib/i18n-labels";
+import { channelLabel, verificationStatusLabel, failCaseText } from "@/lib/i18n-labels";
 import { cn } from "@/utils/utils";
 import { AiInsightCard } from "@/components/ai/ai-insight-card";
 
@@ -519,17 +519,17 @@ function LibraryTab() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 text-[color:var(--danger)]">
                     <AlertTriangle className="h-4 w-4 shrink-0" aria-hidden />
-                    <span className="text-sm font-semibold text-foreground">{c.reason}</span>
+                    <span className="text-sm font-semibold text-foreground">{failCaseText(t, c, "reason")}</span>
                   </div>
                   <p className="mt-1 font-mono text-[10px] text-muted-foreground">
-                    {c.corridor} · {channelLabel(t, c.channelClass)}
+                    {failCaseText(t, c, "corridor")} · {channelLabel(t, c.channelClass)}
                   </p>
                 </div>
                 <span className="shrink-0 font-mono text-sm font-bold">{formatUsd(c.amountUsd)}</span>
               </div>
 
               <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] text-muted-foreground">
-                <span>{t("cases.failedAt")} <b className="text-foreground">{c.failedAt}</b></span>
+                <span>{t("cases.failedAt")} <b className="text-foreground">{failCaseText(t, c, "failedAt")}</b></span>
                 <span className="inline-flex items-center gap-1">
                   <Clock className="h-3 w-3" aria-hidden /> {t("cases.heldDays", { days: c.heldDays })}
                 </span>
@@ -541,7 +541,7 @@ function LibraryTab() {
                   <div className="text-[10px] font-semibold uppercase tracking-wide text-primary">
                     {t("cases.remediation")}
                   </div>
-                  <p className="mt-0.5 text-xs text-foreground">{c.remediation}</p>
+                  <p className="mt-0.5 text-xs text-foreground">{failCaseText(t, c, "remediation")}</p>
                 </div>
               </div>
             </article>
