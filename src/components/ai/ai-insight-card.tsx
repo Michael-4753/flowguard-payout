@@ -60,7 +60,7 @@ export function AiInsightCard({
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [insight, setInsight] = useState<Insight | null>(null);
   const [rawFallback, setRawFallback] = useState("");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const resolvedActionsLabel = actionsLabel ?? t("aiCard.recommendedActions");
 
   async function run() {
@@ -71,7 +71,7 @@ export function AiInsightCard({
       const res = await request("/api/ai/insight", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, snapshot: buildSnapshot() }),
+        body: JSON.stringify({ kind, snapshot: buildSnapshot(), lang: i18n.language?.startsWith("zh") ? "zh" : "en" }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
