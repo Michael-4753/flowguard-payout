@@ -13,29 +13,11 @@ const BOLD = "/tmp/NotoSansSC-Bold.ttf";
 
 const M = 56;              // page margin
 const FOOTER_H = 34;       // reserved footer band
-let pageNo = 0;
-const doc = new PDFDocument({ size: "A4", margins: { top: M, bottom: M + FOOTER_H, left: M, right: M }, autoFirstPage: false });
+const doc = new PDFDocument({ size: "A4", margins: { top: M, bottom: M + FOOTER_H, left: M, right: M }, bufferPages: true, autoFirstPage: true });
 doc.registerFont("reg", REG);
 doc.registerFont("bold", BOLD);
 const stream = fs.createWriteStream(OUT);
 doc.pipe(stream);
-
-// draw footer immediately when a page is added (no buffering, no extra pages)
-let inFooter = false;
-doc.on("pageAdded", () => {
-  if (inFooter) return; // guard against re-entry if footer text ever overflows
-  inFooter = true;
-  pageNo += 1;
-  const n = pageNo;
-  doc.fillColor("#64748b").font("reg").fontSize(8)
-    .text(`FlowGuard · Compliance Wording Review · 第 ${n} 页`,
-      M, doc.page.height - M - 8,
-      { width: doc.page.width - M * 2, align: "center", lineBreak: false });
-  doc.x = M;
-  doc.y = M; // body starts at top margin
-  inFooter = false;
-});
-doc.addPage();
 
 const ACCENT = "#0f766e";
 const MUTED = "#64748b";
