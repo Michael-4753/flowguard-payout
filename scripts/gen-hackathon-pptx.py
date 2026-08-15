@@ -155,7 +155,60 @@ feature("核心功能③ · 成果可演示","双人审批 + 生成付款指令"
          ("产出是指令","批准=生成付款指令，交由持牌机构划付——平台不经手资金。"),
          ("防错防内控","把关键控制点前置，减少人为疏漏造成的资金损失。")])
 
-# ---------- 8 demo ----------
+# ---------- 8 AI coverage table ----------
+s = prs.slides.add_slide(BLANK); bg(s, WHITE)
+eyebrow(s, "AI 为何必要 · 四处真实痛点 → 四个 AI 能力")
+title(s, "AI 覆盖一览：不是装饰，是每个卡点的解法", size=30)
+add_text(s, Inches(0.9), Inches(1.7), Inches(11.5), Inches(0.5),
+         "每个 AI 能力都绑定一个真实痛点、一个具体入口、一件明确的事。", 14, MUT)
+
+ai_rows = [
+    ("① 看不到钱卡哪", "历史里进行中付款的资金流链路图下方",
+     "「AI: where is my money?」", "用自然语言说清钱现在卡在哪家中间行、为何被卡、大概还要多久、你能做什么。"),
+    ("② 退回事后才知道", "核验 Case（open 状态）",
+     "「AI: draft the follow-up」", "基于命中因子直接起草给供应商的核实话术，第一条就是可直接发送的消息（补齐闭环）。"),
+    ("③ 多国重复适应银行", "添加收款人表单（填了国家+银行后出现）",
+     "「AI: what this corridor requires」", "生成该国家/币种的结算要求清单（收款名匹配、SWIFT/IBAN、FX 管制文件等），省去每次重新摸规则。"),
+    ("④ 对账对不上", "对账卡片（有差异或凭证未匹配时）",
+     "「AI: why don't these match?」", "指出金额/凭证对不上的最可能原因 + 下一步。"),
+]
+tbl_shape = s.shapes.add_table(len(ai_rows) + 1, 3, Inches(0.9), Inches(2.35), Inches(11.5), Inches(4.0))
+table = tbl_shape.table
+table.columns[0].width = Inches(2.1)
+table.columns[1].width = Inches(3.2)
+table.columns[2].width = Inches(6.2)
+# disable banded default style header emphasis; set our own colors
+hdrs = ["痛点", "入口", "AI 做什么"]
+for c, htext in enumerate(hdrs):
+    cell = table.cell(0, c)
+    cell.fill.solid(); cell.fill.fore_color.rgb = TEAL
+    cell.margin_left = Inches(0.1); cell.margin_top = Inches(0.04); cell.margin_bottom = Inches(0.04)
+    p = cell.text_frame.paragraphs[0]
+    run = p.add_run(); run.text = htext
+    run.font.size = Pt(13); run.font.color.rgb = WHITE; set_cn(run, True)
+for r, (pain, entry, call, does) in enumerate(ai_rows, start=1):
+    row_fill = RGBColor(0xF8, 0xFA, 0xFC) if r % 2 else WHITE
+    cells_text = [(pain, INK, True, 12), (entry, MUT, False, 11.5), (None, None, None, None)]
+    for c, val in enumerate(cells_text[:2]):
+        text, color, bold, sz = val
+        cell = table.cell(r, c)
+        cell.fill.solid(); cell.fill.fore_color.rgb = row_fill
+        cell.margin_left = Inches(0.1); cell.margin_top = Inches(0.05); cell.margin_bottom = Inches(0.05)
+        p = cell.text_frame.paragraphs[0]
+        run = p.add_run(); run.text = text
+        run.font.size = Pt(sz); run.font.color.rgb = color; set_cn(run, bold)
+    # third cell: call (teal bold) + does (muted)
+    cell = table.cell(r, 2)
+    cell.fill.solid(); cell.fill.fore_color.rgb = row_fill
+    cell.margin_left = Inches(0.1); cell.margin_top = Inches(0.05); cell.margin_bottom = Inches(0.05)
+    tf = cell.text_frame; tf.word_wrap = True
+    p = tf.paragraphs[0]
+    r1 = p.add_run(); r1.text = call; r1.font.size = Pt(12); r1.font.color.rgb = TEAL; set_cn(r1, True)
+    r2 = p.add_run(); r2.text = " — " + does; r2.font.size = Pt(11.5); r2.font.color.rgb = MUT; set_cn(r2, False)
+add_text(s, Inches(0.9), Inches(6.95), Inches(11.5), Inches(0.4),
+         "AI 只加价值、只加警示——绝不降低确定性引擎评分；输出均需提交指令前人工核实。", 10.5, MUT)
+
+# ---------- 9 demo ----------
 s = prs.slides.add_slide(BLANK); bg(s, WHITE)
 eyebrow(s, "现场可以看到什么"); title(s, "现场 Demo：一笔高风险付款的完整拦截", size=32)
 add_text(s, Inches(0.9), Inches(1.85), Inches(11.5), Inches(0.6),
