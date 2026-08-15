@@ -157,7 +157,7 @@ const DECK_EN = [
     eyebrow: "Roadmap",
     title: "From simulation to real rails",
     bullets: [
-      ["Live rail integrations", "Route to licensed institutions (banks / PSPs; digital-asset settlement via an overseas licensed institution). Software-only: no payment licence, no fund custody, no crypto transfer."],
+      ["Live rail integrations", "Route to licensed institutions (banks / PSPs; overseas settlement via an overseas licensed institution). Software-only: no payment licence, no fund custody, no crypto transfer."],
       ["Deeper reconciliation", "Read-only ERP/finance integrations to close the payment → reconciliation → bookkeeping loop. Settlement stays with licensed institutions."],
       ["Multi-currency", "Expand corridor and currency coverage."],
       ["Enterprise RBAC", "Granular roles and approval policies for larger teams."],
