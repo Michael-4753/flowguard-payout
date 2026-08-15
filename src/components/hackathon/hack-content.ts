@@ -111,7 +111,7 @@ export const HACK_DECK: HackSlide[] = [
       { head: "合规风险提示报告", body: "把检查项翻译成通俗解释与修复步骤，并可一键生成供应商核实工单。" },
     ],
     shot: "/pitch-shots/feat-precheck.png",
-    video: "/eazo-assets/att_0oyps7645nfy4jjj-dac41ff6e4-feat-precheck-demo.mp4",
+    video: "/eazo-assets/att_70duam7r6rrsf3w7-896ee20d49-feat-precheck-demo-v2.mp4",
   },
   {
     id: "f2",

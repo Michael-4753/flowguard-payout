@@ -194,7 +194,7 @@ def feature(eb, tt, st, items, shot=None, video=None):
         add_text(s, Inches(8.9), Inches(7.12), Inches(3.55), Inches(0.3), "产品界面（现场可实测）", 9, MUT, align=PP_ALIGN.CENTER)
     return s
 SHOTS = "/home/user/flowguard-payout/public/pitch-shots"
-FEAT1_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_0oyps7645nfy4jjj-dac41ff6e4-feat-precheck-demo.mp4"
+FEAT1_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_70duam7r6rrsf3w7-896ee20d49-feat-precheck-demo-v2.mp4"
 FEAT2_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_385lhafcz161fcq3-190894a7b5-feat-route-demo.mp4"
 FEAT3_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_3qmrjx5a4911h6it-3fb6d329d4-feat-reconcile-demo.mp4"
 feature("核心功能① · AI 为何必要","收款方信息预检-AI Agent","收款账户信息智能校验、国别规则适配、退回风险评分、合规风险提示报告。",
