@@ -195,7 +195,7 @@ def feature(eb, tt, st, items, shot=None, video=None):
     return s
 SHOTS = "/home/user/flowguard-payout/public/pitch-shots"
 FEAT1_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_4rnsqqdleomumbxor6e-feat-precheck-demo-v3.mp4"
-FEAT2_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_385lhafcz161fcq3-190894a7b5-feat-route-demo.mp4"
+FEAT2_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_3puez7yyd5h6in45ypp-feat-route-demo-v2.mp4"
 FEAT3_VIDEO = "/home/user/flowguard-payout/public/eazo-assets/att_3qmrjx5a4911h6it-3fb6d329d4-feat-reconcile-demo.mp4"
 feature("核心功能① · 事前防退回","收款方信息预检-AI Agent","收款账户信息智能校验、国别规则适配、退回风险评分、合规风险提示报告。",
         [("账户信息智能校验","收款名/SWIFT/IBAN 一致性与账户状态校验，先拦截而非先失败。"),
@@ -208,7 +208,7 @@ feature("核心功能② · 事中破黑箱","结算链路透明化追踪","逐�
          ("黑箱卡点标注","逐跳标出透明度（清晰/部分/黑箱）与滞留卡点，付款后还能定位钱现在卡在哪家中间行。"),
          ("多通道比价选路","看清链路后在多类持牌结算通道间，按费用/时效/退回率自动比价，给出可解释的最优路径——平台不执行付款。"),
          ("为什么要 AI","规则引擎决定选哪条路径，AI 只负责用自然语言把「为什么推荐这条、它比其他通道好在哪」讲清楚——可解释、可复核。")],
-        shot=f"{SHOTS}/feat-route.png")
+        shot=f"{SHOTS}/feat-route.png", video=FEAT2_VIDEO)
 feature("核心功能③ · 事后好对账","统一结算状态与对账看板","聚合各通道汇款进度、中转链路信息、交易凭证，实现多笔跨国付款台账可视化与自动对账核销。",
         [("多通道进度聚合","汇总各持牌通道的汇款进度与中转链路信息，钱走到哪一目了然。"),
          ("凭证与台账可视化","聚合交易凭证，多笔跨国付款台账集中可视化管理。"),
