@@ -99,6 +99,39 @@ export function readPrograms(): MilestoneProgram[] {
   }
 }
 
+// Cached snapshot for useSyncExternalStore. getSnapshot MUST return a
+// referentially-stable value when the underlying data is unchanged; otherwise
+// React re-renders forever ("Maximum update depth exceeded"). We memoize on the
+// raw localStorage string and only produce a new array when it actually changes.
+const EMPTY: MilestoneProgram[] = [];
+let snapRaw: string | null = null;
+let snapValue: MilestoneProgram[] = EMPTY;
+
+function getSnapshot(): MilestoneProgram[] {
+  if (typeof window === "undefined") return EMPTY;
+  let raw: string | null;
+  try {
+    raw = window.localStorage.getItem(KEY);
+    if (raw === null) {
+      // seed on first read so the demo has content, then cache it
+      const s = seed();
+      window.localStorage.setItem(KEY, JSON.stringify(s));
+      raw = window.localStorage.getItem(KEY);
+    }
+  } catch {
+    return EMPTY;
+  }
+  if (raw === snapRaw) return snapValue;
+  snapRaw = raw;
+  try {
+    const parsed = raw ? (JSON.parse(raw) as MilestoneProgram[]) : EMPTY;
+    snapValue = Array.isArray(parsed) ? parsed : EMPTY;
+  } catch {
+    snapValue = EMPTY;
+  }
+  return snapValue;
+}
+
 function writePrograms(list: MilestoneProgram[]): void {
   if (typeof window === "undefined") return;
   try {
