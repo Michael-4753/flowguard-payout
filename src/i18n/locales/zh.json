@@ -625,5 +625,46 @@
       "label": "本地入账行",
       "bank": "当地入账合作行"
     }
+  },
+  "riskGauge": {
+    "title": "退回风险分"
+  },
+  "returnReason": {
+    "swift": {
+      "title": "SWIFT/BIC 格式错误，将在路由行退回",
+      "source": "规则：SWIFT 格式校验"
+    },
+    "iban": {
+      "title": "IBAN 无效 → 账户无效退回",
+      "source": "规则：IBAN 结构校验"
+    },
+    "company-name": {
+      "title": "收款名在收款行筛查时不匹配",
+      "source": "规则：名称与后缀校验"
+    },
+    "account-status": {
+      "title": "休眠账户拒收入账电汇",
+      "source": "台账：账户状态"
+    },
+    "sanction": {
+      "title": "在中转行触发制裁/合规冻结",
+      "source": "名单：制裁与高风险"
+    },
+    "bank-blacklist": {
+      "title": "收款行拦截该笔电汇",
+      "source": "名单：银行黑名单"
+    },
+    "currency-control": {
+      "title": "外汇管制冻结——缺少单据",
+      "source": "走廊：外汇管制"
+    },
+    "amount-tier": {
+      "title": "付款金额分级",
+      "source": "规则"
+    },
+    "none": {
+      "title": "未检出明确退回原因",
+      "source": "走廊基线"
+    }
   }
 }

@@ -625,5 +625,46 @@
       "label": "Local payout bank",
       "bank": "In-country payout partner bank"
     }
+  },
+  "riskGauge": {
+    "title": "Return-risk score"
+  },
+  "returnReason": {
+    "swift": {
+      "title": "Malformed SWIFT/BIC bounces at routing bank",
+      "source": "Rule: SWIFT format check"
+    },
+    "iban": {
+      "title": "Invalid IBAN → invalid-account return",
+      "source": "Rule: IBAN structure check"
+    },
+    "company-name": {
+      "title": "Name mismatch at beneficiary screening",
+      "source": "Rule: name & suffix check"
+    },
+    "account-status": {
+      "title": "Dormant account rejects inbound wire",
+      "source": "Ledger: account status"
+    },
+    "sanction": {
+      "title": "Sanctions/compliance hold at correspondent",
+      "source": "List: sanctions & high-risk"
+    },
+    "bank-blacklist": {
+      "title": "Beneficiary bank intercepts the wire",
+      "source": "List: bank blacklist"
+    },
+    "currency-control": {
+      "title": "FX-control hold — missing documentation",
+      "source": "Corridor: FX controls"
+    },
+    "amount-tier": {
+      "title": "Payment amount tier",
+      "source": "Rule"
+    },
+    "none": {
+      "title": "No specific return cause detected",
+      "source": "Corridor baseline"
+    }
   }
 }
