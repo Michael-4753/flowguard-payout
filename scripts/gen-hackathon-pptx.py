@@ -72,17 +72,16 @@ def title(slide, text, color=INK, size=36):
 def subtitle(slide, text, color=MUT):
     add_text(slide, Inches(0.9), Inches(1.95), Inches(11.5), Inches(0.8), text, 16, color)
 
-def bullets_grid(slide, items, top=2.7, card_fill=CARDBG, head_color=INK, body_color=MUT, cols=2):
+def bullets_grid(slide, items, top=2.7, card_fill=CARDBG, head_color=INK, body_color=MUT, cols=2, ch=1.25):
     gap = 0.25
     total_w = 11.5
     cw = (total_w - gap * (cols - 1)) / cols
-    ch = 1.25
     for idx, (head, body) in enumerate(items):
         r = idx // cols; c = idx % cols
         x = Inches(0.9 + c * (cw + gap)); y = Inches(top + r * (ch + gap))
         rect(slide, x, y, Inches(cw), Inches(ch), card_fill)
         add_text(slide, x + Inches(0.2), y + Inches(0.12), Inches(cw - 0.4), Inches(0.4), head, 16, head_color, bold=True)
-        add_text(slide, x + Inches(0.2), y + Inches(0.55), Inches(cw - 0.4), Inches(0.6), body, 12.5, body_color)
+        add_text(slide, x + Inches(0.2), y + Inches(0.55), Inches(cw - 0.4), Inches(ch - 0.65), body, 12.5, body_color)
 
 def footnote(slide, text, color=MUT):
     add_text(slide, Inches(0.9), Inches(6.9), Inches(11.5), Inches(0.4), text, 11, color)
