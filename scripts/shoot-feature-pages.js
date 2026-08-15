@@ -63,13 +63,7 @@ async function run() {
   await page.waitForTimeout(1200);
   await shootElement(page, '[data-el="wizard-route"]', "feat-route.png");
 
-  // ---- Feature ③ : 分阶段里程碑付款工作台 ----
-  await page.goto(`${BASE}/milestones`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(2500);
-  await page.screenshot({ path: `${OUT}/feat-milestones.png`, fullPage: true });
-  console.log("saved feat-milestones.png (full page)");
-
-  // ---- Feature ④ : 统一结算状态与对账看板 ----
+  // ---- Feature ③ : 统一结算状态与对账看板 ----
   // Seed one payment end-to-end first so the reconcile board shows real rows.
   await page.goto(`${BASE}/pay?supplier=nordwind-dev&amount=6400`, { waitUntil: "networkidle" });
   await page.waitForTimeout(1200);
