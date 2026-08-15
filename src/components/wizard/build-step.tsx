@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import { useTranslation, Trans } from "react-i18next";
-import { ArrowRight, Check, Globe2 } from "lucide-react";
+import { ArrowRight, Check, Globe2, Lock } from "lucide-react";
 import type { ChannelClass, Currency, Supplier } from "@/lib/engine/types";
 import { channelLabel, riskLabel, countryLabel } from "@/lib/i18n-labels";
 import { cn } from "@/utils/utils";
 
 const CHANNELS: (ChannelClass | "auto")[] = ["auto", "stablecoin-direct", "local-fiat"];
-const SETTLE_CURRENCIES: Currency[] = ["USD", "EUR", "GBP", "SGD", "INR", "VND", "AED"];
 
 export function BuildStep({
   suppliers,
@@ -23,7 +22,6 @@ export function BuildStep({
 }) {
   const [supplierId, setSupplierId] = useState(initialSupplierId ?? "");
   const [amount, setAmount] = useState(initialAmount ? String(initialAmount) : "");
-  const [settleCurrency, setSettleCurrency] = useState<Currency>("USD");
   const [channel, setChannel] = useState<ChannelClass | "auto">("auto");
   const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation();
