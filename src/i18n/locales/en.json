@@ -405,7 +405,15 @@
     "blackBoxHops": "{{count}} black-box hop(s)",
     "fullyTraceable": "fully traceable",
     "chokepoint": "Chokepoint",
-    "track": "Track"
+    "track": "Track",
+    "caption": {
+      "initiated": "Initiated at origin",
+      "heldAt": "Held at {{bank}}",
+      "inTransit": "In transit via {{bank}}",
+      "arrived": "Arrived at beneficiary",
+      "returnedFrom": "Returned from {{bank}}"
+    },
+    "captionIntermediary": "intermediary"
   },
   "payout": {
     "summary": "Approved · {{amount}} {{settle}} settled{{creditNote}}. Submit this instruction to the {{institution}}, then record its settlement reference below. The licensed institution completes the settlement — this platform does not move funds.",

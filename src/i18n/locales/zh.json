@@ -405,7 +405,15 @@
     "blackBoxHops": "{{count}} 个黑箱节点",
     "fullyTraceable": "全程可追踪",
     "chokepoint": "卡点",
-    "track": "追踪"
+    "track": "追踪",
+    "caption": {
+      "initiated": "已在起点发起",
+      "heldAt": "滞留于 {{bank}}",
+      "inTransit": "经 {{bank}} 在途",
+      "arrived": "已到达收款人",
+      "returnedFrom": "从 {{bank}} 退回"
+    },
+    "captionIntermediary": "中间行"
   },
   "payout": {
     "summary": "已批准 · 以 {{amount}} {{settle}} 结算{{creditNote}}。将此指令提交给{{institution}}，然后在下方记录其结算凭证号。持牌机构完成结算——本平台不经手资金。",
