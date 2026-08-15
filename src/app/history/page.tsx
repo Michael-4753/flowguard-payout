@@ -48,7 +48,13 @@ function HistoryBody() {
   const guest = useIsGuest();
   const [level, setLevel] = useState<RiskLevel | "all">("all");
   const [status, setStatus] = useState<PaymentStatus | "all">("all");
-  const [execId, setExecId] = useState<string | null>(null);
+  const [execId, setExecId] = useState<string | null>(() =>
+    // Deep-linked right after approval (/history?focus={id})? Pre-open that row's
+    // execution panel. It only renders for `initiated` payments, so seeding it
+    // for any other row is harmless — this lands the reviewer directly on the
+    // "submit to the licensed institution" step instead of a bare list.
+    typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("focus"),
+  );
   // Deep-link focus: /history?focus={id} scrolls to and briefly highlights that
   // record so the reviewer doesn't have to hunt for it after approving/returning.
   // Read once from the URL at mount (client component) — no effect needed.
@@ -64,12 +70,6 @@ function HistoryBody() {
     const el = itemRefs.current[focusId];
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "center" });
-    // If we were deep-linked here right after approval, the payment is
-    // `initiated` and its next action is to submit the instruction to the
-    // licensed institution. Auto-open the execution panel so the reviewer lands
-    // directly on the actionable step instead of hunting for a button.
-    const target = payments.find((p) => p.id === focusId);
-    if (target?.status === "initiated") setExecId(focusId);
     const t = setTimeout(() => setFocusId(null), 2600);
     return () => clearTimeout(t);
   }, [focusId, payments]);
