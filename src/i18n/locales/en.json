@@ -3,6 +3,26 @@
     "name": "FlowGuard",
     "tagline": "Cross-border payment risk & routing"
   },
+  "enum": {
+    "channel": {
+      "stablecoin-direct": "Licensed Digital Settlement",
+      "local-fiat": "Local Fiat Payout"
+    },
+    "risk": {
+      "low": "Low risk",
+      "medium": "Medium — needs docs",
+      "high": "High — hold & review"
+    },
+    "status": {
+      "draft": "Draft",
+      "pending_review": "Pending review",
+      "rejected": "Rejected",
+      "initiated": "Initiated",
+      "settling": "Settling",
+      "arrived": "Arrived",
+      "returned": "Returned"
+    }
+  },
   "nav": {
     "home": "Home",
     "pay": "Pay",
