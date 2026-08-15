@@ -93,9 +93,9 @@ add_text(s, Inches(0.9), Inches(1.6), Inches(11.5), Inches(0.5),
 add_text(s, Inches(0.9), Inches(2.2), Inches(11.5), Inches(1.4), "FlowGuard", 72, WHITE, bold=True, align=PP_ALIGN.CENTER)
 add_text(s, Inches(1.4), Inches(3.9), Inches(10.5), Inches(1.0),
          "事前防退回，事中破黑箱，事后好对账", 26, RGBColor(0xEA,0xF7,0xF5), align=PP_ALIGN.CENTER)
-add_text(s, Inches(1.8), Inches(4.95), Inches(9.7), Inches(1.2),
-         "面向外贸企业与跨境电商的跨境付款风控操作台：付款前预检退回风险、比价选路，付款中透明追踪结算链路，付款后自动对账——只做决策辅助，资金由持牌机构结算。",
-         15, RGBColor(0xCF,0xEC,0xE8), align=PP_ALIGN.CENTER)
+add_text(s, Inches(1.5), Inches(4.85), Inches(10.3), Inches(1.4),
+         "FlowGuard 是一款面向外贸工贸企业与跨境服务商的 AI 驱动跨境结算决策辅助平台，专注于付款前合规风险预检、多持牌通道智能路由、结算链路透明化追踪与全流程凭证智能对账，帮助企业降低汇款退回风险、消除中间行信息黑箱、提升跨国结算与财务对账效率。",
+         13, RGBColor(0xCF,0xEC,0xE8), align=PP_ALIGN.CENTER)
 add_text(s, Inches(0.9), Inches(6.4), Inches(11.5), Inches(0.5),
          "一人团队 · 负责 App 全部内容 · 5 分钟路演", 13, RGBColor(0xBF,0xE4,0xE0), align=PP_ALIGN.CENTER)
 
