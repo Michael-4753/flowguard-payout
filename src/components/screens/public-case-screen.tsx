@@ -5,11 +5,11 @@ import { useTranslation } from "react-i18next";
 import { ShieldAlert, Clock, MessageSquare, Send, Lock, CheckCircle2 } from "lucide-react";
 import {
   CASE_ACTOR_LABEL,
-  VERIFICATION_STATUS_LABEL,
   type CaseActor,
   type VerificationCase,
   type VerificationStatus,
 } from "@/lib/engine/types";
+import { verificationStatusLabel } from "@/lib/i18n-labels";
 import { cn } from "@/utils/utils";
 
 interface Payload {
@@ -237,6 +237,7 @@ function WritePanel({
 }
 
 function StatusChip({ status }: { status: VerificationStatus }) {
+  const { t } = useTranslation();
   return (
     <span
       className={cn(
@@ -248,7 +249,7 @@ function StatusChip({ status }: { status: VerificationStatus }) {
             : "border-[color:var(--warning)]/40 bg-[color:var(--warning)]/15 text-[color:var(--warning)]",
       )}
     >
-      {VERIFICATION_STATUS_LABEL[status]}
+      {verificationStatusLabel(t, status)}
     </span>
   );
 }
