@@ -231,12 +231,23 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
           </div>
           {withShot && (
             <div className="flex shrink-0 flex-col items-center gap-2">
-              {/* Screenshot removed — keep an equally-sized empty placeholder box
-                  so the layout stays intact and a screenshot can be pasted in. */}
-              <div className="flex aspect-[9/16] max-h-[62vh] w-[min(280px,60vw)] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl">
-                在此处粘贴截图
-              </div>
-              <span className="text-xs text-muted-foreground">产品界面（现场可实测）</span>
+              {slide.video ? (
+                <video
+                  src={slide.video}
+                  controls
+                  playsInline
+                  className="aspect-[9/16] max-h-[62vh] w-[min(280px,60vw)] rounded-2xl border border-border bg-black object-contain shadow-xl"
+                />
+              ) : (
+                /* Screenshot removed — keep an equally-sized empty placeholder box
+                   so the layout stays intact and a screenshot can be pasted in. */
+                <div className="flex aspect-[9/16] max-h-[62vh] w-[min(280px,60vw)] items-center justify-center rounded-2xl border border-dashed border-border bg-[color:var(--fg-soft)] text-sm text-muted-foreground shadow-xl">
+                  在此处粘贴截图
+                </div>
+              )}
+              <span className="text-xs text-muted-foreground">
+                {slide.video ? "Demo 视频（点击播放）" : "产品界面（现场可实测）"}
+              </span>
             </div>
           )}
         </div>
