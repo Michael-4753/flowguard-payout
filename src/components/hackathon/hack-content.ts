@@ -22,6 +22,8 @@ export interface HackSlide {
   timeline?: { when: string; what: string }[];
   /** case slide: right-column four pits, each previewing a pain point. */
   pits?: { head: string; body: string }[];
+  /** demo slide: left-column per-page function list (name + one line). */
+  pages?: { name: string; body: string }[];
   footnote?: string;
 }
 
