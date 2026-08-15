@@ -22,10 +22,20 @@ const SHARED_TAIL = `
 Output rules:
 - Return STRICT JSON only, no markdown fences.
 - Shape: {"summary": string, "actions": string[]}.
-- "summary": 1-2 plain-English sentences.
+- "summary": 1-2 plain sentences.
 - "actions": 2-4 short imperative steps, most important first.
 - Ground every statement in the snapshot; never invent numbers or facts.
+- LANGUAGE: write EVERY user-visible string in the target language given by the
+  user message. For Chinese (zh) output natural Simplified Chinese with no
+  leftover English words; for English (en) write in English.
 `.trim();
+
+/** Map an app language code to an explicit instruction the model can follow. */
+function languageDirective(lang: unknown): string {
+  return lang === "zh"
+    ? "Target language: Chinese (zh). Every user-visible string must be Simplified Chinese only."
+    : "Target language: English (en). Every user-visible string must be English only.";
+}
 
 const PROMPTS: Record<Kind, string> = {
   flow: `
