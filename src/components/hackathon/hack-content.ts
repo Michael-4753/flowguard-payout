@@ -37,7 +37,7 @@ export const HACK_DECK: HackSlide[] = [
     id: "toc",
     kind: "toc",
     eyebrow: "目录",
-    title: "今天用 5 分钟讲清 11 件事",
+    title: "今天用 5 分钟讲清这几件事",
     toc: [
       "真实案例：一笔货款怎么踩坑",
       "真实问题：谁在痛、痛在哪",
