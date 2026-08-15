@@ -21,12 +21,16 @@ async function run() {
   const page = await ctx.newPage();
 
   async function passAuthGate() {
-    const guest = await page.$('[data-el="auth-guest"]');
-    if (guest) { await guest.click(); await page.waitForTimeout(2200); }
+    try {
+      const guest = await page.waitForSelector('[data-el="auth-guest"]', { timeout: 8000 });
+      await guest.click();
+      await page.waitForTimeout(2500);
+    } catch { /* no gate (already guest) */ }
   }
 
   // ---- Feature ①/② : drive the /pay wizard to the precheck result ----
   await page.goto(`${BASE}/pay?supplier=meridian-freight&amount=42000`, { waitUntil: "networkidle" });
+  await page.waitForTimeout(1500);
   await passAuthGate();
   await page.waitForSelector('[data-el="wizard-build"]', { timeout: 15000 });
   // ensure a payee is selected (prefill picks meridian-freight; click the last/high-risk option as fallback)
