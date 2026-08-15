@@ -3,6 +3,26 @@
     "name": "FlowGuard",
     "tagline": "跨境付款风险与选路"
   },
+  "enum": {
+    "channel": {
+      "stablecoin-direct": "境外持牌数字结算",
+      "local-fiat": "本地法币通道"
+    },
+    "risk": {
+      "low": "低风险",
+      "medium": "中等 — 需补单据",
+      "high": "高风险 — 建议暂缓"
+    },
+    "status": {
+      "draft": "草稿",
+      "pending_review": "待审批",
+      "rejected": "已退回",
+      "initiated": "已提交",
+      "settling": "结算中",
+      "arrived": "已到账",
+      "returned": "被退回"
+    }
+  },
   "nav": {
     "home": "首页",
     "pay": "付款",
