@@ -165,23 +165,33 @@ export function HackSlideView({ slide }: { slide: HackSlide }) {
   }
 
   /* ---------- problem / product / feature / architecture ---------- */
+  const withShot = slide.kind === "feature" && !!slide.shot;
   return (
     <section className="relative flex h-full w-full flex-col justify-center overflow-hidden bg-background px-8 py-10 sm:px-16">
       <Blobs />
       <div className="relative">
         <SlideHeader eyebrow={slide.eyebrow} title={slide.title} subtitle={slide.subtitle} big />
-        <div className="mt-7 grid max-w-4xl gap-3.5 sm:grid-cols-2 sm:pl-4">
-          {slide.bullets?.map((b, idx) => (
-            <div key={b.head} className="group flex gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--primary)]/40 hover:shadow-md">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0f766e] to-[#0e7490] text-xs font-bold text-white shadow">
-                {idx + 1}
-              </span>
-              <div>
-                <p className="text-base font-bold text-foreground">{b.head}</p>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
+        <div className={withShot ? "mt-7 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center" : ""}>
+          <div className={`mt-7 grid gap-3.5 sm:grid-cols-2 sm:pl-4 ${withShot ? "lg:mt-0 lg:max-w-2xl" : "max-w-4xl"}`}>
+            {slide.bullets?.map((b, idx) => (
+              <div key={b.head} className="group flex gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--primary)]/40 hover:shadow-md">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0f766e] to-[#0e7490] text-xs font-bold text-white shadow">
+                  {idx + 1}
+                </span>
+                <div>
+                  <p className="text-base font-bold text-foreground">{b.head}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
+                </div>
               </div>
+            ))}
+          </div>
+          {withShot && (
+            <div className="flex shrink-0 flex-col items-center gap-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={slide.shot} alt={slide.title} className="max-h-[62vh] w-auto rounded-2xl border border-border object-contain shadow-xl" />
+              <span className="text-xs text-muted-foreground">产品界面（现场可实测）</span>
             </div>
-          ))}
+          )}
         </div>
         {slide.footnote && (
           <p className="mt-6 inline-block rounded-full bg-[color:var(--fg-soft)] px-4 py-1.5 text-xs text-muted-foreground sm:ml-4">{slide.footnote}</p>
