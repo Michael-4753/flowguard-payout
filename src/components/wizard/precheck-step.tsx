@@ -5,7 +5,7 @@ import { useTranslation, Trans } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ShieldCheck, ShieldAlert, ChevronDown, TrendingUp, Copy, Check, AlertTriangle, FileCheck2, Route as RouteIcon, Users, Send } from "lucide-react";
 import type { RiskAssessment, RiskFactor, Supplier } from "@/lib/engine/types";
-import { factorTitle, factorDescription, factorRemediation } from "@/lib/i18n-labels";
+import { factorTitle, factorDescription, factorRemediation, returnReasonTitle, returnReasonSource } from "@/lib/i18n-labels";
 import { RiskBadge, SeverityDot } from "@/components/shared/badges";
 import { RiskGauge } from "@/components/shared/risk-gauge";
 import { AiPrecheckExplainer } from "@/components/wizard/ai-precheck-explainer";
@@ -105,7 +105,7 @@ export function PrecheckStep({
         <div className="mt-3 flex items-center gap-2">
           <RiskBadge level={risk.level} />
           <span className="font-mono text-[11px] text-muted-foreground">
-            {scanning ? "Scanning…" : `${hits.length} risk factor(s) hit`}
+            {scanning ? t("precheck.scanning") : t("precheck.riskFactorsHit", { count: hits.length })}
           </span>
         </div>
         {!scanning && (
@@ -279,7 +279,7 @@ export function PrecheckStep({
             {risk.returnReasons.map((r) => (
               <li key={r.id} data-el="return-reason">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="min-w-0 truncate text-[13px] font-medium">{r.title}</span>
+                  <span className="min-w-0 truncate text-[13px] font-medium">{returnReasonTitle(t, r)}</span>
                   <span className="shrink-0 font-mono text-[11px] font-bold text-primary">
                     {formatPercent(r.probability, 0)}
                   </span>
@@ -291,7 +291,7 @@ export function PrecheckStep({
                   />
                 </div>
                 <div className="mt-0.5 font-mono text-[9px] uppercase tracking-wide text-muted-foreground">
-                  {r.source}
+                  {returnReasonSource(t, r)}
                 </div>
               </li>
             ))}
