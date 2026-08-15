@@ -13,11 +13,24 @@ const BOLD = "/tmp/NotoSansSC-Bold.ttf";
 
 const M = 56;              // page margin
 const FOOTER_H = 34;       // reserved footer band
-const doc = new PDFDocument({ size: "A4", margins: { top: M, bottom: M + FOOTER_H, left: M, right: M }, bufferPages: true, autoFirstPage: true });
+let pageNo = 0;
+const doc = new PDFDocument({ size: "A4", margins: { top: M, bottom: M + FOOTER_H, left: M, right: M }, autoFirstPage: false });
 doc.registerFont("reg", REG);
 doc.registerFont("bold", BOLD);
 const stream = fs.createWriteStream(OUT);
 doc.pipe(stream);
+
+// draw footer immediately when a page is added (no buffering, no extra pages)
+doc.on("pageAdded", () => {
+  pageNo += 1;
+  const n = pageNo;
+  const savedY = doc.y;
+  doc.fillColor("#64748b").font("reg").fontSize(8)
+    .text(`FlowGuard · 合规措辞审查报告 / Compliance Wording Review · 第 ${n} 页`,
+      M, doc.page.height - M - 8, { width: doc.page.width - M * 2, align: "center" });
+  doc.y = savedY; // restore so body continues from top margin
+});
+doc.addPage();
 
 const ACCENT = "#0f766e";
 const MUTED = "#64748b";
@@ -141,14 +154,5 @@ while (i < lines.length) {
   i++;
 }
 
-// footers (does not add pages)
-const range = doc.bufferedPageRange();
-for (let p = 0; p < range.count; p++) {
-  doc.switchToPage(p);
-  doc.fillColor(MUTED).font("reg").fontSize(8)
-    .text(`FlowGuard · Compliance Review · ${p + 1} / ${range.count}`,
-      M, doc.page.height - M - 8, { width: CONTENT_W(), align: "center" });
-}
-
 doc.end();
-stream.on("finish", () => console.log("PDF written:", OUT, fs.statSync(OUT).size, "bytes", "| pages:", range.count));
+stream.on("finish", () => console.log("PDF written:", OUT, fs.statSync(OUT).size, "bytes", "| pages:", pageNo));
