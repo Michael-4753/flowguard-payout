@@ -22,12 +22,16 @@ async function run() {
 
   async function passAuthGate() {
     const guest = await page.$('[data-el="auth-guest"]');
-    if (guest) { await guest.click(); await page.waitForTimeout(1200); }
+    if (guest) { await guest.click(); await page.waitForTimeout(2200); }
   }
 
   // ---- Feature ①/② : drive the /pay wizard to the precheck result ----
   await page.goto(`${BASE}/pay?supplier=meridian-freight&amount=42000`, { waitUntil: "networkidle" });
   await passAuthGate();
+  await page.waitForSelector('[data-el="wizard-build"]', { timeout: 15000 });
+  // ensure a payee is selected (prefill picks meridian-freight; click the last/high-risk option as fallback)
+  const opts = await page.$$('[data-el="wizard-supplier-option"]');
+  if (opts.length) { await opts[opts.length - 1].click(); await page.waitForTimeout(400); }
   // submit the draft step to run the precheck
   const runBtn = await page.waitForSelector('[data-el="wizard-run-precheck"]', { timeout: 15000 });
   await runBtn.click();
