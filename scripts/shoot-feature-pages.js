@@ -28,10 +28,18 @@ async function run() {
     } catch { /* no gate (already guest) */ }
   }
 
+  async function switchToZh() {
+    try {
+      const zh = await page.$('[data-el="language-zh"]');
+      if (zh) { await zh.click(); await page.waitForTimeout(1200); }
+    } catch { /* ignore */ }
+  }
+
   // ---- Feature ①/② : drive the /pay wizard to the precheck result ----
   await page.goto(`${BASE}/pay?supplier=meridian-freight&amount=42000`, { waitUntil: "networkidle" });
   await page.waitForTimeout(1500);
   await passAuthGate();
+  await switchToZh();
   await page.waitForSelector('[data-el="wizard-build"]', { timeout: 15000 });
   // ensure a payee is selected (prefill picks meridian-freight; click the last/high-risk option as fallback)
   const opts = await page.$$('[data-el="wizard-supplier-option"]');
