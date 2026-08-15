@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
   // the snapshot validation below as a cheap guard against empty/abuse calls.
   const body = await request.json().catch(() => ({}));
   const snapshot = body?.snapshot;
+  const lang = body?.lang;
   if (!snapshot || typeof snapshot !== "object") {
     return Response.json({ error: "Missing pre-check snapshot" }, { status: 400 });
   }
@@ -67,9 +68,9 @@ export async function POST(request: NextRequest) {
         { role: "system", content: KNOWLEDGE_BASE },
         {
           role: "user",
-          content: `Deterministic pre-check snapshot (JSON):\n${JSON.stringify(
+          content: `${languageDirective(lang)}\n\nDeterministic pre-check snapshot (JSON):\n${JSON.stringify(
             snapshot,
-          ).slice(0, 4000)}\n\nProduce the compliance briefing JSON.`,
+          ).slice(0, 4000)}\n\nProduce the compliance briefing JSON in the target language.`,
         },
       ],
       params: { temperature: 0.3, max_tokens: 800 },
