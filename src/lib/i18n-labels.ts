@@ -66,3 +66,15 @@ export function factorDescription(
 export function factorRemediation(t: TFunction, f: Pick<RiskFactor, "id" | "remediation">): string {
   return t(`factor.${f.id}.remediation`, { defaultValue: f.remediation });
 }
+
+/**
+ * Localized failure-case field. Cases have stable ids (fc-01…); translate on
+ * `id` + field, falling back to the English value stored on the record.
+ */
+export function failCaseText(
+  t: TFunction,
+  c: { id: string; corridor: string; reason: string; failedAt: string; remediation: string },
+  field: "corridor" | "reason" | "failedAt" | "remediation",
+): string {
+  return t(`failCase.${c.id}.${field}`, { defaultValue: c[field] });
+}
