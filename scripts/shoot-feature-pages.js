@@ -54,25 +54,41 @@ async function run() {
   // ① precheck: capture the risk factors block (top of the precheck panel)
   await shootElement(page, '[data-el="wizard-precheck"]', "feat-precheck.png");
 
-  // ② AI signals: wait for the AI cards to finish loading, then capture that region.
-  // AiRiskSignals renders after AiPrecheckExplainer; give App AI time to respond.
-  await page.waitForTimeout(9000);
-  // Prefer a dedicated AI container if present; else fall back to precheck panel.
-  const aiSel = (await page.$('[data-el="ai-risk-signals"]')) ? '[data-el="ai-risk-signals"]'
-    : (await page.$('[data-el="return-reasons"]')) ? '[data-el="return-reasons"]'
-    : '[data-el="wizard-precheck"]';
-  await shootElement(page, aiSel, "feat-ai.png");
+  // ② AI signals: this card is on-demand — click "scan", wait for the AI result,
+  // then screenshot it. If App AI is unavailable it returns to idle; we still
+  // capture the compliance-briefing region as a fallback so the slide is real.
+  try {
+    const runAi = await page.$('[data-el="ai-risk-signals-run"]');
+    if (runAi) { await runAi.click(); }
+    // wait for the scan to resolve (retry button appears when done/error)
+    await page.waitForSelector('[data-el="ai-risk-signals-retry"]', { timeout: 20000 });
+    await page.waitForTimeout(800);
+  } catch { /* AI may be slow/unavailable; capture whatever is there */ }
+  await shootElement(page, '[data-el="ai-risk-signals"]', "feat-ai.png");
 
-  // ---- Feature ③ : dual approval queue ----
+  // ---- Seed the review queue: submit ONE low-risk payment end-to-end ----
+  // A low-risk payee has no blocker/verify gate, so we can go straight to route + confirm.
+  await page.goto(`${BASE}/pay?supplier=nordwind-dev&amount=6400`, { waitUntil: "networkidle" });
+  await page.waitForTimeout(1200);
+  await page.waitForSelector('[data-el="wizard-build"]', { timeout: 15000 });
+  const runBtn2 = await page.waitForSelector('[data-el="wizard-run-precheck"]', { timeout: 15000 });
+  await runBtn2.click();
+  await page.waitForSelector('[data-el="wizard-precheck"]', { timeout: 20000 });
+  const toRoute = await page.waitForSelector('[data-el="wizard-to-route"]:not([disabled])', { timeout: 15000 });
+  await toRoute.click();
+  const confirm = await page.waitForSelector('[data-el="wizard-confirm"]', { timeout: 15000 });
+  await confirm.click();
+  // handleConfirm redirects to /review after ~900ms
+  await page.waitForTimeout(2500);
+
+  // ---- Feature ③ : dual approval queue (now has a pending instruction) ----
   await page.goto(`${BASE}/review`, { waitUntil: "networkidle" });
-  await passAuthGate();
   await page.waitForTimeout(2500);
   await page.screenshot({ path: `${OUT}/feat-review.png`, fullPage: true });
   console.log("saved feat-review.png (full page)");
 
   // ---- Feature ④ : milestones workbench ----
   await page.goto(`${BASE}/milestones`, { waitUntil: "networkidle" });
-  await passAuthGate();
   await page.waitForTimeout(2500);
   await page.screenshot({ path: `${OUT}/feat-milestones.png`, fullPage: true });
   console.log("saved feat-milestones.png (full page)");
