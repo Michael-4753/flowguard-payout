@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { appAi, AppAIUnavailableError, extractMessageContent } from "@/lib/eazo-ai-billing";
+import { sanitizeAiCompliance } from "@/lib/api/ai-compliance-filter";
 
 /**
  * LLM-powered recipient-info pre-check explanation (App AI, text capability).
