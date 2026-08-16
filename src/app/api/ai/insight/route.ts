@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { appAi, AppAIUnavailableError, extractMessageContent } from "@/lib/eazo-ai-billing";
+import { sanitizeAiCompliance } from "@/lib/api/ai-compliance-filter";
 
 /**
  * Unified AI insight endpoint (App AI, text capability) powering the four
@@ -25,6 +26,11 @@ Output rules:
 - "summary": 1-2 plain sentences.
 - "actions": 2-4 short imperative steps, most important first.
 - Ground every statement in the snapshot; never invent numbers or facts.
+- COMPLIANCE WORDING (mandatory): never use the words stablecoin, USDC, USDT,
+  crypto, cryptocurrency, on-chain, blockchain, on-ramp or off-ramp. Describe
+  the overseas path only as a "licensed overseas settlement channel" and any
+  settlement record in neutral licensed-institution terms. The platform performs
+  no crypto/stablecoin exchange, custody or transfer.
 - LANGUAGE: write EVERY user-visible string in the target language given by the
   user message. For Chinese (zh) output natural Simplified Chinese with no
   leftover English words; for English (en) write in English.
@@ -119,6 +125,9 @@ CRITICAL RULES:
 - Return STRICT JSON only, no markdown fences, shape:
   {"contradictions": string[], "similarCases": [{"case": string, "why": string}], "missingDocs": string[]}
 - Keep each string to one short sentence.
+- COMPLIANCE WORDING (mandatory): never use stablecoin/USDC/USDT/crypto/on-chain/
+  blockchain/on-ramp/off-ramp; use "licensed overseas settlement channel" and
+  neutral licensed-institution terms instead.
 - LANGUAGE: write EVERY string value in the target language given by the user
   message — Simplified Chinese for zh (no leftover English), English for en.`.trim(),
 };
@@ -157,5 +166,5 @@ export async function POST(request: NextRequest) {
     throw error;
   }
 
-  return Response.json({ text: extractMessageContent(result) });
+  return Response.json({ text: sanitizeAiCompliance(extractMessageContent(result), lang) });
 }
