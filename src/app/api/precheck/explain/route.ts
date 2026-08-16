@@ -32,6 +32,12 @@ Corridor / compliance rules of thumb:
   the platform never touches funds or performs any crypto conversion) and
   "Local Fiat Payout" (PSP + correspondent bank rail).
 
+COMPLIANCE WORDING (mandatory): Never use the words stablecoin, USDC, USDT,
+crypto, cryptocurrency, on-chain, blockchain, on-ramp or off-ramp in any
+user-visible string. Always describe the overseas path as a "licensed overseas
+settlement channel" and any settlement record in neutral licensed-institution
+terms. The platform performs no crypto/stablecoin exchange, custody or transfer.
+
 Output rules:
 - Return STRICT JSON only, no markdown fences.
 - Shape: {"summary": string, "actions": string[]}.
@@ -87,5 +93,5 @@ export async function POST(request: NextRequest) {
   }
 
   const raw = extractMessageContent(result);
-  return Response.json({ text: raw });
+  return Response.json({ text: sanitizeAiCompliance(raw, lang) });
 }
