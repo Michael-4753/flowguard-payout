@@ -28,9 +28,10 @@ const RULES: Rule[] = [
   { pattern: /链上结算/g, zh: "持牌机构结算", en: "licensed-institution settlement" },
   { pattern: /链上(交易|凭证|流水|记录|哈希|leg|环节)?/g, zh: "结算流水", en: "settlement record" },
   { pattern: /(加密货币|数字货币|虚拟货币|稳定币)(兑换|转账|通道|结算)?/g, zh: "持牌结算", en: "licensed settlement" },
-  { pattern: /(入金|出金)通道|on-?ramp|off-?ramp/gi, zh: "持牌结算入口", en: "licensed settlement gateway" },
+  { pattern: /(USDC|USDT|Tether|稳定币|加密货币)?\s*(入金|出金)通道/g, zh: "持牌结算入口", en: "licensed settlement gateway" },
+  { pattern: /(USDC|USDT|Tether)?\s*on-?ramp|(USDC|USDT|Tether)?\s*off-?ramp/gi, zh: "持牌结算入口", en: "licensed settlement gateway" },
   // --- English multi-word phrases ---
-  { pattern: /stable\s*-?\s*coin[\s-]*(direct|rail|channel|settlement|leg)?/gi, zh: "持牌境外结算通道", en: "licensed overseas settlement channel" },
+  { pattern: /stable\s*-?\s*coin[\s-]*(direct[\s-]*)?(rail|channel|settlement|leg)?/gi, zh: "持牌境外结算通道", en: "licensed overseas settlement channel" },
   { pattern: /(public[-\s]*)?chain\s*settlement/gi, zh: "持牌机构结算", en: "licensed-institution settlement" },
   { pattern: /on[-\s]*chain\s*(settlement|leg|tx|transaction|transfer|record|proof)?/gi, zh: "结算流水", en: "settlement record" },
   { pattern: /crypto(currency|-currency)?\s*(exchange|conversion|transfer|rail|settlement)?/gi, zh: "持牌结算", en: "licensed settlement" },
